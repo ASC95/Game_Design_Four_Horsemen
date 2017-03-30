@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -84,9 +85,8 @@ public class LabSixGame extends Game implements IEventListener {
 	}
 	
 	@Override
-	public void update(ArrayList<String> pressedKeys){
+	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
-		
 		if(box != null) box.update(pressedKeys);
 		if(plat1 != null) plat1.update(pressedKeys);
 		if(plat2 != null) plat2.update(pressedKeys);
@@ -109,11 +109,11 @@ public class LabSixGame extends Game implements IEventListener {
 			}
 			
 			if(canPlay) {
-				if(pressedKeys.contains("Left") || pressedKeys.contains("Right") || pressedKeys.contains("Up")) {
+				if(pressedKeys.contains(KeyEvent.VK_LEFT) || pressedKeys.contains(KeyEvent.VK_RIGHT) || pressedKeys.contains(KeyEvent.VK_UP)) {
 					
-					if(pressedKeys.contains("Left")) {
+					if(pressedKeys.contains(KeyEvent.VK_LEFT)) {
 						boi.setPosition(boi.getPosition().x += -5, boi.getPosition().y);
-						if(pressedKeys.contains("Right") && pressedKeys.indexOf("Right") > pressedKeys.indexOf("Left")) {
+						if(pressedKeys.contains(KeyEvent.VK_RIGHT) && pressedKeys.indexOf(KeyEvent.VK_RIGHT) > pressedKeys.indexOf(KeyEvent.VK_LEFT)) {
 							boi.setPosition(boi.getPosition().x - 5, boi.getPosition().y); // so that sprite will still move 
 						}
 						if(boi.getScaleX() > 0) {
@@ -121,13 +121,13 @@ public class LabSixGame extends Game implements IEventListener {
 							boi.setPosition(boi.getPosition().x + boi.getUnscaledWidth(), boi.getPosition().y);
 						}
 						if((boi.getPosition().x < plat3.getPosition().x&& boi.getPosition().x > plat2.getPosition().x + plat2.getUnscaledWidth()) || (boi.getPosition().x < plat2.getPosition().x && boi.getPosition().x > plat1.getPosition().x + plat1.getUnscaledWidth()) || (boi.getPosition().x < plat1.getPosition().x)) {
-							boi.setGravity(-4);
+							boi.setGravity(-2);
 							boi.setFalling(true);
 						}
 					}
-					if(pressedKeys.contains("Right")) {
+					if(pressedKeys.contains(KeyEvent.VK_RIGHT)) {
 						boi.setPosition(boi.getPosition().x += 5, boi.getPosition().y);
-						if(pressedKeys.contains("Left") && pressedKeys.indexOf("Right") < pressedKeys.indexOf("Left")) {
+						if(pressedKeys.contains(KeyEvent.VK_LEFT) && pressedKeys.indexOf(KeyEvent.VK_RIGHT) < pressedKeys.indexOf(KeyEvent.VK_LEFT)) {
 							boi.setPosition(boi.getPosition().x + 5, boi.getPosition().y); // so that sprite will still move 
 						}
 						if(boi.getScaleX() < 0) {
@@ -136,7 +136,7 @@ public class LabSixGame extends Game implements IEventListener {
 						}
 						
 						if((boi.getPosition().x > plat1.getPosition().x + plat1.getUnscaledWidth() && boi.getPosition().x < plat2.getPosition().x) || (boi.getPosition().x < plat3.getPosition().x && boi.getPosition().x > plat2.getPosition().x + plat1.getUnscaledWidth())) {
-							boi.setGravity(-4);
+							boi.setGravity(-2);
 							boi.setFalling(true);
 						}
 						
@@ -147,7 +147,7 @@ public class LabSixGame extends Game implements IEventListener {
 						boi.animate("walking");
 					}
 					
-					if (pressedKeys.contains("Up")) {
+					if (pressedKeys.contains(KeyEvent.VK_UP)) {
 						if(!boi.isJumping() && !boi.isFalling()) {
 							try {
 								soundManager.LoadSoundEffect("jump", "Mario_Jumping.wav");
@@ -156,8 +156,8 @@ public class LabSixGame extends Game implements IEventListener {
 								e.printStackTrace();
 							}
 							soundManager.PlaySoundEffect("jump");
-							boi.setVelocity(38);
-							boi.setGravity(-5);
+							boi.setVelocity(23);
+							boi.setGravity(-2);
 							boi.setJumping(true);
 							boi.setFalling(false);
 							boi.animate("jumping");

@@ -169,7 +169,7 @@ public class AnimatedSprite extends Sprite{
 	}
 
 	@Override
-	public void update(ArrayList<String> pressedKeys) {
+	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
 		if(this.getDisplayImage() != null) {
 			if(playing) {
