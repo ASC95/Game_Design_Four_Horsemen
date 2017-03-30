@@ -31,7 +31,7 @@ public class LabSixGame extends Game implements IEventListener {
 
 	static int screenWidth = 600;
 	static int screenHeight = 590;
-	
+
 	PhysicsSprite boi = new PhysicsSprite("boi", "standing", "standing.png");
 	Sprite bg = new Sprite("bg", "bg0000.png");
 	Sprite box = new Sprite("box", "box.png");
