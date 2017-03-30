@@ -41,9 +41,19 @@ public class Prototype extends Game {
 		if (boi != null) {
 			if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
 				boi.getPosition().x -= 5;
+				if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
+					boi.setSpeed(7);
+					boi.animate("walking");
+					boi.start();
+				}
 			}
 			if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
 				boi.getPosition().x += 5;
+				if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
+					boi.setSpeed(7);
+					boi.animate("walking");
+					boi.start();
+				}
 			}
 			if (pressedKeys.contains(KeyEvent.VK_UP)) {
 				if(!boi.isJumping() && !boi.isFalling()) {
@@ -56,7 +66,20 @@ public class Prototype extends Game {
 				}
 
 			}
+			if (boi.getPosition().getY() > (this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45)) {
+				boi.setJumping(false);
+				boi.setFalling(false);
+				boi.setPosition(boi.getPosition().x, this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45);
+				if(boi.getAnimate().equals("jumping")) {
+					boi.setSpeed(7);
+					boi.animate("walking");
+				}
+			}
 
+			if (pressedKeys.isEmpty() && !boi.isJumping() && !boi.isFalling()) {
+				boi.animate("standing");
+				boi.start();
+			}
 		}
 	}
 
