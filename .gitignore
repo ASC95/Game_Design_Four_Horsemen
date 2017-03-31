@@ -2,4 +2,4 @@
 *.class
 
 # Don't mess up each other's Intellij configurations #
-workspace.xml
+.idea/*

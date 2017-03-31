@@ -58,7 +58,6 @@ public class Prototype extends Game {
 		boi.addChild(boiAttack3);
 
 		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
-		enemy.setHitBox(0, 0, enemy.getUnscaledWidth(), enemy.getUnscaledHeight());
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		projectile.setPosition((int) enemy.getPosition().getX(), (int) enemy.getPosition().getY() + 50);
@@ -229,7 +228,7 @@ public class Prototype extends Game {
 				frameCounter++;
 			}
 		}
-
+		
 		if(boi != null && boi.collidesWith(projectile)) {
 			boiHealth -= 10;
 			System.out.println("hit!!");
@@ -243,7 +242,6 @@ public class Prototype extends Game {
 		if (boi != null && boi.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}
-
 	}
 
 	private void drawHealthBar(int x, int y, int width, int height, Color color, Graphics g) {
