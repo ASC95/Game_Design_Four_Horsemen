@@ -6,8 +6,10 @@ public class PhysicsSprite extends AnimatedSprite {
 	// boolean to check if sprite is on solid ground and not jumping or sth
 	boolean jumping = false;
 	boolean falling = false;
-	double acceleration = 0;
-	double velocity = 0;
+	double accelerationX = 0;
+	double accelerationY = 0;
+	double velocityX = 0;
+	double velocityY = 0;
 	double gravity = 10;
 	
 	public PhysicsSprite(String id) {
@@ -38,20 +40,51 @@ public class PhysicsSprite extends AnimatedSprite {
 		this.falling = falling;
 	}
 	
-	public double getAcceleration() {
-		return acceleration;
+	public double getXAcceleration() {
+		return accelerationX;
 	}
 
-	public void setAcceleration(double acceleration) {
-		this.acceleration = acceleration;
+	public double getYAcceleration() {
+		return accelerationY;
+	}
+	public void setXAcceleration(double acceleration) {
+		this.accelerationX = acceleration;
 	}
 
-	public double getVelocity() {
-		return velocity;
+	public void setYAcceleration(double acceleration) {
+		this.accelerationY = acceleration;
 	}
 
-	public void setVelocity(double velocity) {
-		this.velocity = velocity;
+	public double getAccelerationX() {
+		return accelerationX;
+	}
+
+	public void setAccelerationX(double accelerationX) {
+		this.accelerationX = accelerationX;
+	}
+
+	public double getAccelerationY() {
+		return accelerationY;
+	}
+
+	public void setAccelerationY(double accelerationY) {
+		this.accelerationY = accelerationY;
+	}
+
+	public double getVelocityX() {
+		return velocityX;
+	}
+
+	public void setVelocityX(double velocityX) {
+		this.velocityX = velocityX;
+	}
+
+	public double getVelocityY() {
+		return velocityY;
+	}
+
+	public void setVelocityY(double velocityY) {
+		this.velocityY = velocityY;
 	}
 
 	public double getGravity() {
@@ -65,15 +98,15 @@ public class PhysicsSprite extends AnimatedSprite {
 	@Override
 	public void update(ArrayList<Integer> pressedKeys) {
 		if(jumping || falling) {
-			velocity = velocity + gravity;
-			this.setPosition(this.getPosition().x, (int)(this.getPosition().y - velocity));
-			if(velocity < 0) {
+			velocityY = velocityY + gravity;
+			this.setPosition(this.getPosition().x, (int)(this.getPosition().y - velocityY));
+			if(velocityY < 0) {
 				falling = true;
 				jumping = false;
 			}	
 		}
 		if(!jumping && !falling) {
-			velocity = 0;
+			velocityY = 0;
 		}
 		super.update(pressedKeys);
 	}

@@ -156,7 +156,7 @@ public class LabSixGame extends Game implements IEventListener {
 								e.printStackTrace();
 							}
 							soundManager.PlaySoundEffect("jump");
-							boi.setVelocity(23);
+//							boi.setVelocity(23);
 							boi.setGravity(-2);
 							boi.setJumping(true);
 							boi.setFalling(false);
@@ -211,35 +211,35 @@ public class LabSixGame extends Game implements IEventListener {
 					juggler.add(boxTween);
 				}
 				
-				if(boi.isFalling() && plat1.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat1.getPosition().getY() + plat1.getUnscaledHeight()) {
-					boi.setJumping(false);
-					boi.setFalling(false);
-					boi.setPosition(boi.getPosition().x, plat1.getPosition().y - boi.getUnscaledHeight());
-					if(boi.getAnimate().equals("jumping")) {
-						boi.setSpeed(7);
-						boi.animate("walking");
-					}
-				}
+//				if(boi.isFalling() && plat1.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat1.getPosition().getY() + plat1.getUnscaledHeight()) {
+//					boi.setJumping(false);
+//					boi.setFalling(false);
+//					boi.setPosition(boi.getPosition().x, plat1.getPosition().y - boi.getUnscaledHeight());
+//					if(boi.getAnimate().equals("jumping")) {
+//						boi.setSpeed(7);
+//						boi.animate("walking");
+//					}
+//				}
 	
-				if(boi.isFalling() && plat2.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat2.getPosition().getY() + plat2.getUnscaledHeight()) {
-					boi.setJumping(false);
-					boi.setFalling(false);
-					boi.setPosition(boi.getPosition().x, plat2.getPosition().y - boi.getUnscaledHeight());
-					if(boi.getAnimate().equals("jumping")) {
-						boi.setSpeed(7);
-						boi.animate("walking");
-					}
-				}
-				
-				if(boi.isFalling() && plat3.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat3.getPosition().getY() + plat3.getUnscaledHeight()) {
-					boi.setJumping(false);
-					boi.setFalling(false);
-					boi.setPosition(boi.getPosition().x, plat3.getPosition().y - boi.getUnscaledHeight());
-					if(boi.getAnimate().equals("jumping")) {
-						boi.setSpeed(7);
-						boi.animate("walking");
-					}
-				}
+//				if(boi.isFalling() && plat2.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat2.getPosition().getY() + plat2.getUnscaledHeight()) {
+//					boi.setJumping(false);
+//					boi.setFalling(false);
+//					boi.setPosition(boi.getPosition().x, plat2.getPosition().y - boi.getUnscaledHeight());
+//					if(boi.getAnimate().equals("jumping")) {
+//						boi.setSpeed(7);
+//						boi.animate("walking");
+//					}
+//				}
+//				
+//				if(boi.isFalling() && plat3.collidesWith(boi) && boi.getPosition().getY() + boi.getUnscaledHeight() + boi.getVelocity() < plat3.getPosition().getY() + plat3.getUnscaledHeight()) {
+//					boi.setJumping(false);
+//					boi.setFalling(false);
+//					boi.setPosition(boi.getPosition().x, plat3.getPosition().y - boi.getUnscaledHeight());
+//					if(boi.getAnimate().equals("jumping")) {
+//						boi.setSpeed(7);
+//						boi.animate("walking");
+//					}
+//				}
 			}
 		}
 		

@@ -53,7 +53,6 @@ public class Prototype extends Game {
 		boi.addChild(boiAttack1);
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
-//		boiAttack1.setHitBoxP(boi.relPos(boiAttack1.getPosition()), boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
 		System.out.println(boiAttack1.getHitBox().getBounds().getLocation());
 		System.out.println(boi.relPos(boiAttack1.getPosition()));
 
@@ -63,14 +62,10 @@ public class Prototype extends Game {
 		boi.addChild(boiAttack2);
 		boiAttack2.setPosition(73, -8);
 		boiAttack2.setVisible(false);
-//		boiAttack2.setHitBox(0, 0, boiAttack2.getUnscaledWidth(), boiAttack2.getUnscaledHeight());
 
 		boi.addChild(boiAttack3);
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
-//		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
-
-//		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		enemy2.setPosition(10, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
@@ -116,7 +111,7 @@ public class Prototype extends Game {
 				}
 				if (pressedKeys.contains(KeyEvent.VK_UP)) {
 					if (!boi.isJumping() && !boi.isFalling()) {
-						boi.setVelocity(23);
+						boi.setVelocityY(23);
 						boi.setGravity(-2);
 						boi.setJumping(true);
 						boi.setFalling(false);
