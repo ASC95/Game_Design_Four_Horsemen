@@ -36,14 +36,18 @@ public class Prototype extends Game {
 		this.addChild(enemy);
 		this.addChild(projectile);
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
+		boi.setHitBox(10, 10, 10, 10);
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
+		boiAttack1.setHitBox(0, 0, boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
 		boi.addChild(boiAttack1);
 		boiAttack2.setPosition(73, -8);
 		boiAttack2.setVisible(false);
+		boiAttack2.setHitBox(0, 0, boiAttack2.getUnscaledWidth(), boiAttack2.getUnscaledHeight());
 		boi.addChild(boiAttack2);
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
+		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
 		boi.addChild(boiAttack3);
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
@@ -160,6 +164,7 @@ public class Prototype extends Game {
 		
 		if(boi != null && boi.collidesWith(projectile)) {
 			System.out.println("hit!!");
+			
 		}
 
 	}

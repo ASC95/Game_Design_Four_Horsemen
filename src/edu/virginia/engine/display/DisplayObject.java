@@ -44,6 +44,9 @@ public class DisplayObject extends EventDispatcher {
 	private int inc = 20;
 	private int vCounter = 0;
 	private DisplayObjectContainer parent;
+	private Point hitBoxPos = new Point(0, 0);
+	private int hitBoxWidth = (int)(this.getUnscaledWidth()*this.getScaleX());
+	private int hitBoxHeight = (int)((this.getUnscaledHeight())*this.getScaleY());
 	Rectangle hitBox = new Rectangle((int)(this.getPosition().getX()*this.getScaleX()), (int)(this.getPosition().getY()*this.getScaleY()), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
 	private Path2D pathBox; // can actually rotate and stuff unlike rectangle ~wow~
 	private Area areaBox;
@@ -54,7 +57,7 @@ public class DisplayObject extends EventDispatcher {
 	 */
 	public DisplayObject(String id) {
 		this.setId(id);
-		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
+		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), hitBoxWidth, hitBoxHeight);
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
 		pathBox = (Path2D) transform.createTransformedShape(hitBox);
@@ -67,7 +70,7 @@ public class DisplayObject extends EventDispatcher {
 		Point p = new Point(0,0);
 		this.setPivotPoint(p);
 		this.setPosition(p);
-		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
+		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), hitBoxWidth, hitBoxHeight);
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
 		pathBox = (Path2D) transform.createTransformedShape(hitBox);
@@ -78,7 +81,7 @@ public class DisplayObject extends EventDispatcher {
 	public DisplayObject(String id, Point position) {
 		this.setId(id);
 		this.setPosition(position);
-		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
+		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), hitBoxWidth, hitBoxHeight);
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
 		pathBox = (Path2D) transform.createTransformedShape(hitBox);
@@ -96,7 +99,7 @@ public class DisplayObject extends EventDispatcher {
 		this.setScaleY(1.0);
 		this.setRotation(0);
 		this.setAlpha(1.0f);
-		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
+		hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX())), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), hitBoxWidth, hitBoxHeight);
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
 		pathBox = (Path2D) transform.createTransformedShape(hitBox);
@@ -241,6 +244,12 @@ public class DisplayObject extends EventDispatcher {
 		this.parent = parent;
 	}
 
+	public void setHitBox(int x, int y, int width, int height) {
+		this.hitBoxPos = new Point(x, y);
+		this.hitBoxWidth = width;
+		this.hitBoxHeight = height;
+	}
+	
 	public Area getHitBox() {
 		return this.areaBox;
 	}
@@ -274,7 +283,7 @@ public class DisplayObject extends EventDispatcher {
 			}
 			*/
 			
-			hitBox.setBounds((int)((this.getPosition().getX() - this.getPivotPoint().getX())), (int)((this.getPosition().getY() - this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()), (int)((this.getUnscaledHeight())));
+			hitBox.setBounds((int)((this.getPosition().getX() - this.getPivotPoint().getX() + hitBoxPos.getX())), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
 			
 			AffineTransform transform = new AffineTransform();
 			transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
