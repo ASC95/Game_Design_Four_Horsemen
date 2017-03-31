@@ -64,7 +64,6 @@ public class PhysicsSprite extends AnimatedSprite {
 	
 	@Override
 	public void update(ArrayList<Integer> pressedKeys) {
-		super.update(pressedKeys);
 		if(jumping || falling) {
 			velocity = velocity + gravity;
 			this.setPosition(this.getPosition().x, (int)(this.getPosition().y - velocity));
@@ -76,5 +75,6 @@ public class PhysicsSprite extends AnimatedSprite {
 		if(!jumping && !falling) {
 			velocity = 0;
 		}
+		super.update(pressedKeys);
 	}
 }

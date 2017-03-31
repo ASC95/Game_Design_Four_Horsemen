@@ -1,9 +1,6 @@
 package edu.virginia.lab1test;
 
-import edu.virginia.engine.display.Game;
-import edu.virginia.engine.display.PhysicsSprite;
-import edu.virginia.engine.display.TweenEvent;
-import edu.virginia.engine.display.TweenableParams;
+import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -22,12 +19,30 @@ public class Prototype extends Game {
 	static int screenHeight = 600;
 
 	PhysicsSprite boi = new PhysicsSprite("boi", "standing", "standing.png");
+	Sprite boiAttack1 = new Sprite("boiAttack1", "boiAttack2.png");
+	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
+	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
+	// potential AttackSprite fields
+	int frameCounter;
+	boolean attack1;
+	boolean canInput;
 
 	public Prototype() throws LineUnavailableException, UnsupportedAudioFileException {
-
 		super("Game Prototype", screenWidth, screenHeight);
 
 		this.addChild(boi);
+		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
+		boiAttack1.setPosition(62, -30);
+		boiAttack1.setVisible(false);
+		boi.addChild(boiAttack1);
+		boiAttack2.setPosition(73, -8);
+		boiAttack2.setVisible(false);
+		boi.addChild(boiAttack2);
+		boiAttack3.setPosition(79, 10);
+		boiAttack3.setVisible(false);
+		boi.addChild(boiAttack3);
+
+		canInput = true;
 
 		boi.setPosition(10, (int) (this.getScenePanel().getHeight() - boi.getUnscaledHeight()*boi.getScaleX() - 45));
 		boi.addImage("walking", "walk1.png", 1, 2);
@@ -39,46 +54,93 @@ public class Prototype extends Game {
 	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
 		if (boi != null) {
-			if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-				boi.getPosition().x -= 5;
-				if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
-					boi.setSpeed(7);
-					boi.animate("walking");
-					boi.start();
+		    if (canInput) {
+				if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
+					boi.getPosition().x -= 5;
+					if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
+						boi.setSpeed(7);
+						boi.animate("walking");
+						boi.start();
+					}
+					boi.setScaleX(-1);
 				}
-			}
-			if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-				boi.getPosition().x += 5;
-				if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
-					boi.setSpeed(7);
-					boi.animate("walking");
-					boi.start();
+				if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
+					boi.getPosition().x += 5;
+					if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
+						boi.setSpeed(7);
+						boi.animate("walking");
+						boi.start();
+					}
+					boi.setScaleX(1);
 				}
-			}
-			if (pressedKeys.contains(KeyEvent.VK_UP)) {
-				if(!boi.isJumping() && !boi.isFalling()) {
-					boi.setVelocity(23);
-					boi.setGravity(-2);
-					boi.setJumping(true);
-					boi.setFalling(false);
-					boi.animate("jumping");
-					boi.start();
+				if (pressedKeys.contains(KeyEvent.VK_UP)) {
+					if (!boi.isJumping() && !boi.isFalling()) {
+						boi.setVelocity(23);
+						boi.setGravity(-2);
+						boi.setJumping(true);
+						boi.setFalling(false);
+						boi.animate("jumping");
+						boi.start();
+					}
+
 				}
 
-			}
-			if (boi.getPosition().getY() > (this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45)) {
-				boi.setJumping(false);
-				boi.setFalling(false);
-				boi.setPosition(boi.getPosition().x, this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45);
-				if(boi.getAnimate().equals("jumping")) {
-					boi.setSpeed(7);
-					boi.animate("walking");
+				if (pressedKeys.contains(KeyEvent.VK_A)) {
+					// this is probably not how we want to implement all of our attacks
+					// but it gives us an idea of what our hypothetical Attack class should handle
+					// perhaps a similar implementation to Animations
+					if (!boi.isJumping() && !boi.isFalling()) {
+						boi.animate("standing");
+						attack1 = true;
+					}
 				}
 			}
+
+
 
 			if (pressedKeys.isEmpty() && !boi.isJumping() && !boi.isFalling()) {
 				boi.animate("standing");
 				boi.start();
+			}
+
+			if (boi.getPosition().getY() > (this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45)) {
+				boi.setJumping(false);
+				boi.setFalling(false);
+				boi.setPosition(boi.getPosition().x, this.getScenePanel().getHeight() - boi.getUnscaledHeight() - 45);
+				/*
+				if(boi.getAnimate().equals("jumping")) {
+					boi.setSpeed(7);
+					boi.animate("walking");
+				}
+				*/
+			}
+
+			if (attack1) {
+			    switch(frameCounter) {
+					case 0:
+						// would actually be collision, not visibility
+                        canInput = false;
+						boiAttack1.setVisible(true);
+						break;
+					case 1:
+						boiAttack1.setVisible(false);
+						boiAttack2.setVisible(true);
+						break;
+					case 2:
+						boiAttack2.setVisible(false);
+						boiAttack3.setVisible(true);
+						break;
+					case 3:
+						boiAttack3.setVisible(false);
+						break;
+					case 12:
+						canInput = true;
+						attack1 = false;
+						frameCounter = -1;
+						break;
+
+				}
+				frameCounter++;
 			}
 		}
 	}

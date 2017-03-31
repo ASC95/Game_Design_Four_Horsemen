@@ -261,6 +261,7 @@ public class DisplayObject extends EventDispatcher {
 	protected void update(ArrayList<Integer> pressedKeys) {
 		// update hitbox
 		if(hitBox != null && pathBox != null) {
+			/*
 			double scaleX = this.getScaleX();
 			double scaleY = this.getScaleY();
 			double xDisplacement = 0;
@@ -270,9 +271,10 @@ public class DisplayObject extends EventDispatcher {
 			}
 			if(this.getScaleY() < 0) {
 				scaleY *= -1;
-			}	
+			}
+			*/
 			
-			hitBox.setBounds((int)((this.getPosition().getX() + this.getPivotPoint().getX()) + xDisplacement), (int)((this.getPosition().getY() + this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()*scaleX), (int)((this.getUnscaledHeight())*scaleY));
+			hitBox.setBounds((int)((this.getPosition().getX() - this.getPivotPoint().getX())), (int)((this.getPosition().getY() - this.getPivotPoint().getY())), (int)(this.getUnscaledWidth()), (int)((this.getUnscaledHeight())));
 			
 			AffineTransform transform = new AffineTransform();
 			transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
@@ -299,7 +301,7 @@ public class DisplayObject extends EventDispatcher {
 			AffineTransform old = applyTransformations(g2d);
 			
 			/* Actually draw the image, perform the pivot point translation here */
-			g2d.drawImage(displayImage, this.pivotPoint.x, this.pivotPoint.y,
+			g2d.drawImage(displayImage, -this.pivotPoint.x, -this.pivotPoint.y,
 					(getUnscaledWidth()),
 					(getUnscaledHeight()), null);
 			
@@ -308,6 +310,7 @@ public class DisplayObject extends EventDispatcher {
 			 * objects
 			 */
 			reverseTransformations(g2d, old);
+			g2d.draw(hitBox);
 		}
 
 	}
