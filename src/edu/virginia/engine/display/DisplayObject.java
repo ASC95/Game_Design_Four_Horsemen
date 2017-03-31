@@ -138,6 +138,12 @@ public class DisplayObject extends EventDispatcher {
 			return;
 		}
 		displayImage = readImage(imageName);
+		if(hitBoxHeight == 0) {
+			hitBoxHeight = displayImage.getHeight();
+		}
+		if(hitBoxWidth == 0) {
+			hitBoxWidth = displayImage.getWidth();
+		}
 		if (displayImage == null) {
 			System.err.println("[DisplayObject.setImage] ERROR: " + imageName + " does not exist!");
 		}
@@ -307,9 +313,21 @@ public class DisplayObject extends EventDispatcher {
 				scaleY *= -1;
 			}
 			*/
+			double parentX = 0;
+			if(parent != null) {
+				parentX = parent.getPosition().getX();
+			}
+			double parentY = 0;
+			if(parent != null) {
+				parentY = parent.getPosition().getY();
+			}
 			
-			hitBox.setBounds((int)((this.getPosition().getX() - this.getPivotPoint().getX() + hitBoxPos.getX())), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
+			if(parent != null && this.parent.getScaleX() == -1) {
+				hitBox.setBounds((int) (((-this.getPosition().getX() + parentX - this.getUnscaledWidth() + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
+			} else {
 			
+				hitBox.setBounds((int) (((this.getPosition().getX() - this.getPivotPoint().getX() + parentX + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
+			}
 			AffineTransform transform = new AffineTransform();
 			transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
 			pathBox = (Path2D) transform.createTransformedShape(hitBox);

@@ -1,5 +1,6 @@
 package edu.virginia.engine.display;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -112,6 +113,7 @@ public class DisplayObjectContainer extends DisplayObject{
 		super.update(pressedKeys);
 		for (DisplayObject child : children) {
 			child.update(pressedKeys);
+			
 		}
 	}
 	
@@ -119,7 +121,7 @@ public class DisplayObjectContainer extends DisplayObject{
 	public void draw(Graphics g){
 		super.draw(g);
 		Graphics2D g2d = (Graphics2D)g;
-		
+
 		AffineTransform at = applyTransformations(g2d);
 		
 		for(int i = 0; i < this.children.size(); i++) {
@@ -127,7 +129,6 @@ public class DisplayObjectContainer extends DisplayObject{
 		}
 		
 		reverseTransformations(g2d, at);
-		
 	}
 	
 }

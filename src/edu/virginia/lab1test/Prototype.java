@@ -20,12 +20,15 @@ public class Prototype extends Game {
 
 	PhysicsSprite boi = new PhysicsSprite("boi", "standing", "standing.png");
 	PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
+	PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
 	PhysicsSprite projectile = new PhysicsSprite("projectile", "idk", "projectile.png");
 	Sprite boiAttack1 = new Sprite("boiAttack1", "boiAttack2.png");
 	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
 	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
 	private int bossHealth = 100;
 	private int boiHealth = 100;
+	
+	Sprite test = new Sprite("testing", "projectile.png");
 
 	// potential AttackSprite fields
 	int frameCounter;
@@ -42,34 +45,40 @@ public class Prototype extends Game {
 		this.addChild(boi);
 		this.addChild(enemy);
 		this.addChild(projectile);
+		this.addChild(enemy2);
+
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 		boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
 
 		boi.addChild(boiAttack1);
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
-		boiAttack1.setHitBoxP(boi.relPos(boiAttack1.getPosition()), boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
+//		boiAttack1.setHitBoxP(boi.relPos(boiAttack1.getPosition()), boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
 		System.out.println(boiAttack1.getHitBox().getBounds().getLocation());
 		System.out.println(boi.relPos(boiAttack1.getPosition()));
 
+		boiAttack1.addChild(test);
+		test.setHitBox(100, 50, 50, 50);
+		
 		boi.addChild(boiAttack2);
 		boiAttack2.setPosition(73, -8);
 		boiAttack2.setVisible(false);
-		boiAttack2.setHitBox(0, 0, boiAttack2.getUnscaledWidth(), boiAttack2.getUnscaledHeight());
+//		boiAttack2.setHitBox(0, 0, boiAttack2.getUnscaledWidth(), boiAttack2.getUnscaledHeight());
 
 		boi.addChild(boiAttack3);
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
-		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
+//		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
 
-		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
+//		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
+		enemy2.setPosition(10, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		projectile.setPosition((int) enemy.getPosition().getX(), (int) enemy.getPosition().getY() + 50);
 
 		canInput = true;
 
-		boi.setPosition(10, (int) (this.getScenePanel().getHeight() - boi.getUnscaledHeight()*boi.getScaleX() - 45));
+		boi.setPosition(400, (int) (this.getScenePanel().getHeight() - boi.getUnscaledHeight()*boi.getScaleX() - 45));
 		boi.addImage("walking", "walk1.png", 1, 2);
 		boi.addImage("jumping", "jump.png", 1, 1);
 
@@ -240,11 +249,18 @@ public class Prototype extends Game {
 			bossHealth -= 10;
 		}
 		*/
-
-		// TODO: fix this
-		if (boi != null && boi.collidesWith(enemy)) {
-			bossHealth -= 10;
+		System.out.println(boi.getHitBox().getBounds());
+		System.out.println(boiAttack1.getHitBox().getBounds());
+		if(boiAttack1 != null && boiAttack1.collidesWith(enemy)) {
+			bossHealth -=10;
 		}
+		if(boiAttack1 != null && boiAttack1.collidesWith(enemy2)) {
+			bossHealth -=10;
+		}
+		// TODO: fix this
+		/**if (boi != null && boi.collidesWith(enemy)) {
+			bossHealth -= 10;
+		} **/
 	}
 
 	private void drawHealthBar(int x, int y, int width, int height, Color color, Graphics g) {
@@ -263,7 +279,14 @@ public class Prototype extends Game {
 		drawHealthBar(150, 50, 25, boiHealth, Color.GREEN, g);
 
 		Graphics2D g2d = (Graphics2D) g;
+
+		for(DisplayObject child : boi.getChildren()) {
+			g2d.setColor(Color.red);
+			g2d.draw(child.getHitBox());
+		}
+		g2d.draw(test.getHitBox());
 		for (DisplayObject child : this.getChildren()) {
+			g2d.setColor(Color.red);
 			g2d.draw(child.getHitBox());
 		}
 
