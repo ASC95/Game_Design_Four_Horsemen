@@ -235,7 +235,7 @@ public class Prototype extends Game {
 		if (boiAttack3 != null && boiAttack3.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}
-	
+
 		if (boi != null && boi.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}

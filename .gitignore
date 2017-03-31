@@ -1,0 +1,6 @@
+# Remember to recompile every time#
+*.class
+
+# Don't mess up each other's Intellij configurations #
+misc.xml
+workspace.xml
