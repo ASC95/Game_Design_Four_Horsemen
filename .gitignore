@@ -2,5 +2,4 @@
 *.class
 
 # Don't mess up each other's Intellij configurations #
-misc.xml
 workspace.xml
