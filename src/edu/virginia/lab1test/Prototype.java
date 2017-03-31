@@ -28,6 +28,10 @@ public class Prototype extends Game {
 	int frameCounter;
 	boolean attack1;
 	boolean canInput;
+	boolean boiCollidable = true;
+
+	int frameCounter2;
+	boolean gotHit;
 
 	public Prototype() throws LineUnavailableException, UnsupportedAudioFileException {
 		super("Game Prototype", screenWidth, screenHeight);
@@ -36,7 +40,7 @@ public class Prototype extends Game {
 		this.addChild(enemy);
 		this.addChild(projectile);
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
-		boi.setHitBox(10, 10, 10, 10);
+		boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
 		boiAttack1.setHitBox(0, 0, boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
@@ -49,6 +53,8 @@ public class Prototype extends Game {
 		boiAttack3.setVisible(false);
 		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
 		boi.addChild(boiAttack3);
+
+		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		projectile.setPosition((int) enemy.getPosition().getX(), (int) enemy.getPosition().getY() + 50);
@@ -133,6 +139,57 @@ public class Prototype extends Game {
 				*/
 			}
 
+			if (boi != null && boiCollidable && boi.collidesWith(projectile)) {
+		    	gotHit = true;
+				System.out.println("hit!!");
+			}
+
+			if (gotHit) {
+		        // need some way to interrupt ALL other possible player states ie. attack1, attack2, etc.
+				// if hit during an attack, hitboxes should disappear and immediately stop appearing
+				// maybe put these special hitbox children in some arraylist and make sure that they're all off?
+				// they're all children...
+
+                // should be an if so i can do things on even frames ie. flash when invincible
+		    	switch(frameCounter2) {
+					case 0:
+						attack1 = false;
+						canInput = false;
+						boiCollidable = false;
+						// TODO: affect knockback by which direction boi gets hit from!!!
+						boi.getPosition().x--;
+						break;
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+					case 13:
+					case 14:
+					case 15:
+					case 16:
+						boi.getPosition().x--;
+						break;
+					case 17:
+						canInput = true;
+						frameCounter = 0;
+						break;
+					case 59:
+						boiCollidable = true;
+						gotHit = false;
+						frameCounter2 = -1;
+						break;
+				}
+				frameCounter2++;
+			}
+
 			if (attack1) {
 			    switch(frameCounter) {
 					case 0:
@@ -151,6 +208,13 @@ public class Prototype extends Game {
 					case 3:
 						boiAttack3.setVisible(false);
 						break;
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+						// attack2 interrupt here
+					    break;
 					case 12:
 						canInput = true;
 						attack1 = false;
@@ -162,10 +226,7 @@ public class Prototype extends Game {
 			}
 		}
 		
-		if(boi != null && boi.collidesWith(projectile)) {
-			System.out.println("hit!!");
-			
-		}
+
 
 	}
 

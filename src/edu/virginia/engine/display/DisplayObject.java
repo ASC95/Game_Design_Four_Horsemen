@@ -261,7 +261,26 @@ public class DisplayObject extends EventDispatcher {
 		return !thisArea.isEmpty();
 
 	}
-	
+
+	//absolute position - relative is relative to this
+	public Point absPos (Point relative) {
+		if (this.getParent() == null) {
+			return relative;
+		}
+		else {
+			Point ret = new Point();
+			ret.setLocation(relative.getX() + this.getPosition().x, relative.getY() + this.getPosition().y);
+			return this.getParent().absPos(ret);
+		}
+	}
+
+	//relative - want relative to this
+	public Point relPos (Point absolute) {
+	    Point res = new Point();
+	    res.setLocation(absolute.getX() - this.absPos(new Point(0,0)).getX(), absolute.getY() - this.absPos(new Point(0,0)).getY() );
+		return res;
+	}
+
 	/**
 	 * Invoked on every frame before drawing. Used to update this display
 	 * objects state before the draw occurs. Should be overridden if necessary
