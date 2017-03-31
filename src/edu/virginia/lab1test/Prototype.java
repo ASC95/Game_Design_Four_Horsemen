@@ -19,6 +19,8 @@ public class Prototype extends Game {
 	static int screenHeight = 600;
 
 	PhysicsSprite boi = new PhysicsSprite("boi", "standing", "standing.png");
+	PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
+	PhysicsSprite projectile = new PhysicsSprite("projectile", "idk", "projectile.png");
 	Sprite boiAttack1 = new Sprite("boiAttack1", "boiAttack2.png");
 	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
 	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
@@ -31,6 +33,8 @@ public class Prototype extends Game {
 		super("Game Prototype", screenWidth, screenHeight);
 
 		this.addChild(boi);
+		this.addChild(enemy);
+		this.addChild(projectile);
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
@@ -41,6 +45,9 @@ public class Prototype extends Game {
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
 		boi.addChild(boiAttack3);
+
+		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
+		projectile.setPosition((int) enemy.getPosition().getX(), (int) enemy.getPosition().getY() + 50);
 
 		canInput = true;
 
@@ -53,6 +60,13 @@ public class Prototype extends Game {
 	@Override
 	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
+		if (projectile != null) {
+			projectile.getPosition().x -= 10;
+			if(projectile.getPosition().x < -30) {
+				projectile.getPosition().x = (int) enemy.getPosition().getX();
+			}
+		}
+
 		if (boi != null) {
 		    if (canInput) {
 				if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
@@ -143,6 +157,11 @@ public class Prototype extends Game {
 				frameCounter++;
 			}
 		}
+		
+		if(boi != null && boi.collidesWith(projectile)) {
+			System.out.println("hit!!");
+		}
+
 	}
 
 	@Override
