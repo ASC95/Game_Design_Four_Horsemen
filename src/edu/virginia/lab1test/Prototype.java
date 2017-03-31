@@ -25,7 +25,6 @@ public class Prototype extends Game {
 	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
 	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
 	private int bossHealth = 100;
-	private int bossHealthLost = 0;
 
 	// potential AttackSprite fields
 	int frameCounter;
@@ -58,6 +57,7 @@ public class Prototype extends Game {
 		boi.addChild(boiAttack3);
 
 		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
+		enemy.setHitBox(0, 0, enemy.getUnscaledWidth(), enemy.getUnscaledHeight());
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		projectile.setPosition((int) enemy.getPosition().getX(), (int) enemy.getPosition().getY() + 50);
@@ -231,8 +231,15 @@ public class Prototype extends Game {
 
 		if(boi != null && boi.collidesWith(projectile)) {
 			System.out.println("hit!!");
-			
 		}
+		if (boiAttack3 != null && boiAttack3.collidesWith(enemy)) {
+			bossHealth -= 10;
+		}
+	
+		if (boi != null && boi.collidesWith(enemy)) {
+			bossHealth -= 10;
+		}
+
 	}
 
 	@Override
@@ -240,7 +247,7 @@ public class Prototype extends Game {
 		super.draw(g);
 		//Draw the boss's health bar
 		g.setColor(Color.RED);
-		g.fillRect(750, 50 + bossHealthLost + 10, 25, bossHealth - 10);
+		g.fillRect(750, 50 + (100 - bossHealth), 25, bossHealth);
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < 10; i++) {
 			g.drawRect(750, 50 + (i * 10), 25, 10);
