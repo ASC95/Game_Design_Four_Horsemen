@@ -25,6 +25,7 @@ public class Prototype extends Game {
 	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
 	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
 	private int bossHealth = 100;
+	private int boiHealth = 100;
 
 	// potential AttackSprite fields
 	int frameCounter;
@@ -230,11 +231,14 @@ public class Prototype extends Game {
 		}
 
 		if(boi != null && boi.collidesWith(projectile)) {
+			boiHealth -= 10;
 			System.out.println("hit!!");
 		}
+		/*
 		if (boiAttack3 != null && boiAttack3.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}
+		*/
 
 		if (boi != null && boi.collidesWith(enemy)) {
 			bossHealth -= 10;
@@ -242,16 +246,30 @@ public class Prototype extends Game {
 
 	}
 
+	private void drawHealthBar(int x, int y, int width, int height, Color color, Graphics g) {
+		g.setColor(color);
+		g.fillRect(x, y + (100 - height), width, height);
+		g.setColor(Color.BLACK);
+		for (int i = 0; i < 10; i++) {
+			g.drawRect(x, y + (i * 10), width, 10);
+		}
+	}
+
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
+		drawHealthBar(750, 50, 25, bossHealth, Color.RED, g);
+		drawHealthBar(150, 50, 25, boiHealth, Color.GREEN, g);
+
 		//Draw the boss's health bar
-		g.setColor(Color.RED);
-		g.fillRect(750, 50 + (100 - bossHealth), 25, bossHealth);
-		g.setColor(Color.BLACK);
-		for (int i = 0; i < 10; i++) {
-			g.drawRect(750, 50 + (i * 10), 25, 10);
-		}
+		//g.setColor(Color.RED);
+		//g.fillRect(750, 50 + (100 - bossHealth), 25, bossHealth);
+
+		//g.setColor(Color.BLACK);
+		//for (int i = 0; i < 10; i++) {
+		//	g.drawRect(750, 50 + (i * 10), 25, 10);
+		//}
+		//Draw
 	}
 
 	public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException {
