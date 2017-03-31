@@ -32,11 +32,11 @@ public class Prototype extends Game {
 
 	// potential AttackSprite fields
 	int frameCounter;
+	int frameCounter2;
 	boolean attack1;
 	boolean canInput;
-	boolean boiCollidable = true;
 
-	int frameCounter2;
+	int frameC2;
 	boolean gotHit;
 
 	public Prototype() throws LineUnavailableException, UnsupportedAudioFileException {
@@ -58,14 +58,17 @@ public class Prototype extends Game {
 
 		boiAttack1.addChild(test);
 		test.setHitBox(100, 50, 50, 50);
+		boiAttack1.setCollidable(false);
 		
 		boi.addChild(boiAttack2);
 		boiAttack2.setPosition(73, -8);
 		boiAttack2.setVisible(false);
+		boiAttack2.setCollidable(false);
 
 		boi.addChild(boiAttack3);
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
+		boiAttack3.setCollidable(false);
 
 		enemy.setPosition(this.getScenePanel().getWidth() - 100, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
 		enemy2.setPosition(10, (int) (this.getScenePanel().getHeight() - enemy.getUnscaledHeight()*enemy.getScaleX() - 100));
@@ -151,7 +154,7 @@ public class Prototype extends Game {
 				*/
 			}
 
-			if (boi != null && boiCollidable && boi.collidesWith(projectile)) {
+			if (boi != null && boi.isCollidable() && boi.collidesWith(projectile)) {
 		    	gotHit = true;
 				System.out.println("hit!!");
 			}
@@ -167,7 +170,7 @@ public class Prototype extends Game {
 					case 0:
 						attack1 = false;
 						canInput = false;
-						boiCollidable = false;
+						boi.setCollidable(false);
 						boiHealth -= 10;
 						// TODO: affect knockback by which direction boi gets hit from!!!
 						boi.getPosition().x--;
@@ -195,7 +198,7 @@ public class Prototype extends Game {
 						frameCounter = 0;
 						break;
 					case 59:
-						boiCollidable = true;
+						boi.setCollidable(true);;
 						gotHit = false;
 						frameCounter2 = -1;
 						break;
@@ -209,17 +212,23 @@ public class Prototype extends Game {
 						// would actually be collision, not visibility
                         canInput = false;
 						boiAttack1.setVisible(true);
+						boiAttack1.setCollidable(true);
 						break;
 					case 1:
 						boiAttack1.setVisible(false);
 						boiAttack2.setVisible(true);
+						boiAttack1.setCollidable(false);
+						boiAttack2.setCollidable(true);
 						break;
 					case 2:
 						boiAttack2.setVisible(false);
 						boiAttack3.setVisible(true);
+						boiAttack2.setCollidable(false);
+						boiAttack3.setCollidable(true);
 						break;
 					case 3:
 						boiAttack3.setVisible(false);
+						boiAttack3.setCollidable(false);
 						break;
 					case 7:
 					case 8:

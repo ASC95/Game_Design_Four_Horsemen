@@ -50,6 +50,7 @@ public class DisplayObject extends EventDispatcher {
 	Rectangle hitBox = new Rectangle((int)(this.getPosition().getX()*this.getScaleX()), (int)(this.getPosition().getY()*this.getScaleY()), (int)(this.getUnscaledWidth()*this.getScaleX()), (int)((this.getUnscaledHeight())*this.getScaleY()));
 	private Path2D pathBox; // can actually rotate and stuff unlike rectangle ~wow~
 	private Area areaBox;
+	private boolean collidable = true;
 	
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
@@ -266,12 +267,23 @@ public class DisplayObject extends EventDispatcher {
 		return this.areaBox;
 	}
 	
-	public boolean collidesWith(DisplayObject other) {
-		Area thisArea = new Area(this.areaBox);
-		Area otherArea = new Area(other.getHitBox());
-		thisArea.intersect(otherArea);
-		return !thisArea.isEmpty();
+	public boolean isCollidable() {
+		return collidable;
+	}
 
+	public void setCollidable(boolean collidable) {
+		this.collidable = collidable;
+	}
+
+	public boolean collidesWith(DisplayObject other) {
+		if(collidable) {
+			Area thisArea = new Area(this.areaBox);
+			Area otherArea = new Area(other.getHitBox());
+			thisArea.intersect(otherArea);
+			return !thisArea.isEmpty();
+		} else {
+			return false;
+		}
 	}
 
 	//absolute position - relative is relative to this
