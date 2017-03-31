@@ -24,6 +24,9 @@ public class Prototype extends Game {
 	Sprite boiAttack1 = new Sprite("boiAttack1", "boiAttack2.png");
 	Sprite boiAttack2 = new Sprite("boiAttack2", "boiAttack2.png");
 	Sprite boiAttack3 = new Sprite("boiAttack3", "boiAttack2.png");
+	private int bossHealth = 100;
+	private int bossHealthLost = 0;
+
 	// potential AttackSprite fields
 	int frameCounter;
 	boolean attack1;
@@ -225,14 +228,23 @@ public class Prototype extends Game {
 				frameCounter++;
 			}
 		}
-		
 
-
+		if(boi != null && boi.collidesWith(projectile)) {
+			System.out.println("hit!!");
+			
+		}
 	}
 
 	@Override
 	public void draw(Graphics g){
 		super.draw(g);
+		//Draw the boss's health bar
+		g.setColor(Color.RED);
+		g.fillRect(750, 50 + bossHealthLost + 10, 25, bossHealth - 10);
+		g.setColor(Color.BLACK);
+		for (int i = 0; i < 10; i++) {
+			g.drawRect(750, 50 + (i * 10), 25, 10);
+		}
 	}
 
 	public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException {
