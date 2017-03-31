@@ -249,6 +249,12 @@ public class DisplayObject extends EventDispatcher {
 		this.hitBoxWidth = width;
 		this.hitBoxHeight = height;
 	}
+
+	public void setHitBoxP(Point p, int width, int height) {
+		this.hitBoxPos = p;
+		this.hitBoxWidth = width;
+		this.hitBoxHeight = height;
+	}
 	
 	public Area getHitBox() {
 		return this.areaBox;
@@ -269,7 +275,7 @@ public class DisplayObject extends EventDispatcher {
 		}
 		else {
 			Point ret = new Point();
-			ret.setLocation(relative.getX() + this.getPosition().x, relative.getY() + this.getPosition().y);
+			ret.setLocation(relative.getX() + this.position.x, relative.getY() + this.position.y);
 			return this.getParent().absPos(ret);
 		}
 	}
@@ -338,7 +344,6 @@ public class DisplayObject extends EventDispatcher {
 			 * objects
 			 */
 			reverseTransformations(g2d, old);
-			g2d.draw(hitBox);
 		}
 
 	}

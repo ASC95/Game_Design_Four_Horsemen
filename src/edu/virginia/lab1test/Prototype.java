@@ -44,18 +44,23 @@ public class Prototype extends Game {
 		this.addChild(projectile);
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 		boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+
+		boi.addChild(boiAttack1);
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
-		boiAttack1.setHitBox(0, 0, boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
-		boi.addChild(boiAttack1);
+		boiAttack1.setHitBoxP(boi.relPos(boiAttack1.getPosition()), boiAttack1.getUnscaledWidth(), boiAttack1.getUnscaledHeight());
+		System.out.println(boiAttack1.getHitBox().getBounds().getLocation());
+		System.out.println(boi.relPos(boiAttack1.getPosition()));
+
+		boi.addChild(boiAttack2);
 		boiAttack2.setPosition(73, -8);
 		boiAttack2.setVisible(false);
 		boiAttack2.setHitBox(0, 0, boiAttack2.getUnscaledWidth(), boiAttack2.getUnscaledHeight());
-		boi.addChild(boiAttack2);
+
+		boi.addChild(boiAttack3);
 		boiAttack3.setPosition(79, 10);
 		boiAttack3.setVisible(false);
 		boiAttack3.setHitBox(0, 0, boiAttack3.getUnscaledWidth(), boiAttack3.getUnscaledHeight());
-		boi.addChild(boiAttack3);
 
 		projectile.setHitBox(0, 0, projectile.getUnscaledWidth(), projectile.getUnscaledHeight());
 
@@ -159,6 +164,7 @@ public class Prototype extends Game {
 						attack1 = false;
 						canInput = false;
 						boiCollidable = false;
+						boiHealth -= 10;
 						// TODO: affect knockback by which direction boi gets hit from!!!
 						boi.getPosition().x--;
 						break;
@@ -229,16 +235,13 @@ public class Prototype extends Game {
 			}
 		}
 		
-		if(boi != null && boi.collidesWith(projectile)) {
-			boiHealth -= 10;
-			System.out.println("hit!!");
-		}
 		/*
 		if (boiAttack3 != null && boiAttack3.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}
 		*/
 
+		// TODO: fix this
 		if (boi != null && boi.collidesWith(enemy)) {
 			bossHealth -= 10;
 		}
@@ -258,6 +261,11 @@ public class Prototype extends Game {
 		super.draw(g);
 		drawHealthBar(750, 50, 25, bossHealth, Color.RED, g);
 		drawHealthBar(150, 50, 25, boiHealth, Color.GREEN, g);
+
+		Graphics2D g2d = (Graphics2D) g;
+		for (DisplayObject child : this.getChildren()) {
+			g2d.draw(child.getHitBox());
+		}
 
 		//Draw the boss's health bar
 		//g.setColor(Color.RED);
