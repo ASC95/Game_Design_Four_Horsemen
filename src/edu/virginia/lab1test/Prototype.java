@@ -34,6 +34,7 @@ public class Prototype extends Game {
 	int frameCounter;
 	int frameCounter2;
 	boolean attack1;
+	boolean attack1Hit = false;
 	boolean canInput;
 
 	int frameC2;
@@ -44,8 +45,8 @@ public class Prototype extends Game {
 
 		this.addChild(boi);
 		this.addChild(enemy);
-		this.addChild(projectile);
 		this.addChild(enemy2);
+		this.addChild(projectile);
 
 		boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 		boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
@@ -53,20 +54,21 @@ public class Prototype extends Game {
 		boi.addChild(boiAttack1);
 		boiAttack1.setPosition(62, -30);
 		boiAttack1.setVisible(false);
-		System.out.println(boiAttack1.getHitBox().getBounds().getLocation());
-		System.out.println(boi.relPos(boiAttack1.getPosition()));
+		boiAttack1.setCollidable(false);
 
+		/*
 		boiAttack1.addChild(test);
 		test.setHitBox(100, 50, 50, 50);
 		boiAttack1.setCollidable(false);
+		*/
 		
 		boi.addChild(boiAttack2);
-		boiAttack2.setPosition(73, -8);
+		boiAttack2.setPosition(78, -8);
 		boiAttack2.setVisible(false);
 		boiAttack2.setCollidable(false);
 
 		boi.addChild(boiAttack3);
-		boiAttack3.setPosition(79, 10);
+		boiAttack3.setPosition(89, 10);
 		boiAttack3.setVisible(false);
 		boiAttack3.setCollidable(false);
 
@@ -86,7 +88,7 @@ public class Prototype extends Game {
 	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
 		if (projectile != null) {
-			projectile.getPosition().x -= 10;
+			projectile.getPosition().x -= 15;
 			if(projectile.getPosition().x < -30) {
 				projectile.getPosition().x = (int) enemy.getPosition().getX();
 			}
@@ -114,8 +116,8 @@ public class Prototype extends Game {
 				}
 				if (pressedKeys.contains(KeyEvent.VK_UP)) {
 					if (!boi.isJumping() && !boi.isFalling()) {
-						boi.setVelocityY(23);
-						boi.setGravity(-2);
+						boi.setVelocityY(-23);
+						boi.setGravity(2);
 						boi.setJumping(true);
 						boi.setFalling(false);
 						boi.animate("jumping");
@@ -131,6 +133,7 @@ public class Prototype extends Game {
 					if (!boi.isJumping() && !boi.isFalling()) {
 						boi.animate("standing");
 						attack1 = true;
+						attack1Hit = false;
 					}
 				}
 			}
@@ -156,7 +159,6 @@ public class Prototype extends Game {
 
 			if (boi != null && boi.isCollidable() && boi.collidesWith(projectile)) {
 		    	gotHit = true;
-				System.out.println("hit!!");
 			}
 
 			if (gotHit) {
@@ -164,16 +166,37 @@ public class Prototype extends Game {
 				// if hit during an attack, hitboxes should disappear and immediately stop appearing
 				// maybe put these special hitbox children in some arraylist and make sure that they're all off?
 				// they're all children...
-
+				for (DisplayObject attack : boi.getChildren()) {
+					attack.setCollidable(false);
+					attack.setVisible(false);
+				}
                 // should be an if so i can do things on even frames ie. flash when invincible
+                if (frameCounter2 < 1) {
+					boi.animate("standing");
+					attack1 = false;
+					canInput = false;
+					boi.setCollidable(false);
+					boiHealth -= 10;
+					// TODO: affect knockback by which direction boi gets hit from!!!
+					boi.getPosition().x--;
+				} else if (frameCounter2 < 17) {
+					boi.getPosition().x--;
+				} else if (frameCounter2 == 17) {
+                	canInput = true;
+                	frameCounter = 0;
+				} else if (frameCounter2 == 59) {
+                	boi.setCollidable(true);
+                	gotHit = false;
+                	frameCounter2 = -1;
+                	boi.setVisible(true);
+				}
+				if (frameCounter2 % 2 == 1) {
+					// every even frame, flash
+					boi.setVisible(!boi.isVisible());
+				}
+				/*
 		    	switch(frameCounter2) {
 					case 0:
-						attack1 = false;
-						canInput = false;
-						boi.setCollidable(false);
-						boiHealth -= 10;
-						// TODO: affect knockback by which direction boi gets hit from!!!
-						boi.getPosition().x--;
 						break;
 					case 1:
 					case 2:
@@ -198,11 +221,12 @@ public class Prototype extends Game {
 						frameCounter = 0;
 						break;
 					case 59:
-						boi.setCollidable(true);;
+						boi.setCollidable(true);
 						gotHit = false;
 						frameCounter2 = -1;
 						break;
 				}
+				*/
 				frameCounter2++;
 			}
 
@@ -253,13 +277,31 @@ public class Prototype extends Game {
 			bossHealth -= 10;
 		}
 		*/
-		System.out.println(boi.getHitBox().getBounds());
-		System.out.println(boiAttack1.getHitBox().getBounds());
-		if(boiAttack1 != null && boiAttack1.collidesWith(enemy)) {
-			bossHealth -=10;
-		}
-		if(boiAttack1 != null && boiAttack1.collidesWith(enemy2)) {
-			bossHealth -=10;
+		if (!attack1Hit) {
+			if (boiAttack1 != null && boiAttack1.collidesWith(enemy)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
+			if (boiAttack1 != null && boiAttack1.collidesWith(enemy2)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
+			if (boiAttack2 != null && boiAttack2.collidesWith(enemy)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
+			if (boiAttack2 != null && boiAttack2.collidesWith(enemy2)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
+			if (boiAttack3 != null && boiAttack3.collidesWith(enemy)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
+			if (boiAttack3 != null && boiAttack3.collidesWith(enemy2)) {
+				bossHealth -= 10;
+				attack1Hit = true;
+			}
 		}
 		// TODO: fix this
 		/**if (boi != null && boi.collidesWith(enemy)) {
@@ -284,6 +326,7 @@ public class Prototype extends Game {
 
 		Graphics2D g2d = (Graphics2D) g;
 
+		/*
 		for(DisplayObject child : boi.getChildren()) {
 			g2d.setColor(Color.red);
 			g2d.draw(child.getHitBox());
@@ -293,6 +336,7 @@ public class Prototype extends Game {
 			g2d.setColor(Color.red);
 			g2d.draw(child.getHitBox());
 		}
+		*/
 
 		//Draw the boss's health bar
 		//g.setColor(Color.RED);

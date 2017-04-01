@@ -96,17 +96,20 @@ public class PhysicsSprite extends AnimatedSprite {
 	}
 	
 	@Override
+	// TODO: this
 	public void update(ArrayList<Integer> pressedKeys) {
 		if(jumping || falling) {
 			velocityY = velocityY + gravity;
-			this.setPosition(this.getPosition().x, (int)(this.getPosition().y - velocityY));
-			if(velocityY < 0) {
-				falling = true;
-				jumping = false;
-			}	
+
 		}
 		if(!jumping && !falling) {
 			velocityY = 0;
+		}
+
+		this.setPosition((int)(this.getPosition().x + velocityX), (int)(this.getPosition().y + velocityY));
+		if(velocityY < 0) {
+			falling = true;
+			jumping = false;
 		}
 		super.update(pressedKeys);
 	}
