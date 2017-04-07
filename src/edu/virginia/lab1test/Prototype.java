@@ -88,7 +88,8 @@ public class Prototype extends Game {
 	public void update(ArrayList<Integer> pressedKeys){
 		super.update(pressedKeys);
 		if (projectile != null) {
-			projectile.getPosition().x -= 15;
+//			projectile.getPosition().x -= 15;
+			projectile.move(-15, 0);
 			if(projectile.getPosition().x < -30) {
 				projectile.getPosition().x = (int) enemy.getPosition().getX();
 			}
@@ -97,7 +98,9 @@ public class Prototype extends Game {
 		if (boi != null) {
 		    if (canInput) {
 				if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-					boi.getPosition().x -= 5;
+//					boi.getPosition().x -= 5;
+//					boi.setPosition(boi.getPosition().x - 5, boi.getPosition().y);
+					boi.move(-5, 0);
 					if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
 						boi.setSpeed(7);
 						boi.animate("walking");
@@ -106,7 +109,7 @@ public class Prototype extends Game {
 					boi.setScaleX(-1);
 				}
 				if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-					boi.getPosition().x += 5;
+					boi.move(5, 0);
 					if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
 						boi.setSpeed(7);
 						boi.animate("walking");
@@ -326,17 +329,20 @@ public class Prototype extends Game {
 
 		Graphics2D g2d = (Graphics2D) g;
 
-		/*
-		for(DisplayObject child : boi.getChildren()) {
-			g2d.setColor(Color.red);
-			g2d.draw(child.getHitBox());
+		if(boi != null) {
+			for(DisplayObject child : boi.getChildren()) {
+				g2d.setColor(Color.red);
+				g2d.draw(child.getHitBox());
+			}
 		}
-		g2d.draw(test.getHitBox());
+		if(test != null) {
+			g2d.draw(test.getHitBox());
+		}
 		for (DisplayObject child : this.getChildren()) {
 			g2d.setColor(Color.red);
 			g2d.draw(child.getHitBox());
 		}
-		*/
+		
 
 		//Draw the boss's health bar
 		//g.setColor(Color.RED);

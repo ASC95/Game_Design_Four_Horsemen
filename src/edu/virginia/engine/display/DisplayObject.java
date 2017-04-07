@@ -184,14 +184,78 @@ public class DisplayObject extends EventDispatcher {
 	public Point getPosition() {
 		return position;
 	}
+	
+/**	public void setHitBox(int x, int y, int width, int height) {
+		this.hitBoxPos = new Point(x, y);
+		this.hitBoxWidth = width;
+		this.hitBoxHeight = height;
+	}
+
+	public void setHitBoxP(Point p, int width, int height) {
+		this.hitBoxPos = p;
+		this.hitBoxWidth = width;
+		this.hitBoxHeight = height;
+	}**/
 
 	public void setPosition(Point position) {
+//		double xDisp = position.getX() - this.getPosition().x;
+//		double yDisp = position.getY() - this.getPosition().y;
+//		
+//		this.hitBox.x += xDisp;
+//		this.hitBox.y += yDisp;
+//		
+//		if(yDisp > 0 || xDisp > 0) {
+//			System.out.println(this.getId());
+//			System.out.println("original pos: " + this.getPosition().x + ", " + this.getPosition().y + " new pos: " + position.x + ", " + position.y);
+//		}
+		
+		/**AffineTransform transform = new AffineTransform();
+		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
+		pathBox = (Path2D) transform.createTransformedShape(hitBox);
+		Area newArea = new Area(hitBox);
+		areaBox.reset();
+		areaBox.add(newArea);**/
+		
 		this.position = position;
 	}
 	
 	public void setPosition(int i, int j) {
 		Point p = new Point(i, j);
+		
+//		double xDisp = p.getX() - this.getPosition().x;
+//		double yDisp = p.getY() - this.getPosition().y;
+//		
+//		if(yDisp > 0 || xDisp > 0) {
+//			System.out.println(this.getId());
+//			System.out.println("original pos: " + this.getPosition().x + ", " + this.getPosition().y + " new pos: " + i + ", " + j);
+//		}
+		
+	/**	this.hitBox.x += xDisp;
+		this.hitBox.y += yDisp;
+		
+		AffineTransform transform = new AffineTransform();
+		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
+		pathBox = (Path2D) transform.createTransformedShape(hitBox);
+		Area newArea = new Area(hitBox);
+		areaBox.reset();
+		areaBox.add(newArea);**/
+		
 		this.position = p;
+	}
+	
+	public void move(int x, int y) {
+		this.position.x += x;
+		this.position.y += y;
+		
+		this.hitBox.x += x;
+		this.hitBox.y += y;
+		
+		AffineTransform transform = new AffineTransform();
+		transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
+		pathBox = (Path2D) transform.createTransformedShape(hitBox);
+		Area newArea = new Area(hitBox);
+		areaBox.reset();
+		areaBox.add(newArea);
 	}
 	
 	public Point getPivotPoint() {
