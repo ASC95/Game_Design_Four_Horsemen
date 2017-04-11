@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public class MovementTest extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
+    int boiHealth = 200;
+    int bossHealth = 1000;
     /*
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
@@ -43,7 +45,7 @@ public class MovementTest extends Game implements IEventListener {
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
 
-    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
 
     TweenJuggler juggler = new TweenJuggler();
     Tween bossStingerTween = new Tween(boss);
@@ -54,6 +56,7 @@ public class MovementTest extends Game implements IEventListener {
     boolean upWasPressed;
     boolean aWasPressed;
     boolean shiftWasPressed;
+    boolean bossWasHit;
     int jumpFrameCounter;
     int dashFrameCounter;
 
@@ -189,7 +192,11 @@ public class MovementTest extends Game implements IEventListener {
         boss.addAttack("slash", bossSlash1);
         boss.addAttack("fireball", bossFireball1);
 
-        boss.addEventListener(this, "ATTACK_END");
+        boss.addEventListener(this, "ATTACK_END" + boss.getId());
+        boi.addEventListener(this, "ATTACK_END" + boi.getId());
+        boi.addEventListener(this, "GOT_HIT");
+        boi.addEventListener(boi, "GOT_HIT");
+        boss.addEventListener(this, "BOSS_HIT");
 
     }
 
@@ -285,7 +292,9 @@ public class MovementTest extends Game implements IEventListener {
                         boi.animate("jumping");
                         boi.start();
                         boi.setAttack("dash");
-                        boi.setiFrames(10);
+                        if (boi.getiFrames() < 10) {
+                            boi.setiFrames(10);
+                        }
                         boi.startAttack();
                         if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
                             boi.setVelocityX(-17);
@@ -368,13 +377,57 @@ public class MovementTest extends Game implements IEventListener {
             }
         }
 
+        if (boi != null && boi.isCollidable()) {
+            if (bossAttack1.collidesWith(boi)) {
+                boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
+            } else if (bossAttack2.collidesWith(boi)) {
+                boi.dispatchEvent(new Event("GOT_HIT", bossAttack2));
+            } else if (bossAttack3.collidesWith(boi)) {
+                boi.dispatchEvent(new Event("GOT_HIT", bossAttack3));
+            } else if (fireball1.collidesWith(boi)) {
+                boi.dispatchEvent(new Event("GOT_HIT", fireball1));
+            }
+        }
+
+        if (boss != null && !bossWasHit) {
+            if (boiAttack1.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack1));
+            } else if (boiAttack2.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack2));
+            } else if (boiAttack3.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack3));
+            } else if (boiAttack4.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack4));
+            } else if (boiAttack5.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack5));
+            } else if (boiAttack6.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack6));
+            } else if (boiAttack7.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack7));
+            } else if (boiAttack8.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack8));
+            } else if (boiAttack9.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack9));
+            } else if (boiAttack10.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack10));
+            } else if (boiAttack11.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack11));
+            } else if (boiAttack12.collidesWith(boss)) {
+                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack12));
+            }
+        }
+
     }
 
     @Override
     public void draw(Graphics g) {
         super.draw(g);
-
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.blue);
+        g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
+        g2d.drawString("Player HP: " + boiHealth, 100, 100);
+        g2d.setColor(Color.red);
+        g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
         /*
         if (boi != null) {
             g2d.setColor(Color.red);
@@ -393,8 +446,20 @@ public class MovementTest extends Game implements IEventListener {
     }
 
     public void handleEvent(Event e) {
-        if (e.getEventType().equals("ATTACK_END")) {
+        if (e.getEventType().equals("ATTACK_END" + boss.getId())) {
             bossTimer.resetGameClock();
+        }
+        if (e.getEventType().equals("ATTACK_END" + boi.getId())) {
+            bossWasHit = false;
+        }
+        if (e.getEventType().equals("GOT_HIT")) {
+            AttackHitbox x = (AttackHitbox) e.getSource();
+            boiHealth -= x.getDamage();
+        }
+        if (e.getEventType().equals("BOSS_HIT")) {
+            bossWasHit = true;
+            AttackHitbox x = (AttackHitbox) e.getSource();
+            bossHealth -= x.getDamage();
         }
     }
 

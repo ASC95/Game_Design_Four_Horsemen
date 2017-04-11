@@ -31,6 +31,10 @@ public class Player extends ActionSprite implements IEventListener {
 
     public void handleEvent(Event e) {
         // TODO: collision throws events
+		if (e.getEventType().equals("GOT_HIT")) {
+		    this.stopAttack();
+			this.iFrames = 120;
+		}
     }
 
 	public int getHealth() {
@@ -60,6 +64,10 @@ public class Player extends ActionSprite implements IEventListener {
 	public void setiFrames (int iFrames) {
 	    this.iFrames = iFrames;
     }
+
+    public int getiFrames () {
+		return iFrames;
+	}
 
 	@Override
     public void update(ArrayList<Integer> pressedKeys) {

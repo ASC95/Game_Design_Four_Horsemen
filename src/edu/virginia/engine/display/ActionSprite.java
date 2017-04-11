@@ -87,6 +87,7 @@ public class ActionSprite extends PhysicsSprite {
 		this.currentAction = null;
 		this.canMove = true;
 		this.frameCounter = 0;
+		this.dispatchEvent(new Event("ATTACK_END" + this.getId(), this));
 	}
 
 	public void startAttack() {
@@ -138,7 +139,6 @@ public class ActionSprite extends PhysicsSprite {
             if (frameCounter == currentAction.getEnd()) {
                 // stop attacking
                 this.stopAttack();
-                this.dispatchEvent(new Event("ATTACK_END", this));
             } else {
             	// might not work -- reference vs value
 				// first step - disable previous hitboxes
@@ -164,8 +164,12 @@ public class ActionSprite extends PhysicsSprite {
 				}
 				// after interrupt frame passes, start queued action
 				if (frameCounter >= currentAction.getInterrupt() && queuedAction != null) {
+				    /*
 				    currentAction = queuedAction;
 					queuedAction = null;
+					*/
+				    this.stopAttack();
+				    currentAction = queuedAction;
 					this.startAttack();
 				}
             }
