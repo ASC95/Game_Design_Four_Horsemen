@@ -43,9 +43,11 @@ public class MovementTest extends Game implements IEventListener {
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
 
+    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
 
     TweenJuggler juggler = new TweenJuggler();
     Tween bossStingerTween = new Tween(boss);
+    Tween fireballTween = new Tween(fireball1);
 
     GameClock bossTimer = new GameClock();
 
@@ -153,6 +155,7 @@ public class MovementTest extends Game implements IEventListener {
         boss.setPosition(100, 540);
         boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
         boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
+        boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
 
         boss.addChild(bossAttack1);
         bossAttack1.setPosition(boss.getUnscaledWidth() / 2, 0);
@@ -160,6 +163,8 @@ public class MovementTest extends Game implements IEventListener {
         bossAttack2.setPosition(boss.getUnscaledWidth() / 2, -boss.getUnscaledHeight() / 2);
         boss.addChild(bossAttack3);
         bossAttack3.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+        boss.addChild(fireball1);
+        fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
 
         Action bossStinger = new Action(60 + 20 + 30, 110, 110);
         for (int i = 61; i < 81; i++) {
@@ -175,8 +180,14 @@ public class MovementTest extends Game implements IEventListener {
         bossSlash1.addHitboxes(bossAttack3, 42);
         bossSlash1.addHitboxes(bossAttack1, 42);
 
+        Action bossFireball1 = new Action(40 + 30 + 30, 100, 100);
+        for (int i = 41; i < 71; i++) {
+            bossFireball1.addHitboxes(fireball1, i);
+        }
+
         boss.addAttack("stinger", bossStinger);
         boss.addAttack("slash", bossSlash1);
+        boss.addAttack("fireball", bossFireball1);
 
         boss.addEventListener(this, "ATTACK_END");
 
@@ -320,7 +331,7 @@ public class MovementTest extends Game implements IEventListener {
                     boss.animate("stinger");
                     boss.start();
                     boss.startAttack();
-                } else {
+                } else if (bossTimer.getElapsedTime() * 1000000 % 3 == 1) {
                     if (boss.getPosition().x < boi.getPosition().x) {
                         boss.setScaleX(1);
                     } else {
@@ -330,8 +341,17 @@ public class MovementTest extends Game implements IEventListener {
                     boss.animate("slash");
                     boss.start();
                     boss.startAttack();
+                } else {
+                    if (boss.getPosition().x < boi.getPosition().x) {
+                        boss.setScaleX(1);
+                    } else {
+                        boss.setScaleX(-1);
+                    }
+                    boss.setAttack("fireball");
+                    boss.animate("fireball");
+                    boss.start();
+                    boss.startAttack();
                 }
-                bossTimer.resetGameClock();
             } else {
                 boss.animate("standing");
                 boss.start();
@@ -339,8 +359,12 @@ public class MovementTest extends Game implements IEventListener {
         }
         if (boss != null && boss.isAttacking()) {
             if (boss.getCurrentAction().equals("stinger") && boss.getFrameCounter() == 60) {
-               bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
-               juggler.add(bossStingerTween);
+                bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
+                juggler.add(bossStingerTween);
+            }
+            if (boss.getCurrentAction().equals("fireball") && boss.getFrameCounter() == 40) {
+                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 30 * 21.33);
+                juggler.add(fireballTween);
             }
         }
 
