@@ -65,7 +65,7 @@ public class AnimatedSprite extends Sprite{
 		
 		BufferedImage img = null;
 		try {
-			String file = ("resources" + File.separator + imageName);
+			String file = ("/Users/austinchang/github/Game_Design_Four_Horsemen/resources" + File.separator + imageName);
 			img = ImageIO.read(new File(file));
 		} catch (IOException e) {
 			System.out.println("[Error in DisplayObject.java:readImage] Could not read image " + imageName);
