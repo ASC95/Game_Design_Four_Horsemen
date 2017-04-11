@@ -20,8 +20,9 @@ public class MovementTest extends Game implements IEventListener {
     /*
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
-    PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
     */
+    PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
+
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
 	AttackHitbox boiAttack1 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0 , 0);
@@ -67,9 +68,14 @@ public class MovementTest extends Game implements IEventListener {
 
         this.addChild(boss);
         this.addChild(boi);
-
-        /*
         this.addChild(jumpingEnemy);
+        jumpingEnemy.setPosition(50, 400);
+        jumpingEnemy.altMove = true;
+        jumpingEnemy.setAccelerationY(.09);
+        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
+        //jumpingEnemy.jumpToCoordwithVelocity(700, 5);
+        //jumpingEnemy.setAccelerationY(.09);
+        /*
         this.addChild(enemy);
         this.addChild(enemy2);
         */
@@ -323,6 +329,15 @@ public class MovementTest extends Game implements IEventListener {
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
                 boi.setVelocityY(0);
             }
+            if (jumpingEnemy.getPosition().getY() > 540 + jumpingEnemy.getUnscaledHeight() / 2) {
+                jumpingEnemy.setJumping(false);
+                jumpingEnemy.setFalling(false);
+                //jumpingEnemy.setDJ(true);
+                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 500 + jumpingEnemy.getUnscaledHeight() / 2);
+                jumpingEnemy.setVelocityY(0);
+                jumpingEnemy.setAccelerationY(0);
+            }
+
 
 
         }
@@ -415,6 +430,14 @@ public class MovementTest extends Game implements IEventListener {
             } else if (boiAttack12.collidesWith(boss)) {
                 boss.dispatchEvent(new Event("BOSS_HIT", boiAttack12));
             }
+        }
+
+        if (jumpingEnemy.getPosition().getX() >= 1000) {
+            jumpingEnemy.setAccelerationY(2);
+            jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
+        } else if (jumpingEnemy.getPosition().getX() <= 50) {
+            jumpingEnemy.setAccelerationY(1);
+            jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
         }
 
     }
