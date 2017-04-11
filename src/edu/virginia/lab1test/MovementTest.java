@@ -13,9 +13,11 @@ import java.util.ArrayList;
 public class MovementTest extends Game {
 
     Player boi = new Player("boi", "standing", "standing.png");
+    /*
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
     PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
+    */
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
 	AttackHitbox boiAttack1 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0 , 0);
@@ -58,11 +60,11 @@ public class MovementTest extends Game {
 
         this.addChild(boss);
         this.addChild(boi);
-        this.addChild(jumpingEnemy);
+
         /*
+        this.addChild(jumpingEnemy);
         this.addChild(enemy);
         this.addChild(enemy2);
-<<<<<<< Updated upstream
         */
 
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
