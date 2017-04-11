@@ -113,4 +113,13 @@ public class PhysicsSprite extends AnimatedSprite {
 		}
 		super.update(pressedKeys);
 	}
+
+	public void jumpToCoordwithVelocity(double xCoord, double vx) {
+		double displacement = xCoord - getPosition().getX();
+		double frames = displacement/velocityX/2; //how many frames it will take
+		double initialVelocityY = -(accelerationY * frames);
+		velocityX = vx;
+		velocityY = initialVelocityY;
+		//return initialVelocityY;
+	}
 }
