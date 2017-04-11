@@ -1,6 +1,8 @@
 package edu.virginia.lab1test;
 
+import edu.virginia.engine.events.Event;
 import edu.virginia.engine.display.*;
+import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.GameClock;
 
 import java.awt.*;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by Resquall on 4/9/2017.
  */
-public class MovementTest extends Game {
+public class MovementTest extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
     /*
@@ -167,15 +169,16 @@ public class MovementTest extends Game {
         }
 
         Action bossSlash1 = new Action(0, 59, 60);
-        bossSlash1.addHitboxes(bossAttack2, 20);
-        bossSlash1.addHitboxes(bossAttack3, 20);
-        bossSlash1.addHitboxes(bossAttack3, 21);
-        bossSlash1.addHitboxes(bossAttack3, 22);
-        bossSlash1.addHitboxes(bossAttack1, 22);
+        bossSlash1.addHitboxes(bossAttack2, 40);
+        bossSlash1.addHitboxes(bossAttack3, 40);
+        bossSlash1.addHitboxes(bossAttack3, 41);
+        bossSlash1.addHitboxes(bossAttack3, 42);
+        bossSlash1.addHitboxes(bossAttack1, 42);
 
         boss.addAttack("stinger", bossStinger);
         boss.addAttack("slash", bossSlash1);
 
+        boss.addEventListener(this, "ATTACK_END");
 
     }
 
@@ -271,6 +274,7 @@ public class MovementTest extends Game {
                         boi.animate("jumping");
                         boi.start();
                         boi.setAttack("dash");
+                        boi.setiFrames(10);
                         boi.startAttack();
                         if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
                             boi.setVelocityX(-17);
@@ -303,28 +307,34 @@ public class MovementTest extends Game {
 
         }
         if (boss != null && !boss.isAttacking()) {
-            if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
-                // tween to one side of the stage
-                // handleEvent of tween should start attack
-                if (boss.getPosition().x > 500) {
-                    boss.setScaleX(-1);
+            if (bossTimer.getElapsedTime() > 3000) {
+                if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
+                    // tween to one side of the stage
+                    // handleEvent of tween should start attack
+                    if (boss.getPosition().x > 500) {
+                        boss.setScaleX(-1);
+                    } else {
+                        boss.setScaleX(1);
+                    }
+                    boss.setAttack("stinger");
+                    boss.animate("stinger");
+                    boss.start();
+                    boss.startAttack();
                 } else {
-                    boss.setScaleX(1);
+                    if (boss.getPosition().x < boi.getPosition().x) {
+                        boss.setScaleX(1);
+                    } else {
+                        boss.setScaleX(-1);
+                    }
+                    boss.setAttack("slash");
+                    boss.animate("slash");
+                    boss.start();
+                    boss.startAttack();
                 }
-                boss.setAttack("stinger");
-                boss.animate("stinger");
-                boss.start();
-                boss.startAttack();
+                bossTimer.resetGameClock();
             } else {
-                if (boss.getPosition().x < boi.getPosition().x) {
-                    boss.setScaleX(1);
-                } else {
-                    boss.setScaleX(-1);
-                }
-                boss.setAttack("slash");
-                boss.animate("slash");
+                boss.animate("standing");
                 boss.start();
-                boss.startAttack();
             }
         }
         if (boss != null && boss.isAttacking()) {
@@ -356,6 +366,12 @@ public class MovementTest extends Game {
     public static void main(String[] args) {
         MovementTest game = new MovementTest();
         game.start();
+    }
+
+    public void handleEvent(Event e) {
+        if (e.getEventType().equals("ATTACK_END")) {
+            bossTimer.resetGameClock();
+        }
     }
 
 }

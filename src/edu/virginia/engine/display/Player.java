@@ -64,7 +64,14 @@ public class Player extends ActionSprite implements IEventListener {
 	@Override
     public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
-
+		if (iFrames > 0) {
+			this.setCollidable(false);
+			this.setAlpha(.5f);
+			this.iFrames--;
+		} else {
+			this.setCollidable(true);
+			this.setAlpha(1f);
+		}
 	}
 
 	/*

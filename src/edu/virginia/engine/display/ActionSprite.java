@@ -1,5 +1,7 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.events.Event;
+
 import java.util.*;
 
 /**
@@ -136,6 +138,7 @@ public class ActionSprite extends PhysicsSprite {
             if (frameCounter == currentAction.getEnd()) {
                 // stop attacking
                 this.stopAttack();
+                this.dispatchEvent(new Event("ATTACK_END", this));
             } else {
             	// might not work -- reference vs value
 				// first step - disable previous hitboxes
