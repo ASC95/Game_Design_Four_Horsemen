@@ -1,6 +1,7 @@
 package edu.virginia.lab1test;
 
 import edu.virginia.engine.display.*;
+import edu.virginia.engine.util.GameClock;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,7 @@ public class MovementTest extends Game {
     Player boi = new Player("boi", "standing", "standing.png");
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
+    ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
 	AttackHitbox boiAttack1 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0 , 0);
 	AttackHitbox boiAttack2 = new AttackHitbox("boiAttack2", "boiAttack2.png", 10, 0, 0 , 0);
@@ -32,6 +34,16 @@ public class MovementTest extends Game {
     AttackHitbox boiAttack12 = new AttackHitbox("boiAttack12 ", "boiAttack2.png", 30, 0, 0 , 0);
 
 
+    AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+    AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+    AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+
+
+    TweenJuggler juggler = new TweenJuggler();
+    Tween bossStingerTween = new Tween(boss);
+
+    GameClock bossTimer = new GameClock();
+
     boolean upWasPressed;
     boolean aWasPressed;
     boolean shiftWasPressed;
@@ -39,14 +51,22 @@ public class MovementTest extends Game {
     int dashFrameCounter;
 
     public MovementTest() {
-        super("Movement", 1920, 1080);
+        super("Movement", 1280, 720);
+        // 1920 - 1280 = 640
+        // 1080 - 720 = 360
 
+        this.addChild(boss);
         this.addChild(boi);
+        /*
         this.addChild(enemy);
         this.addChild(enemy2);
+        */
 
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
         boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+
+        boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
+        boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
 
         // attack stuff
         boi.addChild(boiAttack1);
@@ -115,17 +135,51 @@ public class MovementTest extends Game {
 
         // how to set things based on bottom?
         // i want everything on the floor...
+        /*
         enemy.setPosition(0, 900);
         enemy2.setPosition(1820, 900);
-        boi.setPosition(1920 / 2, 900 + boi.getUnscaledHeight() / 2 + 1);
+        */
+        boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
         boi.addImage("walking", "walk1.png", 1, 2);
         boi.addImage("jumping", "jump.png", 1, 1);
+
+        boss.setPosition(100, 540);
+        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
+        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
+
+        boss.addChild(bossAttack1);
+        bossAttack1.setPosition(boss.getUnscaledWidth() / 2, 0);
+        boss.addChild(bossAttack2);
+        bossAttack2.setPosition(boss.getUnscaledWidth() / 2, -boss.getUnscaledHeight() / 2);
+        boss.addChild(bossAttack3);
+        bossAttack3.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+
+        Action bossStinger = new Action(60 + 20 + 30, 110, 110);
+        for (int i = 61; i < 81; i++) {
+            bossStinger.addHitboxes(bossAttack1, i);
+            bossStinger.addHitboxes(bossAttack2, i);
+            bossStinger.addHitboxes(bossAttack3, i);
+        }
+
+        Action bossSlash1 = new Action(0, 59, 60);
+        bossSlash1.addHitboxes(bossAttack1, 20);
+        bossSlash1.addHitboxes(bossAttack2, 20);
+        bossSlash1.addHitboxes(bossAttack2, 21);
+        bossSlash1.addHitboxes(bossAttack2, 22);
+        bossSlash1.addHitboxes(bossAttack3, 22);
+
+        boss.addAttack("stinger", bossStinger);
+        boss.addAttack("slash", bossSlash1);
+
 
     }
 
     @Override
     public void update(ArrayList<Integer> pressedKeys) {
         super.update(pressedKeys);
+        if (juggler != null) {
+            juggler.nextFrame();
+        }
         if (boi != null) {
             if (boi.canMove()) {
                 if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
@@ -233,14 +287,43 @@ public class MovementTest extends Game {
                 boi.start();
             }
 
-            if (boi.getPosition().getY() > 900 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
                 boi.setJumping(false);
                 boi.setFalling(false);
                 boi.setDJ(true);
-                boi.setPosition(boi.getPosition().x, 900 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
                 boi.setVelocityY(0);
             }
+
+
         }
+        if (boss != null && !boss.isAttacking()) {
+            if (bossTimer.getElapsedTime() % 2 == 0) {
+                // tween to one side of the stage
+                // handleEvent of tween should start attack
+                if (boss.getPosition().x > 500) {
+                    boss.setScaleX(-1);
+                } else {
+                    boss.setScaleX(1);
+                }
+                boss.setAttack("stinger");
+                boss.animate("stinger");
+                boss.start();
+                boss.startAttack();
+            } else {
+                boss.setAttack("slash");
+                boss.animate("slash");
+                boss.start();
+                boss.startAttack();
+            }
+        }
+        if (boss != null && boss.isAttacking()) {
+            if (boss.getFrameCounter() == 60) {
+               bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
+               juggler.add(bossStingerTween);
+            }
+        }
+
     }
 
     @Override

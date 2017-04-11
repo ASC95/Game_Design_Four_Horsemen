@@ -125,6 +125,10 @@ public class ActionSprite extends PhysicsSprite {
 	}
 	*/
 
+	public int getFrameCounter() {
+		return this.frameCounter;
+	}
+
 	@Override
 	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
