@@ -46,7 +46,7 @@ public class Action {
         return end;
     }
 
-    public List<AttackHitbox>[] getHitboxes() {
+    public HitboxList[] getHitboxes() {
         return hitboxes;
     }
 }

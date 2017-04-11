@@ -32,7 +32,7 @@ public class Player extends ActionSprite implements IEventListener {
     public void handleEvent(Event e) {
         // TODO: collision throws events
 		if (e.getEventType().equals("GOT_HIT")) {
-		    this.stopAttack();
+		    this.fullInterrupt();
 			this.iFrames = 120;
 		}
     }

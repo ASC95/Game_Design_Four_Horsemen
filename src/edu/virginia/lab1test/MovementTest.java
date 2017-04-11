@@ -431,13 +431,14 @@ public class MovementTest extends Game implements IEventListener {
                 boss.dispatchEvent(new Event("BOSS_HIT", boiAttack12));
             }
         }
-
-        if (jumpingEnemy.getPosition().getX() >= 1000) {
-            jumpingEnemy.setAccelerationY(2);
-            jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
-        } else if (jumpingEnemy.getPosition().getX() <= 50) {
-            jumpingEnemy.setAccelerationY(1);
-            jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
+        if (jumpingEnemy != null) {
+            if (jumpingEnemy.getPosition().getX() >= 1000) {
+                jumpingEnemy.setAccelerationY(2);
+                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
+            } else if (jumpingEnemy.getPosition().getX() <= 50) {
+                jumpingEnemy.setAccelerationY(1);
+                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
+            }
         }
 
     }

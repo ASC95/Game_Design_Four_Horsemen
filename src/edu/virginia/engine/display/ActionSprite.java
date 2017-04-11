@@ -79,6 +79,16 @@ public class ActionSprite extends PhysicsSprite {
 		}
 	}
 	*/
+	public void fullInterrupt() {
+		for (Action.HitboxList list : this.currentAction.getHitboxes()) {
+			for (AttackHitbox a : list) {
+				a.setCollidable(false);
+				a.setVisible(false);
+			}
+		}
+		this.stopAttack();
+		this.queuedAction = null;
+	}
 
 	public void stopAttack() {
 		this.attacking = false;
