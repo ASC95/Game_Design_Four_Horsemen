@@ -148,6 +148,7 @@ public class MovementTest extends Game implements IEventListener {
         boi.addAttack("jab2", jab2);
         boi.addAttack("jab3", jab3);
         boi.addAttack("dash", new Action(20, 20, 20));
+        boi.addAttack("got_hit", new Action(30, 30, 30));
         boi.setGravity(2);
 
 
@@ -200,8 +201,9 @@ public class MovementTest extends Game implements IEventListener {
 
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
-        boi.addEventListener(this, "GOT_HIT");
+        // boi must be before this
         boi.addEventListener(boi, "GOT_HIT");
+        boi.addEventListener(this, "GOT_HIT");
         boss.addEventListener(this, "BOSS_HIT");
 
     }
@@ -272,9 +274,9 @@ public class MovementTest extends Game implements IEventListener {
 
             if (pressedKeys.contains(KeyEvent.VK_A)) {
                 if (!boi.isJumping() && !boi.isFalling()) {
-                    boi.animate("standing");
-                    boi.setVelocityX(0);
                     if (boi.getCurrentAction() == null) {
+                        boi.animate("standing");
+                        boi.setVelocityX(0);
 						boi.setAttack("jab1");
 						boi.startAttack();
 						aWasPressed = true;
@@ -479,6 +481,8 @@ public class MovementTest extends Game implements IEventListener {
         if (e.getEventType().equals("GOT_HIT")) {
             AttackHitbox x = (AttackHitbox) e.getSource();
             boiHealth -= x.getDamage();
+            boi.setAttack("got_hit");
+            boi.startAttack();
         }
         if (e.getEventType().equals("BOSS_HIT")) {
             bossWasHit = true;

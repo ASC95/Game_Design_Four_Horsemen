@@ -80,10 +80,12 @@ public class ActionSprite extends PhysicsSprite {
 	}
 	*/
 	public void fullInterrupt() {
-		for (Action.HitboxList list : this.currentAction.getHitboxes()) {
-			for (AttackHitbox a : list) {
-				a.setCollidable(false);
-				a.setVisible(false);
+		if (this.currentAction != null) {
+			for (Action.HitboxList list : this.currentAction.getHitboxes()) {
+				for (AttackHitbox a : list) {
+					a.setCollidable(false);
+					a.setVisible(false);
+				}
 			}
 		}
 		this.stopAttack();
@@ -180,6 +182,7 @@ public class ActionSprite extends PhysicsSprite {
 					*/
 				    this.stopAttack();
 				    currentAction = queuedAction;
+				    queuedAction = null;
 					this.startAttack();
 				}
             }
