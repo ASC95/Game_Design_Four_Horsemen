@@ -107,7 +107,7 @@ public class PhysicsSprite extends AnimatedSprite {
 		}
 
 		this.setPosition((int)(this.getPosition().x + velocityX), (int)(this.getPosition().y + velocityY));
-		if(velocityY < 0) {
+		if(velocityY > 0) {
 			falling = true;
 			jumping = false;
 		}

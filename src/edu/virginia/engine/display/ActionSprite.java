@@ -16,6 +16,8 @@ public class ActionSprite extends PhysicsSprite {
 	private Action currentAction;
 	private Action queuedAction;
 
+	private boolean canMove = true;
+
 	// list of hitboxes will just be children, unless we have a reason not to do so
 
 	/* hashmap! containing corresponding start/end frames for given attack string */
@@ -36,6 +38,14 @@ public class ActionSprite extends PhysicsSprite {
 
 	public ActionSprite(String id, String key, String imageFileName, int rows, int col) {
 		super(id, key, imageFileName, rows, col);
+	}
+
+	public boolean canMove() {
+		return canMove;
+	}
+
+	public void setCanMove(boolean canMove) {
+		this.canMove = canMove;
 	}
 
 	/* create and establish attack name with corresponding start/end; add to hashmap */
@@ -73,6 +83,7 @@ public class ActionSprite extends PhysicsSprite {
 		this.interruptable = true;
 		this.interrupted = false;
 		this.currentAction = null;
+		this.canMove = true;
 		this.frameCounter = 0;
 	}
 
@@ -80,6 +91,7 @@ public class ActionSprite extends PhysicsSprite {
 		this.attacking = true;
 		this.interruptable = false;
 		this.interrupted = false;
+		this.canMove = false;
 		this.frameCounter = 0;
 	}
 

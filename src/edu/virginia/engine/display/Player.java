@@ -3,6 +3,7 @@ package edu.virginia.engine.display;
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -12,8 +13,13 @@ public class Player extends ActionSprite implements IEventListener {
     // fields???
 	// could have fields of button presses corresponding to certain actions to enable remapping
     private int health;
-	private boolean canInput;
-	private boolean canMove;
+
+    private boolean hasDJ;
+
+	private boolean canInput = true;
+	private boolean dashing = true;
+
+	private int iFrames;
 
 	public Player(String id, String key, String imageFileName) {
 		super(id, key, imageFileName);
@@ -43,17 +49,29 @@ public class Player extends ActionSprite implements IEventListener {
 		this.canInput = canInput;
 	}
 
-	public boolean canMove() {
-		return canMove;
+	public boolean canDJ() {
+		return hasDJ;
 	}
 
-	public void setCanMove(boolean canMove) {
-		this.canMove = canMove;
+	public void setDJ(boolean canDJ) {
+	    this.hasDJ = canDJ;
 	}
+
+	public void setiFrames (int iFrames) {
+	    this.iFrames = iFrames;
+    }
 
 	@Override
     public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
+
 	}
+
+	/*
+	@Override
+	public void draw(Graphics g){
+        super.draw(g);
+	}
+	*/
 
 }
