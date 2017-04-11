@@ -162,11 +162,11 @@ public class MovementTest extends Game {
         }
 
         Action bossSlash1 = new Action(0, 59, 60);
-        bossSlash1.addHitboxes(bossAttack1, 20);
         bossSlash1.addHitboxes(bossAttack2, 20);
-        bossSlash1.addHitboxes(bossAttack2, 21);
-        bossSlash1.addHitboxes(bossAttack2, 22);
+        bossSlash1.addHitboxes(bossAttack3, 20);
+        bossSlash1.addHitboxes(bossAttack3, 21);
         bossSlash1.addHitboxes(bossAttack3, 22);
+        bossSlash1.addHitboxes(bossAttack1, 22);
 
         boss.addAttack("stinger", bossStinger);
         boss.addAttack("slash", bossSlash1);
@@ -298,7 +298,7 @@ public class MovementTest extends Game {
 
         }
         if (boss != null && !boss.isAttacking()) {
-            if (bossTimer.getElapsedTime() % 2 == 0) {
+            if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
                 // tween to one side of the stage
                 // handleEvent of tween should start attack
                 if (boss.getPosition().x > 500) {
@@ -311,6 +311,11 @@ public class MovementTest extends Game {
                 boss.start();
                 boss.startAttack();
             } else {
+                if (boss.getPosition().x < boi.getPosition().x) {
+                    boss.setScaleX(1);
+                } else {
+                    boss.setScaleX(-1);
+                }
                 boss.setAttack("slash");
                 boss.animate("slash");
                 boss.start();
@@ -318,7 +323,7 @@ public class MovementTest extends Game {
             }
         }
         if (boss != null && boss.isAttacking()) {
-            if (boss.getFrameCounter() == 60) {
+            if (boss.getCurrentAction().equals("stinger") && boss.getFrameCounter() == 60) {
                bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
                juggler.add(bossStingerTween);
             }
