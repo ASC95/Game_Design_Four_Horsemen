@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class MovementTest extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
-    int boiHealth = 200;
     int bossHealth = 1000;
     /*
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
@@ -25,21 +24,6 @@ public class MovementTest extends Game implements IEventListener {
 
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
-	AttackHitbox boiAttack1 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0 , 0);
-	AttackHitbox boiAttack2 = new AttackHitbox("boiAttack2", "boiAttack2.png", 10, 0, 0 , 0);
-	AttackHitbox boiAttack3 = new AttackHitbox("boiAttack3", "boiAttack2.png", 10, 0, 0 , 0);
-
-    AttackHitbox boiAttack4 = new AttackHitbox("boiAttack4", "boiAttack2.png", 15, 0, 0 , 0);
-    AttackHitbox boiAttack5 = new AttackHitbox("boiAttack5", "boiAttack2.png", 15, 0, 0 , 0);
-    AttackHitbox boiAttack6 = new AttackHitbox("boiAttack6", "boiAttack2.png", 15, 0, 0 , 0);
-
-
-    AttackHitbox boiAttack7 = new AttackHitbox("boiAttack7 ", "boiAttack2.png", 30, 0, 0 , 0);
-    AttackHitbox boiAttack8 = new AttackHitbox("boiAttack8 ", "boiAttack2.png", 30, 0, 0 , 0);
-    AttackHitbox boiAttack9 = new AttackHitbox("boiAttack9 ", "boiAttack2.png", 30, 0, 0 , 0);
-    AttackHitbox boiAttack10 = new AttackHitbox("boiAttack10 ", "boiAttack2.png", 30, 0, 0 , 0);
-    AttackHitbox boiAttack11 = new AttackHitbox("boiAttack11 ", "boiAttack2.png", 30, 0, 0 , 0);
-    AttackHitbox boiAttack12 = new AttackHitbox("boiAttack12 ", "boiAttack2.png", 30, 0, 0 , 0);
 
 
     AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
@@ -54,12 +38,7 @@ public class MovementTest extends Game implements IEventListener {
 
     GameClock bossTimer = new GameClock();
 
-    boolean upWasPressed;
-    boolean aWasPressed;
-    boolean shiftWasPressed;
     boolean bossWasHit;
-    int jumpFrameCounter;
-    int dashFrameCounter;
 
     public MovementTest() {
         super("Movement", 1280, 720);
@@ -68,7 +47,18 @@ public class MovementTest extends Game implements IEventListener {
 
         this.addChild(boss);
         this.addChild(boi);
+        boi.setHealth(200);
+        boi.setGravity(2);
+        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
+        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+        boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
+
+        boi.addEventListener(this, "ATTACK_END" + boi.getId());
+        boi.addEventListener(this, "GOT_HIT");
+
+        /*
         this.addChild(jumpingEnemy);
+        */
         jumpingEnemy.setPosition(50, 400);
         jumpingEnemy.altMove = true;
         jumpingEnemy.setAccelerationY(.09);
@@ -80,77 +70,9 @@ public class MovementTest extends Game implements IEventListener {
         this.addChild(enemy2);
         */
 
-        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
-        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
 
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
-
-        // attack stuff
-        boi.addChild(boiAttack1);
-		boiAttack1.setPosition(42, -30);
-		boi.addChild(boiAttack2);
-		boiAttack2.setPosition(58, -8);
-		boi.addChild(boiAttack3);
-		boiAttack3.setPosition(69, 10);
-
-
-		boi.addChild(boiAttack4);
-		boiAttack4.setPosition(59, -15);
-		boi.addChild(boiAttack5);
-		boiAttack5.setPosition(79, -15);
-        boi.addChild(boiAttack6);
-        boiAttack6.setPosition(99, -15);
-
-
-        boi.addChild(boiAttack7);
-        boiAttack7.setPosition(60, -40);
-
-        boi.addChild(boiAttack8);
-        boiAttack8.setPosition(80, -35);
-
-        boi.addChild(boiAttack9);
-        boiAttack9.setPosition(100, -30);
-
-        boi.addChild(boiAttack10);
-        boiAttack10.setPosition(120, -20);
-
-        boi.addChild(boiAttack11);
-        boiAttack11.setPosition(100, -10);
-
-        boi.addChild(boiAttack12);
-        boiAttack12.setPosition(80, -5);
-
-		// actions
-		// frame data from marth lol
-        Action jab1 = new Action(3, 20, 27);
-        jab1.addHitboxes((AttackHitbox)boi.getChildAtIndex(0), 4);
-        jab1.addHitboxes(boiAttack2, 5);
-        jab1.addHitboxes(boiAttack3, 6);
-
-        Action jab2 = new Action(5, 21, 28);
-        jab2.addHitboxes(boiAttack4, 5);
-        jab2.addHitboxes(boiAttack5, 6);
-        jab2.addHitboxes(boiAttack6, 7);
-
-        Action jab3 = new Action(40, 40, 40);
-        jab3.addHitboxes(boiAttack7, 9);
-        jab3.addHitboxes(boiAttack8, 9);
-        jab3.addHitboxes(boiAttack8, 10);
-        jab3.addHitboxes(boiAttack9, 10);
-        jab3.addHitboxes(boiAttack9, 11);
-        jab3.addHitboxes(boiAttack10, 11);
-        jab3.addHitboxes(boiAttack11, 11);
-        jab3.addHitboxes(boiAttack11, 12);
-        jab3.addHitboxes(boiAttack12, 12);
-
-        boi.addAttack("jab1", jab1);
-        boi.addAttack("jab2", jab2);
-        boi.addAttack("jab3", jab3);
-        boi.addAttack("dash", new Action(20, 20, 20));
-        boi.addAttack("got_hit", new Action(30, 30, 30));
-        boi.setGravity(2);
-
 
         // how to set things based on bottom?
         // i want everything on the floor...
@@ -158,9 +80,6 @@ public class MovementTest extends Game implements IEventListener {
         enemy.setPosition(0, 900);
         enemy2.setPosition(1820, 900);
         */
-        boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
-        boi.addImage("walking", "walk1.png", 1, 2);
-        boi.addImage("jumping", "jump.png", 1, 1);
 
         boss.setPosition(100, 540);
         boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
@@ -200,10 +119,6 @@ public class MovementTest extends Game implements IEventListener {
         boss.addAttack("fireball", bossFireball1);
 
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
-        boi.addEventListener(this, "ATTACK_END" + boi.getId());
-        // boi must be before this
-        boi.addEventListener(boi, "GOT_HIT");
-        boi.addEventListener(this, "GOT_HIT");
         boss.addEventListener(this, "BOSS_HIT");
 
     }
@@ -215,127 +130,22 @@ public class MovementTest extends Game implements IEventListener {
             juggler.nextFrame();
         }
         if (boi != null) {
-            if (boi.canMove()) {
-                if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-                    boi.setVelocityX(-10);
-                    if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
-                        boi.setSpeed(6);
-                        boi.animate("walking");
-                        boi.start();
-                    }
-                    boi.setScaleX(-1);
-                } else if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-                    boi.setVelocityX(10);
-                    if (!boi.isJumping() && !boi.isFalling() && !boi.getAnimate().equals("walking")) {
-                        boi.setSpeed(6);
-                        boi.animate("walking");
-                        boi.start();
-                    }
-                    boi.setScaleX(1);
-                } else {
-                    boi.setVelocityX(0);
-                }
-                if (pressedKeys.contains(KeyEvent.VK_UP)) {
-                    if (!upWasPressed) {
-                        if (!boi.isJumping() && !boi.isFalling()) {
-                            upWasPressed = true;
-                            boi.setVelocityY(-35);
-                            boi.setJumping(true);
-                            boi.setFalling(false);
-                            boi.animate("jumping");
-                            boi.start();
-                        } else if (boi.canDJ()) {
-                            upWasPressed = true;
-                            boi.setVelocityY(-30);
-                            boi.setJumping(true);
-                            boi.setFalling(false);
-                            boi.setDJ(false);
-                        }
-                    }
-                    if (upWasPressed) {
-                        if (boi.canDJ()) {
-                            // if he can double jump and is jumping, then he's using his grounded jump
-                            if (boi.isJumping() && jumpFrameCounter > 5 && jumpFrameCounter < 16) {
-                                boi.setVelocityY(-25 - 6 + jumpFrameCounter);
-                            }
-                        } else {
-                            // i did this because the two jumps should have different timing windows
-                            if (boi.isJumping() && jumpFrameCounter > 5 && jumpFrameCounter < 12) {
-                                boi.setVelocityY(-20 - 6 + jumpFrameCounter);
-                            }
-                        }
-                        jumpFrameCounter++;
-                    }
-                } else {
-                    upWasPressed = false;
-                    jumpFrameCounter = 0;
-                }
-            }
-
-            if (pressedKeys.contains(KeyEvent.VK_A)) {
-                if (!boi.isJumping() && !boi.isFalling()) {
-                    if (boi.getCurrentAction() == null) {
-                        boi.animate("standing");
-                        boi.setVelocityX(0);
-						boi.setAttack("jab1");
-						boi.startAttack();
-						aWasPressed = true;
-					} else if (!aWasPressed && boi.getCurrentAction().equals("jab1")) {
-                    	boi.setAttack("jab2");
-                    	aWasPressed = true;
-					} else if (!aWasPressed && boi.getCurrentAction().equals("jab2")) {
-                        boi.setAttack("jab3");
-                        aWasPressed = true;
-                    }
-                }
-            } else {
-		    	aWasPressed = false;
-			}
-
-			if (pressedKeys.contains(KeyEvent.VK_SHIFT)) {
-                if (!boi.isJumping() && !boi.isFalling()) {
-                    if (!shiftWasPressed && (boi.getCurrentAction() == null)) {
-                        shiftWasPressed = true;
-                        // replace with dashing animation
-                        boi.animate("jumping");
-                        boi.start();
-                        boi.setAttack("dash");
-                        if (boi.getiFrames() < 10) {
-                            boi.setiFrames(10);
-                        }
-                        boi.startAttack();
-                        if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
-                            boi.setVelocityX(-17);
-                        } else if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
-                            boi.setVelocityX(17);
-                        } else if (boi.getScaleX() == 1) {
-                            boi.setVelocityX(17);
-                        } else {
-                            boi.setVelocityX(-17);
-                        }
-                    }
-                }
-            } else {
-                shiftWasPressed = false;
-            }
-
             if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
                 boi.animate("standing");
                 boi.start();
             }
 
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
-                boi.setJumping(false);
-                boi.setFalling(false);
-                boi.setDJ(true);
+                // set landing sets jumping false, falling false, velocityY 0, hasDJ true
+                boi.setLanding();
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
-                boi.setVelocityY(0);
             }
+
             if (jumpingEnemy.getPosition().getY() > 540 + jumpingEnemy.getUnscaledHeight() / 2) {
                 jumpingEnemy.setJumping(false);
                 jumpingEnemy.setFalling(false);
                 //jumpingEnemy.setDJ(true);
-                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 500 + jumpingEnemy.getUnscaledHeight() / 2);
+                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 540 + jumpingEnemy.getUnscaledHeight() / 2);
                 jumpingEnemy.setVelocityY(0);
                 jumpingEnemy.setAccelerationY(0);
             }
@@ -389,12 +199,12 @@ public class MovementTest extends Game implements IEventListener {
                 juggler.add(bossStingerTween);
             }
             if (boss.getCurrentAction().equals("fireball") && boss.getFrameCounter() == 40) {
-                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 30 * 21.33);
+                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
                 juggler.add(fireballTween);
             }
         }
 
-        if (boi != null && boi.isCollidable()) {
+        if (boi != null) {
             if (bossAttack1.collidesWith(boi)) {
                 boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
             } else if (bossAttack2.collidesWith(boi)) {
@@ -407,30 +217,10 @@ public class MovementTest extends Game implements IEventListener {
         }
 
         if (boss != null && !bossWasHit) {
-            if (boiAttack1.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack1));
-            } else if (boiAttack2.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack2));
-            } else if (boiAttack3.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack3));
-            } else if (boiAttack4.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack4));
-            } else if (boiAttack5.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack5));
-            } else if (boiAttack6.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack6));
-            } else if (boiAttack7.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack7));
-            } else if (boiAttack8.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack8));
-            } else if (boiAttack9.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack9));
-            } else if (boiAttack10.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack10));
-            } else if (boiAttack11.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack11));
-            } else if (boiAttack12.collidesWith(boss)) {
-                boss.dispatchEvent(new Event("BOSS_HIT", boiAttack12));
+            for (DisplayObject hitbox : boi.getChildren()) {
+                if (hitbox.collidesWith(boss)) {
+                    boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
+                }
             }
         }
         if (jumpingEnemy != null) {
@@ -451,19 +241,19 @@ public class MovementTest extends Game implements IEventListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
-        g2d.drawString("Player HP: " + boiHealth, 100, 100);
+        if (boi != null) g2d.drawString("Player HP: " + boi.getHealth(), 100, 100);
         g2d.setColor(Color.red);
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
-        /*
         if (boi != null) {
             g2d.setColor(Color.red);
             g2d.draw(boi.getHitBox());
+            /*
             for(DisplayObject child : boi.getChildren()) {
                 g2d.setColor(Color.red);
                 g2d.draw(child.getHitBox());
             }
+            */
         }
-        */
     }
 
     public static void main(String[] args) {
@@ -480,9 +270,7 @@ public class MovementTest extends Game implements IEventListener {
         }
         if (e.getEventType().equals("GOT_HIT")) {
             AttackHitbox x = (AttackHitbox) e.getSource();
-            boiHealth -= x.getDamage();
-            boi.setAttack("got_hit");
-            boi.startAttack();
+            boi.damage(x.getDamage());
         }
         if (e.getEventType().equals("BOSS_HIT")) {
             bossWasHit = true;
