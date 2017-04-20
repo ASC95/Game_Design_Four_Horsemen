@@ -14,6 +14,9 @@ public class Player extends ActionSprite implements IEventListener {
     // fields???
 	// could have fields of button presses corresponding to certain actions to enable remapping
     private int health;
+    private int maxHP;
+    private double mana;
+    private double maxMP;
 
     private boolean hasDJ;
 
@@ -22,6 +25,7 @@ public class Player extends ActionSprite implements IEventListener {
 	private boolean shiftWasPressed;
 	private boolean aWasPressed;
 	private boolean upWasPressed;
+	private boolean eWasPressed;
 
 	private int iFrames;
 	private int jumpFrameCounter;
@@ -51,6 +55,7 @@ public class Player extends ActionSprite implements IEventListener {
 		// attacks no hitboxes
 		this.addAttack("dash", new Action(20, 20, 20));
 		this.addAttack("got_hit", new Action(30, 30, 30));
+		this.addAttack("heal", new Action(25, 50, 70));
 
 		// attacks with hitboxes
 		this.addChild(boiAttack1);
@@ -119,9 +124,18 @@ public class Player extends ActionSprite implements IEventListener {
     public void handleEvent(Event e) {
         // TODO: collision throws events
 		if (e.getEventType().equals("GOT_HIT")) {
+			// get damage of hitbox and apply
+			AttackHitbox x = (AttackHitbox) e.getSource();
+			this.damage(x.getDamage());
+
 		    this.fullInterrupt();
 			this.iFrames = 120;
 			this.velocityX = 0;
+			this.velocityY = 0;
+			if (this.jumping) {
+				this.jumping = false;
+				this.falling = true;
+			}
 			// replace with actual flinch anim
 			this.animate("standing");
 			this.start();
@@ -138,8 +152,32 @@ public class Player extends ActionSprite implements IEventListener {
 		this.health = health;
 	}
 
+	public int getMaxHP() {
+		return maxHP;
+	}
+
+	public void setMaxHP(int maxHP) {
+		this.maxHP = maxHP;
+	}
+
 	public void damage(int damage) {
 		this.health -= damage;
+	}
+
+	public double getMana() {
+		return mana;
+	}
+
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+
+	public double getMaxMP() {
+		return maxMP;
+	}
+
+	public void setMaxMP(int maxMP) {
+		this.maxMP = maxMP;
 	}
 
 	public boolean canInput() {
@@ -180,10 +218,15 @@ public class Player extends ActionSprite implements IEventListener {
 			this.setCollidable(false);
 			this.setAlpha(.5f);
 			this.iFrames--;
-		} else {
+		} else if (!this.isCollidable()){
 			this.setCollidable(true);
 			this.setAlpha(1f);
 		}
+
+		// mana regen
+		if (mana < maxMP) mana += .08;
+
+		// controls
 		if (this.canMove()) {
 			if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
 				this.setVelocityX(-10);
@@ -270,7 +313,7 @@ public class Player extends ActionSprite implements IEventListener {
 					this.start();
 					this.setAttack("dash");
 					if (this.getiFrames() < 10) {
-						this.setiFrames(10);
+						this.setiFrames(12);
 					}
 					this.startAttack();
 					if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
@@ -286,6 +329,25 @@ public class Player extends ActionSprite implements IEventListener {
 			}
 		} else {
 			shiftWasPressed = false;
+		}
+
+		if (pressedKeys.contains(KeyEvent.VK_E)) {
+			if (!this.isJumping() && !this.isFalling()) {
+				if (!eWasPressed && this.getCurrentAction() == null && mana >= 80) {
+					eWasPressed = true;
+					// heal anim
+					this.animate("standing");
+					this.start();
+					this.setAttack("heal");
+					this.startAttack();
+					this.setVelocityX(0);
+					health += 100;
+					if (health > maxHP) health = maxHP;
+					mana -= 80;
+				}
+			}
+		} else {
+			eWasPressed = false;
 		}
 
 	}

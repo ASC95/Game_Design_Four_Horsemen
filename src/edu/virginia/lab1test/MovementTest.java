@@ -16,8 +16,9 @@ public class MovementTest extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
     int bossHealth = 1000;
-    /*
+
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
+    /*
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
     */
     PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
@@ -37,8 +38,25 @@ public class MovementTest extends Game implements IEventListener {
     Tween fireballTween = new Tween(fireball1);
 
     GameClock bossTimer = new GameClock();
+    GameClock bossMoveTimer = new GameClock();
 
     boolean bossWasHit;
+
+
+    // camera shit
+    double camX;
+    double camY;
+
+    double SCREENSIZE_X;
+    double SCREENSIZE_Y;
+    double WORLDSIZE_X;
+    double WORLDSIZE_Y;
+    // max = worldsize - screensize
+    double offsetMaxX;
+    double offsetMaxY;
+    double offsetMinX;
+    double offsetMinY;
+
 
     public MovementTest() {
         super("Movement", 1280, 720);
@@ -47,7 +65,11 @@ public class MovementTest extends Game implements IEventListener {
 
         this.addChild(boss);
         this.addChild(boi);
+        boi.setMaxHP(200);
         boi.setHealth(200);
+        boi.setMaxMP(200);
+        boi.setMana(200);
+
         boi.setGravity(2);
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
         boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
@@ -65,8 +87,9 @@ public class MovementTest extends Game implements IEventListener {
         jumpingEnemy.jumpToCoordwithVelocity(700, 5);
         //jumpingEnemy.jumpToCoordwithVelocity(700, 5);
         //jumpingEnemy.setAccelerationY(.09);
-        /*
+
         this.addChild(enemy);
+        /*
         this.addChild(enemy2);
         */
 
@@ -76,8 +99,9 @@ public class MovementTest extends Game implements IEventListener {
 
         // how to set things based on bottom?
         // i want everything on the floor...
+
+        enemy.setPosition(640, 540);
         /*
-        enemy.setPosition(0, 900);
         enemy2.setPosition(1820, 900);
         */
 
@@ -121,6 +145,16 @@ public class MovementTest extends Game implements IEventListener {
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
 
+        // camera initialization shit
+        WORLDSIZE_X = 1280 * 2;
+        WORLDSIZE_Y = 720;
+        SCREENSIZE_X = 1280;
+        SCREENSIZE_Y = 720;
+        offsetMaxX = WORLDSIZE_X - SCREENSIZE_X;
+        offsetMaxY = WORLDSIZE_Y - SCREENSIZE_Y;
+        offsetMinX = 0;
+        offsetMinY = 0;
+
     }
 
     @Override
@@ -155,12 +189,17 @@ public class MovementTest extends Game implements IEventListener {
         }
         if (boss != null && !boss.isAttacking()) {
             if (bossTimer.getElapsedTime() > 3000) {
+                boss.setVelocityX(0);
                 if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
                     // tween to one side of the stage
-                    // handleEvent of tween should start attack
-                    if (boss.getPosition().x > 500) {
+
+                    if (boss.getPosition().x > 640) {
+                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 1180, Math.abs(boss.getPosition().x - 1180) / 60 * 30);
+                        juggler.add(bossStingerTween);
                         boss.setScaleX(-1);
                     } else {
+                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 100, boss.getPosition().x / 60 * 30);
+                        juggler.add(bossStingerTween);
                         boss.setScaleX(1);
                     }
                     boss.setAttack("stinger");
@@ -191,14 +230,39 @@ public class MovementTest extends Game implements IEventListener {
             } else {
                 boss.animate("standing");
                 boss.start();
+                if (bossMoveTimer.getElapsedTime() > 600) {
+                    if (bossMoveTimer.getElapsedTime() * 1000000 % 3 == 0) {
+                        if (boss.getPosition().x > boi.getPosition().x) {
+                            boss.setVelocityX(4); // away
+                        } else {
+                            boss.setVelocityX(-4); // towards
+                        }
+                    } else {
+                        if (boss.getPosition().x > boi.getPosition().x) {
+                            boss.setVelocityX(-4);
+                        } else {
+                            boss.setVelocityX(4);
+                        }
+                    }
+                    bossMoveTimer.resetGameClock();
+                }
             }
+            // bounds for boss
+            if (boss.getPosition().x < 100) {
+                boss.getPosition().x = 100;
+            }
+            if (boss.getPosition().x > 1180) {
+                boss.getPosition().x = 1180;
+            }
+
         }
         if (boss != null && boss.isAttacking()) {
-            if (boss.getCurrentAction().equals("stinger") && boss.getFrameCounter() == 60) {
+            // frame counter checks are cheaper?
+            if (boss.getFrameCounter() == 60 && boss.getCurrentAction().equals("stinger")) {
                 bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
                 juggler.add(bossStingerTween);
             }
-            if (boss.getCurrentAction().equals("fireball") && boss.getFrameCounter() == 40) {
+            if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
                 fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
                 juggler.add(fireballTween);
             }
@@ -220,6 +284,8 @@ public class MovementTest extends Game implements IEventListener {
             for (DisplayObject hitbox : boi.getChildren()) {
                 if (hitbox.collidesWith(boss)) {
                     boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
+                    // this prevents hitting more than once with single attack
+                    break;
                 }
             }
         }
@@ -233,17 +299,39 @@ public class MovementTest extends Game implements IEventListener {
             }
         }
 
+        // camera update
+        if (boi != null) {
+            camX = boi.getPosition().x - SCREENSIZE_X / 2;
+            camY = boi.getPosition().y - SCREENSIZE_Y / 2;
+        }
+        if (camX > offsetMaxX)
+            camX = offsetMaxX;
+        else if (camX < offsetMinX)
+            camX = offsetMinX;
+
+        if (camY > offsetMaxY)
+            camY = offsetMaxY;
+        else if (camY < offsetMinY)
+            camY = offsetMinY;
     }
 
     @Override
     public void draw(Graphics g) {
+        // camera translation
+        g.translate((int)-camX, (int)-camY);
+        // draw everything but GUI
         super.draw(g);
+        // change back
+        g.translate((int)camX, (int)camY);
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
         if (boi != null) g2d.drawString("Player HP: " + boi.getHealth(), 100, 100);
+        if (boi != null) g2d.drawString("Player MP: " + (int)boi.getMana(), 100, 200);
         g2d.setColor(Color.red);
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
+        /*
         if (boi != null) {
             g2d.setColor(Color.red);
             g2d.draw(boi.getHitBox());
@@ -252,8 +340,8 @@ public class MovementTest extends Game implements IEventListener {
                 g2d.setColor(Color.red);
                 g2d.draw(child.getHitBox());
             }
-            */
         }
+        */
     }
 
     public static void main(String[] args) {
@@ -264,14 +352,15 @@ public class MovementTest extends Game implements IEventListener {
     public void handleEvent(Event e) {
         if (e.getEventType().equals("ATTACK_END" + boss.getId())) {
             bossTimer.resetGameClock();
+            bossMoveTimer.resetGameClock();
         }
         if (e.getEventType().equals("ATTACK_END" + boi.getId())) {
             bossWasHit = false;
         }
+        /*
         if (e.getEventType().equals("GOT_HIT")) {
-            AttackHitbox x = (AttackHitbox) e.getSource();
-            boi.damage(x.getDamage());
         }
+        */
         if (e.getEventType().equals("BOSS_HIT")) {
             bossWasHit = true;
             AttackHitbox x = (AttackHitbox) e.getSource();
