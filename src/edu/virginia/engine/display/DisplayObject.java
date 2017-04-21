@@ -340,7 +340,7 @@ public class DisplayObject extends EventDispatcher {
 	}
 
 	public boolean collidesWith(DisplayObject other) {
-		if(collidable) {
+		if(collidable && other.isCollidable()) {
 			Area thisArea = new Area(this.areaBox);
 			Area otherArea = new Area(other.getHitBox());
 			thisArea.intersect(otherArea);

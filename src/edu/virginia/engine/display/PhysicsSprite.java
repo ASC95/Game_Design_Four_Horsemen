@@ -6,12 +6,13 @@ public class PhysicsSprite extends AnimatedSprite {
 	// boolean to check if sprite is on solid ground and not jumping or sth
 	boolean jumping = false;
 	boolean falling = false;
+	public boolean altMove = false;
 	double accelerationX = 0;
 	double accelerationY = 0;
 	double velocityX = 0;
 	double velocityY = 0;
 	double gravity = 10;
-	
+
 	public PhysicsSprite(String id) {
 		super(id);
 	}
@@ -98,19 +99,30 @@ public class PhysicsSprite extends AnimatedSprite {
 	@Override
 	// TODO: this
 	public void update(ArrayList<Integer> pressedKeys) {
-		if(jumping || falling) {
+		//super.update(pressedKeys);
+		if(!altMove && (jumping || falling)) {
 			velocityY = velocityY + gravity;
 
 		}
-		if(!jumping && !falling) {
+		if(!altMove && (!jumping && !falling)) {
 			velocityY = 0;
 		}
+		velocityY = getVelocityY() + accelerationY;
 
 		this.setPosition((int)(this.getPosition().x + velocityX), (int)(this.getPosition().y + velocityY));
-		if(velocityY < 0) {
+		if(!altMove && velocityY > 0) {
 			falling = true;
 			jumping = false;
 		}
 		super.update(pressedKeys);
+	}
+
+	public void jumpToCoordwithVelocity(double xCoord, double vx) {
+		velocityX = vx;
+		double displacement = xCoord - getPosition().getX();
+		double frames = Math.abs(displacement/velocityX/2); //how many frames it will take
+		double initialVelocityY = -(accelerationY * frames);
+		velocityY = initialVelocityY;
+		//return initialVelocityY;
 	}
 }
