@@ -131,6 +131,7 @@ public class Player extends ActionSprite implements IEventListener {
 		    this.fullInterrupt();
 			this.iFrames = 120;
 			this.velocityX = 0;
+			// if velocityY > 0?
 			this.velocityY = 0;
 			if (this.jumping) {
 				this.jumping = false;
