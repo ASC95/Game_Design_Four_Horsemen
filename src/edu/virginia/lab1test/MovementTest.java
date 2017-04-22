@@ -15,16 +15,19 @@ import java.util.ArrayList;
 public class MovementTest extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
+
     int bossHealth = 1000;
+    int loadingFrames = 0;
 
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
-    /*
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
-    */
-    PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
+//    PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
+    PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
+    PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
 
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
+    private CollisionObjectContainer collisionManager = new CollisionObjectContainer("collisionManager");
 
 
     AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
@@ -46,7 +49,6 @@ public class MovementTest extends Game implements IEventListener {
     // camera shit
     double camX;
     double camY;
-
     double SCREENSIZE_X;
     double SCREENSIZE_Y;
     double WORLDSIZE_X;
@@ -62,9 +64,17 @@ public class MovementTest extends Game implements IEventListener {
         super("Movement", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
+        boi.setPlayerControlled(true);
+        platform1.setPosition(300, 300);
+        collisionManager.addChild(boi);
+        collisionManager.addChild(platform1);
+        collisionManager.addChild(platform2);
+        platform2.setPosition(600, 300);
+        this.addChild(collisionManager);
+        //this.addChild(platform1);
 
         this.addChild(boss);
-        this.addChild(boi);
+        //this.addChild(boi);
         boi.setMaxHP(200);
         boi.setHealth(200);
         boi.setMaxMP(200);
@@ -78,15 +88,13 @@ public class MovementTest extends Game implements IEventListener {
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
 
-        /*
-        this.addChild(jumpingEnemy);
-        */
-        jumpingEnemy.setPosition(50, 400);
-        jumpingEnemy.altMove = true;
-        jumpingEnemy.setAccelerationY(.09);
-        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
-        //jumpingEnemy.jumpToCoordwithVelocity(700, 5);
-        //jumpingEnemy.setAccelerationY(.09);
+//        this.addChild(jumpingEnemy);
+//        jumpingEnemy.setPosition(50, 400);
+//        jumpingEnemy.altMove = true;
+//        jumpingEnemy.setAccelerationY(.09);
+//        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
+//        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
+//        jumpingEnemy.setAccelerationY(.09);
 
         this.addChild(enemy);
         /*
@@ -170,19 +178,19 @@ public class MovementTest extends Game implements IEventListener {
             }
 
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
-                // set landing sets jumping false, falling false, velocityY 0, hasDJ true
+//                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
             }
 
-            if (jumpingEnemy.getPosition().getY() > 540 + jumpingEnemy.getUnscaledHeight() / 2) {
-                jumpingEnemy.setJumping(false);
-                jumpingEnemy.setFalling(false);
-                //jumpingEnemy.setDJ(true);
-                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 540 + jumpingEnemy.getUnscaledHeight() / 2);
-                jumpingEnemy.setVelocityY(0);
-                jumpingEnemy.setAccelerationY(0);
-            }
+//            if (jumpingEnemy.getPosition().getY() > 540 + jumpingEnemy.getUnscaledHeight() / 2) {
+//                jumpingEnemy.setJumping(false);
+//                jumpingEnemy.setFalling(false);
+//                //jumpingEnemy.setDJ(true);
+//                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 540 + jumpingEnemy.getUnscaledHeight() / 2);
+//                jumpingEnemy.setVelocityY(0);
+//                jumpingEnemy.setAccelerationY(0);
+//            }
 
 
 
@@ -289,15 +297,15 @@ public class MovementTest extends Game implements IEventListener {
                 }
             }
         }
-        if (jumpingEnemy != null) {
-            if (jumpingEnemy.getPosition().getX() >= 1000) {
-                jumpingEnemy.setAccelerationY(2);
-                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
-            } else if (jumpingEnemy.getPosition().getX() <= 50) {
-                jumpingEnemy.setAccelerationY(1);
-                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
-            }
-        }
+//        if (jumpingEnemy != null) {
+//            if (jumpingEnemy.getPosition().getX() >= 1000) {
+//                jumpingEnemy.setAccelerationY(2);
+//                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
+//            } else if (jumpingEnemy.getPosition().getX() <= 50) {
+//                jumpingEnemy.setAccelerationY(1);
+//                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
+//            }
+//        }
 
         // camera update
         if (boi != null) {
@@ -317,14 +325,18 @@ public class MovementTest extends Game implements IEventListener {
 
     @Override
     public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+//        g2d.draw(boi.getHitBox());
+//        g2d.draw(platform1.getHitBox());
+//        g2d.draw(platform2.getHitBox());
+//        loadingFrames++;
         // camera translation
         g.translate((int)-camX, (int)-camY);
         // draw everything but GUI
         super.draw(g);
         // change back
-        g.translate((int)camX, (int)camY);
+        //g.translate((int)camX, (int)camY);
 
-        Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
         if (boi != null) g2d.drawString("Player HP: " + boi.getHealth(), 100, 100);

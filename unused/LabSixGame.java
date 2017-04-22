@@ -121,7 +121,7 @@ public class LabSixGame extends Game implements IEventListener {
 							boi.setPosition(boi.getPosition().x + boi.getUnscaledWidth(), boi.getPosition().y);
 						}
 						if((boi.getPosition().x < plat3.getPosition().x&& boi.getPosition().x > plat2.getPosition().x + plat2.getUnscaledWidth()) || (boi.getPosition().x < plat2.getPosition().x && boi.getPosition().x > plat1.getPosition().x + plat1.getUnscaledWidth()) || (boi.getPosition().x < plat1.getPosition().x)) {
-							boi.setGravity(-2);
+//							boi.setGravity(-2);
 							boi.setFalling(true);
 						}
 					}
@@ -136,7 +136,7 @@ public class LabSixGame extends Game implements IEventListener {
 						}
 						
 						if((boi.getPosition().x > plat1.getPosition().x + plat1.getUnscaledWidth() && boi.getPosition().x < plat2.getPosition().x) || (boi.getPosition().x < plat3.getPosition().x && boi.getPosition().x > plat2.getPosition().x + plat1.getUnscaledWidth())) {
-							boi.setGravity(-2);
+//							boi.setGravity(-2);
 							boi.setFalling(true);
 						}
 						
@@ -157,7 +157,7 @@ public class LabSixGame extends Game implements IEventListener {
 							}
 							soundManager.PlaySoundEffect("jump");
 //							boi.setVelocity(23);
-							boi.setGravity(-2);
+//							boi.setGravity(-2);
 							boi.setJumping(true);
 							boi.setFalling(false);
 							boi.animate("jumping");
