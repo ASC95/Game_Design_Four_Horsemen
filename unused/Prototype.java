@@ -120,7 +120,7 @@ public class Prototype extends Game {
 				if (pressedKeys.contains(KeyEvent.VK_UP)) {
 					if (!boi.isJumping() && !boi.isFalling()) {
 						boi.setVelocityY(-23);
-						boi.setGravity(2);
+//						boi.setGravity(2);
 						boi.setJumping(true);
 						boi.setFalling(false);
 						boi.animate("jumping");

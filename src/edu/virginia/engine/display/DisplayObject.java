@@ -2,12 +2,7 @@
 
 package edu.virginia.engine.display;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
@@ -51,6 +46,7 @@ public class DisplayObject extends EventDispatcher {
 	private Path2D pathBox; // can actually rotate and stuff unlike rectangle ~wow~
 	private Area areaBox;
 	private boolean collidable = true;
+    private boolean playerControlled = false;
 	
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
@@ -321,15 +317,23 @@ public class DisplayObject extends EventDispatcher {
 		this.hitBoxHeight = height;
 	}
 
-	public void setHitBoxP(Point p, int width, int height) {
-		this.hitBoxPos = p;
-		this.hitBoxWidth = width;
-		this.hitBoxHeight = height;
-	}
+//	public void setHitBoxP(Point p, int width, int height) {
+//		this.hitBoxPos = p;
+//		this.hitBoxWidth = width;
+//		this.hitBoxHeight = height;
+//	}
 	
 	public Area getHitBox() {
 		return this.areaBox;
 	}
+
+//	public Shape getGlobalHitBox() {
+//		AffineTransform transformation = new AffineTransform();
+//		transformation.translate(getPosition().getX(), getPosition().getY());
+//		transformation.scale(getScaleX(), getScaleY());
+//		transformation.rotate(getRotation(), getUnscaledWidth()/2 * scaleX, getUnscaledHeight()/2 * scaleY);
+//		return transformation.createTransformedShape(hitBox);
+//	}
 	
 	public boolean isCollidable() {
 		return collidable;
@@ -401,7 +405,6 @@ public class DisplayObject extends EventDispatcher {
 			if(parent != null && this.parent.getScaleX() == -1) {
 				hitBox.setBounds((int) (((-this.getPosition().getX() + parentX - this.getUnscaledWidth() + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
 			} else {
-			
 				hitBox.setBounds((int) (((this.getPosition().getX() - this.getPivotPoint().getX() + parentX + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
 			}
 			AffineTransform transform = new AffineTransform();
@@ -468,4 +471,11 @@ public class DisplayObject extends EventDispatcher {
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 	}
 
+	public boolean isPlayerControlled() {
+        return playerControlled;
+    }
+
+    public void setPlayerControlled(boolean b) {
+        playerControlled = b;
+    }
 }
