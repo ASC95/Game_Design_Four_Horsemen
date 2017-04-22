@@ -179,7 +179,9 @@ public class MovementTest extends Game implements IEventListener {
 
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
-                boi.setLanding();
+//                boi.setLanding();
+                boi.setFalling(false);
+                boi.setJumping(false);
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
             }
 

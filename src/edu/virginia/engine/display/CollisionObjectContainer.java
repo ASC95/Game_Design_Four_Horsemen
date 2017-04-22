@@ -19,7 +19,7 @@ public class CollisionObjectContainer extends DisplayObjectContainer {
             for (DisplayObject child2 : getChildren()) {
                 if (areColliding((PhysicsSprite) child1, (PhysicsSprite) child2)) {
                     handleCollision((PhysicsSprite) child1, (PhysicsSprite) child2);
-                    System.out.println("Collision between " + child1.getId() + " and " + child2.getId());
+//                    System.out.println("Collision between " + child1.getId() + " and " + child2.getId());
                 }
             }
         }
