@@ -16,6 +16,11 @@ public class Conquest2 extends Game implements IEventListener {
     Player boi = new Player("boi", "standing", "standing.png");
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
     Sprite platform1 = new Sprite("plat1", "platform2.png");
+    Sprite platform2 = new Sprite("plat2", "platform2.png");
+    Sprite platform3 = new Sprite("plat3", "platform2.png");
+    Sprite platform4 = new Sprite("plat4", "platform2.png");
+    Sprite platform5 = new Sprite("plat5", "platform2.png");
+    ArrayList<Sprite> platforms = new ArrayList<>();
 
     // attack hitboxes for boss go here
     ArrayList<AttackHitbox> bulletHell1 = new ArrayList<>();
@@ -56,6 +61,10 @@ public class Conquest2 extends Game implements IEventListener {
         this.addChild(boss);
         this.addChild(boi);
         this.addChild(platform1);
+        this.addChild(platform2);
+        this.addChild(platform3);
+        this.addChild(platform4);
+        this.addChild(platform5);
         // boi
         boi.setMaxHP(200);
         boi.setHealth(200);
@@ -95,7 +104,16 @@ public class Conquest2 extends Game implements IEventListener {
         offsetMinY = 0;
 
         // platforms
-        platform1.setPosition(640, 1260 - 300);
+        platform1.setPosition(1280 - 150 - platform1.getUnscaledWidth(), 1260 - 180);
+        platform2.setPosition(150, 1260 - 180);
+        platform3.setPosition(640 - platform1.getUnscaledWidth() / 2, 1260 - 480);
+        platform4.setPosition(1280 - 150 - platform1.getUnscaledWidth(), 1260 - 780);
+        platform5.setPosition(150, 1260 - 780);
+        platforms.add(platform1);
+        platforms.add(platform2);
+        platforms.add(platform3);
+        platforms.add(platform4);
+        platforms.add(platform5);
     }
 
     @Override
@@ -112,10 +130,12 @@ public class Conquest2 extends Game implements IEventListener {
                 boi.setPosition(boi.getPosition().x, 1260 + boi.getUnscaledHeight() / 2);
             }
             if (!boi.canDropDown()) {
-                if (platform1.getPosition().y >= boi.getLastFramePosition().y + boi.getUnscaledHeight() / 2) {
-                    if (platform1.collidesWith(boi)) {
-                        boi.setLanding();
-                        boi.setPosition(boi.getPosition().x, platform1.getPosition().y - boi.getUnscaledHeight() / 2);
+                for (Sprite plat : platforms) {
+                    if (plat.getPosition().y >= boi.getLastFramePosition().y + boi.getUnscaledHeight() / 2) {
+                        if (plat.collidesWith(boi)) {
+                            boi.setLanding();
+                            boi.setPosition(boi.getPosition().x, plat.getPosition().y - boi.getUnscaledHeight() / 2);
+                        }
                     }
                 }
             }

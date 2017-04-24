@@ -33,20 +33,20 @@ public class Player extends ActionSprite implements IEventListener {
     private int jumpFrameCounter;
 
     private AttackHitbox boiAttack1 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0, 0);
-    private AttackHitbox boiAttack2 = new AttackHitbox("boiAttack2", "boiAttack2.png", 10, 0, 0, 0);
-    private AttackHitbox boiAttack3 = new AttackHitbox("boiAttack3", "boiAttack2.png", 10, 0, 0, 0);
+    private AttackHitbox boiAttack2 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0, 0);
+    private AttackHitbox boiAttack3 = new AttackHitbox("boiAttack1", "boiAttack2.png", 10, 0, 0, 0);
 
-    private AttackHitbox boiAttack4 = new AttackHitbox("boiAttack4", "boiAttack2.png", 15, 0, 0, 0);
-    private AttackHitbox boiAttack5 = new AttackHitbox("boiAttack5", "boiAttack2.png", 15, 0, 0, 0);
-    private AttackHitbox boiAttack6 = new AttackHitbox("boiAttack6", "boiAttack2.png", 15, 0, 0, 0);
+    private AttackHitbox boiAttack4 = new AttackHitbox("boiAttack2", "boiAttack2.png", 15, 0, 0, 0);
+    private AttackHitbox boiAttack5 = new AttackHitbox("boiAttack2", "boiAttack2.png", 15, 0, 0, 0);
+    private AttackHitbox boiAttack6 = new AttackHitbox("boiAttack2", "boiAttack2.png", 15, 0, 0, 0);
 
 
-    private AttackHitbox boiAttack7 = new AttackHitbox("boiAttack7 ", "boiAttack2.png", 30, 0, 0, 0);
-    private AttackHitbox boiAttack8 = new AttackHitbox("boiAttack8 ", "boiAttack2.png", 30, 0, 0, 0);
-    private AttackHitbox boiAttack9 = new AttackHitbox("boiAttack9 ", "boiAttack2.png", 30, 0, 0, 0);
-    private AttackHitbox boiAttack10 = new AttackHitbox("boiAttack10 ", "boiAttack2.png", 30, 0, 0, 0);
-    private AttackHitbox boiAttack11 = new AttackHitbox("boiAttack11 ", "boiAttack2.png", 30, 0, 0, 0);
-    private AttackHitbox boiAttack12 = new AttackHitbox("boiAttack12 ", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack7 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack8 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack9 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack10 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack11 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+    private AttackHitbox boiAttack12 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
 
     public Player(String id, String key, String imageFileName) {
         super(id, key, imageFileName);
