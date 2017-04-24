@@ -4,6 +4,7 @@ import edu.virginia.engine.events.Event;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.GameClock;
+import javafx.application.Platform;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -21,7 +22,6 @@ public class MovementTest extends Game implements IEventListener {
 
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
-//    PhysicsSprite jumpingEnemy = new PhysicsSprite("jumpingEnemy", "standing", "stand.png");
     PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
     PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
 
@@ -74,10 +74,10 @@ public class MovementTest extends Game implements IEventListener {
         collisionManager.addChild(platform2);
         platform2.setPosition(600, 300);
         this.addChild(collisionManager);
-        //this.addChild(platform1);
+//        this.addChild(platform1);
 
         this.addChild(boss);
-        //this.addChild(boi);
+//        this.addChild(boi);
         boi.setMaxHP(200);
         boi.setHealth(200);
         boi.setMaxMP(200);
@@ -90,14 +90,6 @@ public class MovementTest extends Game implements IEventListener {
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
-
-//        this.addChild(jumpingEnemy);
-//        jumpingEnemy.setPosition(50, 400);
-//        jumpingEnemy.altMove = true;
-//        jumpingEnemy.setAccelerationY(.09);
-//        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
-//        jumpingEnemy.jumpToCoordwithVelocity(700, 5);
-//        jumpingEnemy.setAccelerationY(.09);
 
         this.addChild(enemy);
         /*
@@ -175,30 +167,22 @@ public class MovementTest extends Game implements IEventListener {
             juggler.nextFrame();
         }
         if (boi != null) {
-            if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
+//            if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
+            if (!boi.isJumping() && !boi.isAttacking() && !pressedKeys.contains(KeyEvent.VK_LEFT) && !pressedKeys.contains(KeyEvent.VK_RIGHT)) {
                 boi.animate("standing");
                 boi.start();
+            }
+            if (boi.isJumping()) {
+                boi.animate("jumping");
             }
 
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
-//                boi.setLanding();
-                boi.setFalling(false);
-                boi.setJumping(false);
+                boi.setLanding();
+//                boi.setFalling(false);
+//                boi.setJumping(false);
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
             }
-
-//            if (jumpingEnemy.getPosition().getY() > 540 + jumpingEnemy.getUnscaledHeight() / 2) {
-//                jumpingEnemy.setJumping(false);
-//                jumpingEnemy.setFalling(false);
-//                //jumpingEnemy.setDJ(true);
-//                jumpingEnemy.setPosition(jumpingEnemy.getPosition().x, 540 + jumpingEnemy.getUnscaledHeight() / 2);
-//                jumpingEnemy.setVelocityY(0);
-//                jumpingEnemy.setAccelerationY(0);
-//            }
-
-
-
         }
         if (boss != null && !boss.isAttacking() && !bossMovingAction) {
             if (bossTimer.getElapsedTime() > 3000) {
@@ -344,15 +328,6 @@ public class MovementTest extends Game implements IEventListener {
                 }
             }
         }
-//        if (jumpingEnemy != null) {
-//            if (jumpingEnemy.getPosition().getX() >= 1000) {
-//                jumpingEnemy.setAccelerationY(2);
-//                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), -5);
-//            } else if (jumpingEnemy.getPosition().getX() <= 50) {
-//                jumpingEnemy.setAccelerationY(1);
-//                jumpingEnemy.jumpToCoordwithVelocity(boi.getPosition().getX(), 20);
-//            }
-//        }
 
         // camera update
         if (boi != null) {
@@ -368,7 +343,34 @@ public class MovementTest extends Game implements IEventListener {
             camY = offsetMaxY;
         else if (camY < offsetMinY)
             camY = offsetMinY;
+
+        if (boi != null) {
+            if (boi.getHealth() <= 0) {
+                dispatchEvent(new Event("gameOver", this));
+                super.exitGame();
+            }
+        }
     }
+
+    /**
+     * This is needed because you need to switch to the JavaFX thread before you can change data in the
+     * JavaFX application.
+     * @param event
+     */
+    @Override
+    public void dispatchEvent(Event event) {
+        if (event.getEventType().equals("gameOver")) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    MovementTest.super.dispatchEvent(event);
+                }
+            });
+        } else {
+            super.dispatchEvent(event);
+        }
+    }
+
 
     @Override
     public void draw(Graphics g) {
@@ -376,7 +378,7 @@ public class MovementTest extends Game implements IEventListener {
 //        g2d.draw(boi.getHitBox());
 //        g2d.draw(platform1.getHitBox());
 //        g2d.draw(platform2.getHitBox());
-//        loadingFrames++;
+        loadingFrames++;
         // camera translation
         g.translate((int)-camX, (int)-camY);
         // draw everything but GUI

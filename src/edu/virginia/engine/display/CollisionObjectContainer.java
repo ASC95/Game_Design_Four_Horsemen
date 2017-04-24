@@ -55,9 +55,9 @@ public class CollisionObjectContainer extends DisplayObjectContainer {
         else {
 //            player.setVelocityY(0);
             player.getPosition().setLocation(player.getPosition().getX(), obstacle.getHitBox().getBounds().getY() - player.getHitBox().getBounds().getHeight()/2);
-            player.setJumping(false);
-            player.setFalling(false);
-            //((Player) player).setLanding();
+//            player.setJumping(false);
+//            player.setFalling(false);
+            ((Player) player).setLanding();
         }
     }
 }
