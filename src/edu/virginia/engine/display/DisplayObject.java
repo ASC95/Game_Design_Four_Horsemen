@@ -46,8 +46,7 @@ public class DisplayObject extends EventDispatcher {
 	private Path2D pathBox; // can actually rotate and stuff unlike rectangle ~wow~
 	private Area areaBox;
 	private boolean collidable = true;
-    private boolean playerControlled = false;
-	
+
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
 	 * position OR the id and a buffered image and position
@@ -473,12 +472,4 @@ public class DisplayObject extends EventDispatcher {
 		g2d.setTransform(old);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 	}
-
-	public boolean isPlayerControlled() {
-        return playerControlled;
-    }
-
-    public void setPlayerControlled(boolean b) {
-        playerControlled = b;
-    }
 }

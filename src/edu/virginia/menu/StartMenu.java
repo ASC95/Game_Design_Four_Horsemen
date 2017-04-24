@@ -2,9 +2,12 @@ package edu.virginia.menu;
 
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
+import edu.virginia.engine.util.SoundManager;
+import edu.virginia.lab1test.Conquest;
 import edu.virginia.lab1test.Famine;
 import edu.virginia.lab1test.MovementTest;
 import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -37,10 +40,9 @@ public class StartMenu extends Application implements IEventListener {
 
     private static Stage theStage = null;
     private static StartMenu instance = null;
-
     private final static int width = 1280;
     private final static int height = 720;
-
+    private static SoundManager soundManager = new SoundManager();
     private static final EventHandler<KeyEvent> startScreenHandle = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
@@ -66,9 +68,9 @@ public class StartMenu extends Application implements IEventListener {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setScene(getStartMenu());
-//        primaryStage.setMaximized(true);
         theStage = primaryStage;
+//        primaryStage.setScene(getStartMenu());
+        primaryStage.setScene(getStartMenu());
         primaryStage.setWidth(width);
         primaryStage.setHeight(height);
         primaryStage.show();
@@ -82,6 +84,13 @@ public class StartMenu extends Application implements IEventListener {
         addButtons(gridPane);
         addText(gridPane);
         Scene startMenu = new Scene(gridPane);
+        try {
+            soundManager.stopAllMusic();
+            soundManager.loadMusic("menuMusic", "menu.wav");
+            soundManager.playMusic("menuMusic");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return startMenu;
     }
 
@@ -98,6 +107,38 @@ public class StartMenu extends Application implements IEventListener {
         ft.setAutoReverse(true);
         ft.play();
         theStage.addEventHandler(KeyEvent.KEY_PRESSED, startScreenHandle);
+        try {
+            soundManager.stopAllMusic();
+            soundManager.loadMusic("gameOverMusic", "gameOver.wav");
+            soundManager.playMusic("gameOverMusic");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Scene(stackPane);
+    }
+
+    private static Scene getWinScreen() {
+        StackPane stackPane = new StackPane();
+        stackPane.setBackground(new Background(new BackgroundFill(Color.GOLD, CornerRadii.EMPTY, Insets.EMPTY)));
+        ImageView victoryImage = new ImageView(new Image("file:resources" + File.separator + "victory.png"));
+        stackPane.getChildren().add(victoryImage);
+        StackPane.setAlignment(victoryImage, Pos.CENTER);
+        ScaleTransition st = new ScaleTransition(Duration.millis(2000), victoryImage);
+        st.setFromX(1.0);
+        st.setFromY(1.0);
+        st.setToX(1.3);
+        st.setToY(1.3);
+        st.setCycleCount(Timeline.INDEFINITE);
+        st.setAutoReverse(true);
+        st.play();
+        theStage.addEventHandler(KeyEvent.KEY_PRESSED, startScreenHandle);
+        try {
+            soundManager.stopAllMusic();
+            soundManager.loadMusic("victoryMusic", "victory.wav");
+            soundManager.playMusic("victoryMusic");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new Scene(stackPane);
     }
 
@@ -111,18 +152,12 @@ public class StartMenu extends Application implements IEventListener {
     @Override
     public void handleEvent(Event event) {
         if (event.getEventType().equals("gameOver")) {
-//            Stage stage = new Stage();
-//            stage.setWidth(width);
-//            stage.setHeight(height);
-//            stage.setScene(getGameOverScreen());
-//            stage.setMaximized(true);
-//            stage.show();
             theStage.setScene(getGameOverScreen());
             theStage.setIconified(false);
+        } else if (event.getEventType().equals("victory")) {
+            theStage.setScene(getWinScreen());
+            theStage.setIconified(false);
         }
-//        theStage.setScene(getGameOverScreen());
-//        theStage.setMaximized(true);
-
     }
 
     private static void addText(GridPane gridPane) {
@@ -136,7 +171,7 @@ public class StartMenu extends Application implements IEventListener {
         GridPane.setValignment(warText, VPos.BOTTOM);
         gridPane.add(warText, 1, 1);
 
-        Text famineText = new Text("Famine");
+        Text famineText = new Text("Conquest");
         famineText.setFont(new Font(30));
         GridPane.setValignment(famineText, VPos.BOTTOM);
         gridPane.add(famineText, 2, 1);
@@ -183,9 +218,9 @@ public class StartMenu extends Application implements IEventListener {
         formatButton(warBtn);
         formatWarButton(warBtn);
 
-        Button famineBtn = new Button();
-        formatFamineButton(famineBtn);
-        formatButton(famineBtn);
+        Button conquestBtn = new Button();
+        formatConquestButton(conquestBtn);
+        formatButton(conquestBtn);
 
         Button boss3 = new Button();
         formatButton(boss3);
@@ -193,9 +228,9 @@ public class StartMenu extends Application implements IEventListener {
         formatButton(boss4);
 
         gridPane.add(warBtn, 1, 1);
-        gridPane.add(famineBtn, 2, 1);
-        gridPane.add(boss3, 1, 2);
-        gridPane.add(boss4, 2, 2);
+        gridPane.add(conquestBtn, 2, 1);
+//        gridPane.add(boss3, 1, 2);
+//        gridPane.add(boss4, 2, 2);
     }
 
     private static void formatWarButton(Button warBtn) {
@@ -205,23 +240,40 @@ public class StartMenu extends Application implements IEventListener {
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
+                        try {
+                            soundManager.stopAllMusic();
+                            soundManager.loadMusic("warMusic", "war.wav");
+                            soundManager.playMusic("warMusic");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         MovementTest warBoss = new MovementTest();
                         warBoss.addEventListener(getInstance(), "gameOver");
+                        warBoss.addEventListener(getInstance(), "victory");
                         warBoss.start();
                         theStage.setIconified(true);
                     }
                 });
     }
 
-    private static void formatFamineButton(Button famBtn) {
+    private static void formatConquestButton(Button famBtn) {
         famBtn.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
         famBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        Famine famineBoss = new Famine();
-                        famineBoss.addEventListener(getInstance(), "gameOver");
-                        famineBoss.start();
+                        try {
+                            soundManager.stopAllMusic();
+                            soundManager.loadMusic("conquestMusic", "conquest.wav");
+                            soundManager.playMusic("conquestMusic");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Conquest conquestBoss = new Conquest();
+                        conquestBoss.addEventListener(getInstance(), "gameOver");
+                        conquestBoss.addEventListener(getInstance(), "victory");
+                        conquestBoss.start();
+                        theStage.setIconified(true);
                     }
                 });
     }

@@ -6,125 +6,124 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 public class PhysicsSprite extends AnimatedSprite {
-	// boolean to check if sprite is on solid ground and not jumping or sth
-	boolean jumping = false;
-	boolean falling = false;
-	double accelerationX = 0;
-	double accelerationY = 0;
-	double velocityX = 0;
-	double velocityY = 0;
-	private double maxVelocityY = 15;
-	double gravity = 10;
+    // boolean to check if sprite is on solid ground and not jumping or sth
+    boolean jumping = false;
+    boolean falling = false;
+    double accelerationX = 0;
+    double accelerationY = 0;
+    double velocityX = 0;
+    double velocityY = 0;
+    private double maxVelocityY = 15;
+    double gravity = 10;
 
-	public PhysicsSprite(String id) {
-		super(id);
-	}
-	
-	public PhysicsSprite(String id, String key, String imageFileName) {
-		super(id, key, imageFileName);
-	}
-	
-	public PhysicsSprite(String id, String key, String imageFileName, int rows, int col) {
-		super(id, key, imageFileName, rows, col);
-	}
+    public PhysicsSprite(String id) {
+        super(id);
+    }
 
-	public boolean isJumping() {
-		return jumping;
-	}
+    public PhysicsSprite(String id, String key, String imageFileName) {
+        super(id, key, imageFileName);
+    }
 
-	public void setJumping(boolean jumping) {
-		this.jumping = jumping;
-	}
+    public PhysicsSprite(String id, String key, String imageFileName, int rows, int col) {
+        super(id, key, imageFileName, rows, col);
+    }
 
-	public boolean isFalling() {
-		return falling;
-	}
+    public boolean isJumping() {
+        return jumping;
+    }
 
-	public void setFalling(boolean falling) {
-		this.falling = falling;
-	}
-	
-	public double getXAcceleration() {
-		return accelerationX;
-	}
+    public void setJumping(boolean jumping) {
+        this.jumping = jumping;
+    }
 
-	public double getYAcceleration() {
-		return accelerationY;
-	}
-	public void setXAcceleration(double acceleration) {
-		this.accelerationX = acceleration;
-	}
+    public boolean isFalling() {
+        return falling;
+    }
 
-	public void setYAcceleration(double acceleration) {
-		this.accelerationY = acceleration;
-	}
+    public void setFalling(boolean falling) {
+        this.falling = falling;
+    }
 
-	public double getAccelerationX() {
-		return accelerationX;
-	}
+    public double getXAcceleration() {
+        return accelerationX;
+    }
 
-	public void setAccelerationX(double accelerationX) {
-		this.accelerationX = accelerationX;
-	}
+    public double getYAcceleration() {
+        return accelerationY;
+    }
 
-	public double getAccelerationY() {
-		return accelerationY;
-	}
+    public void setXAcceleration(double acceleration) {
+        this.accelerationX = acceleration;
+    }
 
-	public void setAccelerationY(double accelerationY) {
-		this.accelerationY = accelerationY;
-	}
+    public void setYAcceleration(double acceleration) {
+        this.accelerationY = acceleration;
+    }
 
-	public double getVelocityX() {
-		return velocityX;
-	}
+    public double getAccelerationX() {
+        return accelerationX;
+    }
 
-	public void setVelocityX(double velocityX) {
-		this.velocityX = velocityX;
-	}
+    public void setAccelerationX(double accelerationX) {
+        this.accelerationX = accelerationX;
+    }
 
-	public double getVelocityY() {
-		return velocityY;
-	}
+    public double getAccelerationY() {
+        return accelerationY;
+    }
 
-	public void setVelocityY(double velocityY) {
-		this.velocityY = velocityY;
-	}
+    public void setAccelerationY(double accelerationY) {
+        this.accelerationY = accelerationY;
+    }
 
-	public double getGravity() {
-		return gravity;
-	}
+    public double getVelocityX() {
+        return velocityX;
+    }
 
-	public void setGravity(double gravity) {
-		this.gravity = gravity;
-	}
-	
-	@Override
-	// TODO: this
-	public void update(ArrayList<Integer> pressedKeys) {
+    public void setVelocityX(double velocityX) {
+        this.velocityX = velocityX;
+    }
+
+    public double getVelocityY() {
+        return velocityY;
+    }
+
+    public void setVelocityY(double velocityY) {
+        this.velocityY = velocityY;
+    }
+
+    public double getGravity() {
+        return gravity;
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
+
+    @Override
+    // TODO: this
+    public void update(ArrayList<Integer> pressedKeys) {
 //		super.update(pressedKeys);
-		// yes let's make this more convoluted
-		// will actually break simple boss movement?
+        // yes let's make this more convoluted
+        // will actually break simple boss movement?
         // this means that we have to set bosses as "playercontrolled" in order to give them velocities? why?
-		if (isPlayerControlled()) {
-			if (jumping || falling) {
-				velocityY = velocityY + gravity;
+        if (jumping || falling) {
+            velocityY = velocityY + gravity;
 //				if (velocityY > maxVelocityY) {
 //					velocityY = maxVelocityY;
 //				}
-			}
-			if (!jumping && !falling && !pressedKeys.contains(KeyEvent.VK_UP)) {
-				velocityY = 0;
-			}
-			//velocityY = getVelocityY() + accelerationY;
-			this.setPosition((int) (this.getPosition().x + velocityX), (int) (this.getPosition().y + velocityY));
-			if (velocityY > 0) {
-				falling = true;
-				jumping = false;
-			}
-		}
-		super.update(pressedKeys);
-	}
+        }
+        if (!jumping && !falling && !pressedKeys.contains(KeyEvent.VK_UP)) {
+            velocityY = 0;
+        }
+        //velocityY = getVelocityY() + accelerationY;
+        this.setPosition((int) (this.getPosition().x + velocityX), (int) (this.getPosition().y + velocityY));
+        if (velocityY > 0) {
+            falling = true;
+            jumping = false;
+        }
+        super.update(pressedKeys);
+    }
 
 //	public void jumpToCoordwithVelocity(double xCoord, double vx) {
 //		velocityX = vx;

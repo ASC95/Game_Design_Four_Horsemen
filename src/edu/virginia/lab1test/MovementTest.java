@@ -67,21 +67,19 @@ public class MovementTest extends Game implements IEventListener {
         super("Movement", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
-        boi.setPlayerControlled(true);
-        // see physics sprite notes.
-        boss.setPlayerControlled(true);
-        platform1.setPosition(300, 300);
-        collisionManager.addChild(boi);
-        collisionManager.addChild(platform1);
-        collisionManager.addChild(platform2);
-        platform2.setPosition(600, 300);
-        this.addChild(collisionManager);
+//         see physics sprite notes.
+//        platform1.setPosition(300, 300);
+//        collisionManager.addChild(boi);
+//        collisionManager.addChild(platform1);
+//        collisionManager.addChild(platform2);
+//        platform2.setPosition(600, 300);
+//        this.addChild(collisionManager);
 //        this.addChild(platform1);
 
         this.addChild(boss);
-//        this.addChild(boi);
+        this.addChild(boi);
         boi.setMaxHP(200);
-        boi.setHealth(10);
+        boi.setHealth(200);
         boi.setMaxMP(200);
         boi.setMana(200);
 
@@ -93,7 +91,7 @@ public class MovementTest extends Game implements IEventListener {
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
 
-        this.addChild(enemy);
+//        this.addChild(enemy);
         /*
         this.addChild(enemy2);
         */
@@ -352,6 +350,10 @@ public class MovementTest extends Game implements IEventListener {
                 super.exitGame();
             }
         }
+        if (bossHealth <= 0) {
+            dispatchEvent(new Event("victory", this));
+            super.exitGame();
+        }
     }
 
     /**
@@ -361,7 +363,7 @@ public class MovementTest extends Game implements IEventListener {
      */
     @Override
     public void dispatchEvent(Event event) {
-        if (event.getEventType().equals("gameOver")) {
+        if (event.getEventType().equals("gameOver") || event.getEventType().equals("victory")) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {

@@ -4,6 +4,7 @@ import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.util.GameClock;
+import javafx.application.Platform;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -85,10 +86,6 @@ public class Conquest extends Game implements IEventListener {
         boi.setHealth(200);
         boi.setMaxMP(200);
         boi.setMana(200);
-
-        // call
-        boi.setPlayerControlled(true);
-        boss.setPlayerControlled(true);
 
         boi.setGravity(2);
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
@@ -249,7 +246,36 @@ public class Conquest extends Game implements IEventListener {
             camY = offsetMaxY;
         else if (camY < offsetMinY)
             camY = offsetMinY;
+
+//        if (boi != null) {
+//            if (boi.getHealth() <= 0) {
+//                dispatchEvent(new Event("gameOver", this));
+//                super.exitGame();
+//            }
+//        }
+//        if (bossHealth <= 0) {
+//            dispatchEvent(new Event("victory", this));
+//        }
     }
+
+//    /**
+//     * This is needed because you need to switch to the JavaFX thread before you can change data in the
+//     * JavaFX application.
+//     * @param event
+//     */
+//    @Override
+//    public void dispatchEvent(Event event) {
+//        if (event.getEventType().equals("gameOver") || event.getEventType().equals("victory")) {
+//            Platform.runLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Conquest.super.dispatchEvent(event);
+//                }
+//            });
+//        } else {
+//            super.dispatchEvent(event);
+//        }
+//    }
 
     @Override
     public void draw(Graphics g) {

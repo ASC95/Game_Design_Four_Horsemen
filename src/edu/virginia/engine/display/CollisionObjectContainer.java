@@ -32,7 +32,8 @@ public class CollisionObjectContainer extends DisplayObjectContainer {
     public void handleCollision(PhysicsSprite sprite1, PhysicsSprite sprite2) {
         PhysicsSprite player;
         PhysicsSprite obstacle;
-        if (sprite1.isPlayerControlled()) {
+//        if (sprite1.isPlayerControlled()) {
+        if (sprite1.getId().equals("boi")) {
             player = sprite1;
             obstacle = sprite2;
         } else {

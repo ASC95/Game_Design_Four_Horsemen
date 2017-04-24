@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.print.DocFlavor.URL;
 import javax.sound.sampled.AudioInputStream;
@@ -24,7 +25,7 @@ public class SoundManager {
 		
 	}
 	
-	public void LoadSoundEffect(String id, String filename) throws LineUnavailableException, UnsupportedAudioFileException {
+	public void loadSoundEffect(String id, String filename) throws LineUnavailableException, UnsupportedAudioFileException {
 		try {
 			String file = ("resources" + File.separator + filename);
 			File f = new File(file);
@@ -39,14 +40,14 @@ public class SoundManager {
 		}
 	}
 	
-	public void PlaySoundEffect(String id) {
+	public void playSoundEffect(String id) {
 		Clip soundFile = fxList.get(id);
 		if(soundFile != null) {
 			soundFile.start();
 		}
 	}
 	
-	public void LoadMusic(String id, String filename) throws LineUnavailableException, UnsupportedAudioFileException {
+	public void loadMusic(String id, String filename) throws LineUnavailableException, UnsupportedAudioFileException {
 		try {
 			String file = ("resources" + File.separator + filename);
 			File f = new File(file);
@@ -61,7 +62,7 @@ public class SoundManager {
 		}
 	}
 	
-	public void PlayMusic(String id) {
+	public void playMusic(String id) {
 		Clip soundFile = musicList.get(id);
 		if(soundFile != null) {
 			soundFile.loop(soundFile.LOOP_CONTINUOUSLY);
@@ -69,8 +70,24 @@ public class SoundManager {
 		}
 	}
 	
-	public void StopMusic(String id) {
+	public void stopMusic(String id) {
 		Clip soundFile = musicList.get(id);
 		soundFile.stop();
+	}
+
+	public HashMap getMusicList() {
+		return musicList;
+	}
+
+	public HashMap getFXList() {
+		return fxList;
+	}
+
+	public void stopAllMusic() {
+		for(Map.Entry<String, Clip> entry : musicList.entrySet()) {
+			String key = entry.getKey();
+//			Clip value = entry.getValue();
+			stopMusic(key);
+		}
 	}
 }

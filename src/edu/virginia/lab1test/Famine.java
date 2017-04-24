@@ -64,7 +64,7 @@ public class Famine extends Game implements IEventListener {
         super("Movement", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
-        boi.setPlayerControlled(true);
+//        boi.setPlayerControlled(true);
         platform1.setPosition(300, 300);
         collisionManager.addChild(boi);
         collisionManager.addChild(platform1);
