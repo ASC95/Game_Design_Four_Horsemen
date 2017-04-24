@@ -89,6 +89,8 @@ public class DisplayObjectContainer extends DisplayObject{
 			String currentId = this.children.get(i).getId();
 			if(currentId.equals(id)) {
 				this.children.remove(i);
+				// ONLY REMOVE ONE CHILD
+				break;
 			}
 		}
 	}

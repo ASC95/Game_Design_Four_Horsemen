@@ -19,6 +19,7 @@ public class Conquest extends Game implements IEventListener {
     Sprite platform1 = new Sprite("plat1", "platform2.png");
 
     // attack hitboxes for boss go here
+    /*
     AttackHitbox bossAttack1 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
     AttackHitbox bossAttack2 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
@@ -31,8 +32,18 @@ public class Conquest extends Game implements IEventListener {
     AttackHitbox bossAttack10 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
     AttackHitbox bossAttack11 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
     AttackHitbox bossAttack12 = new AttackHitbox("bulletHell1", "arrow.png", 30, 0, 0, 0);
+    */
 
-    AttackHitbox bossStraightArrow = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    /*
+    AttackHitbox bossStraightArrow1 = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    AttackHitbox bossStraightArrow2 = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    AttackHitbox bossStraightArrow3 = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    AttackHitbox bossStraightArrow4 = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    AttackHitbox bossStraightArrow5 = new AttackHitbox("straight", "arrow.png", 40, 0, 0, 0);
+    */
+
+    ArrayList<AttackHitbox> bulletHell1 = new ArrayList<>();
+    ArrayList<AttackHitbox> straightAttack = new ArrayList<>();
 
     TweenJuggler juggler = new TweenJuggler();
     // tweens
@@ -56,6 +67,7 @@ public class Conquest extends Game implements IEventListener {
     GameClock bossTimer = new GameClock();
     GameClock bossMoveTimer = new GameClock();
     int bossFrameCounter;
+    int arrowCounter;
 
     // boss booleans
     boolean bossWasHit;
@@ -86,6 +98,14 @@ public class Conquest extends Game implements IEventListener {
         boi.setHealth(200);
         boi.setMaxMP(200);
         boi.setMana(200);
+
+        // call
+        /*
+        boi.setPlayerControlled(true);
+        boss.setPlayerControlled(true);
+        */
+        // set scale without flipping hitboxes
+        boss.setNoHitboxFlip(true);
 
         boi.setGravity(2);
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
@@ -120,6 +140,7 @@ public class Conquest extends Game implements IEventListener {
         bossAttack12.setPivotPoint(bossAttack1.getUnscaledWidth() / 2, bossAttack1.getUnscaledHeight() / 2);
         */
 
+        /*
         boss.addChild(bossAttack1);
         boss.addChild(bossAttack2);
         boss.addChild(bossAttack3);
@@ -132,23 +153,36 @@ public class Conquest extends Game implements IEventListener {
         boss.addChild(bossAttack10);
         boss.addChild(bossAttack11);
         boss.addChild(bossAttack12);
+        */
 
 
 
         // should just use normal for loop but whatever
-        int counter = 0;
-        for (DisplayObject child : boss.getChildren()) {
-            child.setPivotPoint(bossAttack1.getUnscaledWidth() / 2, bossAttack1.getUnscaledHeight() / 2);
-            child.setRotation(90 - counter * 10);
+        for (int i = 0; i < 12; i++) {
+            AttackHitbox bulletArrow = new AttackHitbox("bullethell1", "arrow.png", 30, 0, 0, 0);
+            bulletHell1.add(bulletArrow);
+            boss.addChild(bulletArrow);
+            bulletArrow.setPivotPoint(bulletArrow.getUnscaledWidth() / 2, bulletArrow.getUnscaledHeight() / 2);
+            bulletArrow.setRotation(90 - i * 10);
             // shouldn't be here actually
-            child.setCollidable(true);
-            child.setVisible(true);
-            counter++;
+            bulletArrow.setCollidable(true);
+            bulletArrow.setVisible(true);
         }
+
+        for (int i = 0; i < 5; i++) {
+            AttackHitbox straightArrow = new AttackHitbox("straight", "arrow.png", 30, 0, 0, 0);
+            straightAttack.add(straightArrow);
+            boss.addChild(straightArrow);
+            straightArrow.setPivotPoint(straightArrow.getUnscaledWidth() / 2, straightArrow.getUnscaledHeight() / 2);
+            straightArrow.setCollidable(true);
+            straightArrow.setVisible(true);
+        }
+        /*
         boss.addChild(bossStraightArrow);
         bossStraightArrow.setPivotPoint(bossStraightArrow.getUnscaledWidth() / 2, bossStraightArrow.getUnscaledHeight() / 2);
         bossStraightArrow.setCollidable(true);
         bossStraightArrow.setVisible(true);
+        */
 
 
         // camera initialization shit
@@ -194,7 +228,7 @@ public class Conquest extends Game implements IEventListener {
         if (boss != null && bossFrameCounter < 48) {
             // boss.getChildren().atIndex(frameCounter / 2 or whatever)
             if (bossFrameCounter % 4 == 0) {
-                DisplayObject arrow = boss.getChildren().get(bossFrameCounter / 4);
+                DisplayObject arrow = bulletHell1.get(bossFrameCounter / 4);
                 Tween arrowTween = new Tween(arrow);
                 arrowTween.animate(TweenableParams.X, arrow.getPosition().x, arrow.getPosition().x + 1800 * Math.cos(Math.toRadians(arrow.getRotation())), 1000 / 60 * 300);
                 arrowTween.animate(TweenableParams.Y, arrow.getPosition().y, arrow.getPosition().y + 1800 * Math.sin(Math.toRadians(arrow.getRotation())), 1000 / 60 * 300);
@@ -212,17 +246,19 @@ public class Conquest extends Game implements IEventListener {
             */
         }
 
-        if (bossTimer != null && bossTimer.getElapsedTime() > 3000) {
+        if (bossTimer != null && bossTimer.getElapsedTime() > 400) {
             double diffx = boi.getPosition().x - boss.getPosition().x;
             double diffy = boi.getPosition().y - boss.getPosition().y;
             // radians
             double rotate = (Math.atan(diffy/diffx));
-            bossStraightArrow.setRotation((int)Math.toDegrees(rotate));
-            Tween straightTween = new Tween(bossStraightArrow);
+            straightAttack.get(arrowCounter).setRotation((int)Math.toDegrees(rotate));
+            Tween straightTween = new Tween(straightAttack.get(arrowCounter));
             straightTween.animate(TweenableParams.X, 0, Math.cos(rotate) * 1800, 1000 / 60 * 120);
             straightTween.animate(TweenableParams.Y, 0, Math.sin(rotate) * 1800, 1000 / 60 * 120);
             TweenJuggler.add(straightTween);
             bossTimer.resetGameClock();
+            arrowCounter++;
+            if (arrowCounter == straightAttack.size()) arrowCounter = 0;
         }
 
         if (boi != null) {

@@ -7,7 +7,7 @@ import edu.virginia.engine.util.GameClock;
 
 public class Tween extends EventDispatcher {
 
-	private DisplayObject tween;
+	protected DisplayObject tween;
 	private String transition = "";
 	private boolean complete;
 	private ArrayList<TweenParam> allParams = new ArrayList<TweenParam>();

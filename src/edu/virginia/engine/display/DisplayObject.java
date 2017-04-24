@@ -30,6 +30,7 @@ public class DisplayObject extends EventDispatcher {
 	private BufferedImage displayImage;
 	private boolean visible = true;
 	private boolean vPresent = false;
+	private boolean noHitboxFlip;
 	protected Point position = new Point(0,0);
 	private Point pivotPoint = new Point(0,0);
 	private double scaleX = 1.0;
@@ -217,15 +218,15 @@ public class DisplayObject extends EventDispatcher {
 	public void setPosition(int i, int j) {
 		Point p = new Point(i, j);
 		
-//		double xDisp = p.getX() - this.getPosition().x;
-//		double yDisp = p.getY() - this.getPosition().y;
-//		
+		double xDisp = p.getX() - this.getPosition().x;
+		double yDisp = p.getY() - this.getPosition().y;
+
 //		if(yDisp > 0 || xDisp > 0) {
 //			System.out.println(this.getId());
 //			System.out.println("original pos: " + this.getPosition().x + ", " + this.getPosition().y + " new pos: " + i + ", " + j);
 //		}
 		
-	/**	this.hitBox.x += xDisp;
+		this.hitBox.x += xDisp;
 		this.hitBox.y += yDisp;
 		
 		AffineTransform transform = new AffineTransform();
@@ -233,7 +234,7 @@ public class DisplayObject extends EventDispatcher {
 		pathBox = (Path2D) transform.createTransformedShape(hitBox);
 		Area newArea = new Area(hitBox);
 		areaBox.reset();
-		areaBox.add(newArea);**/
+		areaBox.add(newArea);
 		
 		this.position = p;
 	}
@@ -308,6 +309,10 @@ public class DisplayObject extends EventDispatcher {
 
 	public void setParent(DisplayObjectContainer parent) {
 		this.parent = parent;
+	}
+
+	public void setNoHitboxFlip(boolean b) {
+	    this.noHitboxFlip = b;
 	}
 
 	public void setHitBox(int x, int y, int width, int height) {
@@ -401,7 +406,7 @@ public class DisplayObject extends EventDispatcher {
 				parentY = parent.getPosition().getY();
 			}
 			
-			if(parent != null && this.parent.getScaleX() == -1) {
+			if(parent != null && this.parent.getScaleX() == -1 && !this.noHitboxFlip) {
 				hitBox.setBounds((int) (((-this.getPosition().getX() + parentX - this.getUnscaledWidth() + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
 			} else {
 				hitBox.setBounds((int) (((this.getPosition().getX() - this.getPivotPoint().getX() + parentX + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);

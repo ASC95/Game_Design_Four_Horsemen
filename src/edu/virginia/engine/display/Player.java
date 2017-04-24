@@ -17,9 +17,11 @@ public class Player extends ActionSprite implements IEventListener {
     private int maxHP;
     private double mana;
     private double maxMP;
+    private Point lastFramePosition;
 
     private boolean hasDJ;
 
+    private boolean dropDown;
     private boolean canInput = true;
 
     private boolean shiftWasPressed;
@@ -205,6 +207,10 @@ public class Player extends ActionSprite implements IEventListener {
         return iFrames;
     }
 
+    public Point getLastFramePosition() {
+        return this.lastFramePosition;
+    }
+
     public void setLanding() {
         this.jumping = false;
         this.falling = false;
@@ -212,8 +218,14 @@ public class Player extends ActionSprite implements IEventListener {
         this.velocityY = 0;
     }
 
+    public boolean canDropDown () {
+        return this.dropDown;
+    }
+
     @Override
     public void update(ArrayList<Integer> pressedKeys) {
+        // before moving or anything..
+        this.lastFramePosition = this.position;
         super.update(pressedKeys);
         if (iFrames > 0) {
             this.setCollidable(false);
@@ -286,7 +298,13 @@ public class Player extends ActionSprite implements IEventListener {
                 upWasPressed = false;
                 jumpFrameCounter = 0;
             }
+            if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
+                this.dropDown = true;
+            } else{
+                this.dropDown = false;
+            }
         }
+
 
         if (pressedKeys.contains(KeyEvent.VK_A)) {
             if (!aWasPressed && !this.isJumping() && !this.isFalling()) {
@@ -354,6 +372,8 @@ public class Player extends ActionSprite implements IEventListener {
         } else {
             eWasPressed = false;
         }
+
+        if (this.falling) this.animate("jumping");
 
     }
 

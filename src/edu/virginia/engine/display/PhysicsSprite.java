@@ -113,17 +113,19 @@ public class PhysicsSprite extends AnimatedSprite {
 //					velocityY = maxVelocityY;
 //				}
         }
-        if (!jumping && !falling && !pressedKeys.contains(KeyEvent.VK_UP)) {
-            velocityY = 0;
-        }
+			/*
+			if (!jumping && !falling && !pressedKeys.contains(KeyEvent.VK_UP)) {
+				velocityY = 0;
+			}
+			*/
         //velocityY = getVelocityY() + accelerationY;
         this.setPosition((int) (this.getPosition().x + velocityX), (int) (this.getPosition().y + velocityY));
         if (velocityY > 0) {
             falling = true;
             jumping = false;
         }
-        super.update(pressedKeys);
-    }
+		super.update(pressedKeys);
+	}
 
 //	public void jumpToCoordwithVelocity(double xCoord, double vx) {
 //		velocityX = vx;
