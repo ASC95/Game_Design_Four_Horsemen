@@ -209,7 +209,7 @@ public class Player extends ActionSprite implements IEventListener {
         this.jumping = false;
         this.falling = false;
         this.hasDJ = true;
-//        this.velocityY = 0;
+        this.velocityY = 0;
     }
 
     @Override
@@ -231,8 +231,7 @@ public class Player extends ActionSprite implements IEventListener {
         if (this.canMove()) {
             if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
                 this.setVelocityX(-10);
-//                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
-                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking") && velocityY == 0) {
+                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
                     this.setSpeed(6);
                     this.animate("walking");
                     this.start();
@@ -240,8 +239,7 @@ public class Player extends ActionSprite implements IEventListener {
                 this.setScaleX(-1);
             } else if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
                 this.setVelocityX(10);
-//                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
-                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking") && velocityY == 0) {
+                if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
                     this.setSpeed(6);
                     this.animate("walking");
                     this.start();
@@ -252,27 +250,25 @@ public class Player extends ActionSprite implements IEventListener {
             }
             if (pressedKeys.contains(KeyEvent.VK_UP)) {
                 if (!upWasPressed) {
-//                    if (!this.isJumping() && !this.isFalling()) {
-                    if (!this.isJumping() && velocityY == 0) {
+                    // boi can't use his grounded jump while he's falling. otherwise he can midair jump infinitely.
+                    // pls
+                    if (!this.isJumping() && !this.isFalling()) {
                         upWasPressed = true;
-////                        this.setPosition((int) getPosition().getX(), (int) getPosition().getY() - 1);
+                        this.setPosition((int) getPosition().getX(), (int) getPosition().getY() - 1);
                         this.setVelocityY(-35);
-                        this.animate("jumping");
                         this.setJumping(true);
-//                        this.setFalling(true);
-//                        setDJ(true);
-//                        this.start();
+                        this.setFalling(false);
+                        this.animate("jumping");
+                        this.start();
                     } else if (this.canDJ()) {
                         upWasPressed = true;
                         this.setVelocityY(-30);
                         this.setJumping(true);
-//                        this.setFalling(true);
+                        this.setFalling(false);
                         this.setDJ(false);
                     }
                 }
-
                 if (upWasPressed) {
-                    setJumping(true);
                     if (this.canDJ()) {
                         // if he can double jump and is jumping, then he's using his grounded jump
                         if (this.isJumping() && jumpFrameCounter > 5 && jumpFrameCounter < 16) {
@@ -286,8 +282,7 @@ public class Player extends ActionSprite implements IEventListener {
                     }
                     jumpFrameCounter++;
                 }
-            }
-            else {
+            } else {
                 upWasPressed = false;
                 jumpFrameCounter = 0;
             }

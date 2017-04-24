@@ -68,6 +68,8 @@ public class MovementTest extends Game implements IEventListener {
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
         boi.setPlayerControlled(true);
+        // see physics sprite notes.
+        boss.setPlayerControlled(true);
         platform1.setPosition(300, 300);
         collisionManager.addChild(boi);
         collisionManager.addChild(platform1);
@@ -384,7 +386,7 @@ public class MovementTest extends Game implements IEventListener {
         // draw everything but GUI
         super.draw(g);
         // change back
-        //g.translate((int)camX, (int)camY);
+        g.translate((int)camX, (int)camY);
 
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
