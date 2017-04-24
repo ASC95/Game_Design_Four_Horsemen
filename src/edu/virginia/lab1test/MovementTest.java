@@ -4,6 +4,7 @@ import edu.virginia.engine.events.Event;
 import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.GameClock;
+import edu.virginia.engine.util.SoundManager;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -20,6 +21,7 @@ public class MovementTest extends Game implements IEventListener {
     int bossHealth = 1000;
     int loadingFrames = 0;
 
+    Sprite background = new Sprite("background", "warBackground.png");
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
     PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
@@ -28,7 +30,6 @@ public class MovementTest extends Game implements IEventListener {
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
     private CollisionObjectContainer collisionManager = new CollisionObjectContainer("collisionManager");
-
 
     AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
@@ -44,9 +45,10 @@ public class MovementTest extends Game implements IEventListener {
     GameClock bossTimer = new GameClock();
     GameClock bossMoveTimer = new GameClock();
 
+    private SoundManager soundManager = new SoundManager();
+
     boolean bossWasHit;
     boolean bossMovingAction;
-
 
     // camera shit
     double camX;
@@ -76,6 +78,7 @@ public class MovementTest extends Game implements IEventListener {
 //        this.addChild(collisionManager);
 //        this.addChild(platform1);
 
+        this.addChild(background);
         this.addChild(boss);
         this.addChild(boi);
         boi.setMaxHP(200);
@@ -90,13 +93,12 @@ public class MovementTest extends Game implements IEventListener {
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
+        boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
 
 //        this.addChild(enemy);
         /*
         this.addChild(enemy2);
         */
-
-
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
 
@@ -147,6 +149,8 @@ public class MovementTest extends Game implements IEventListener {
 
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
+        boss.addEventListener(soundManager, "BOSS_HIT");//boss listens for when it gets hit
+        boss.addEventListener(soundManager, "BOSS_DASH");//boss listens for when it dashes
 
         // camera initialization shit
         WORLDSIZE_X = 1280;
@@ -179,8 +183,6 @@ public class MovementTest extends Game implements IEventListener {
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-//                boi.setFalling(false);
-//                boi.setJumping(false);
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
             }
         }
@@ -288,6 +290,7 @@ public class MovementTest extends Game implements IEventListener {
                 // bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 18);
                 bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 1000 / 60 * 20);
                 juggler.add(bossStingerTween);
+                boss.dispatchEvent(new Event("BOSS_DASH", boss));
             }
             if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
                 // fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
@@ -310,12 +313,16 @@ public class MovementTest extends Game implements IEventListener {
         if (boi != null) {
             if (bossAttack1.collidesWith(boi)) {
                 boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
+                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
             } else if (bossAttack2.collidesWith(boi)) {
                 boi.dispatchEvent(new Event("GOT_HIT", bossAttack2));
+                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
             } else if (bossAttack3.collidesWith(boi)) {
                 boi.dispatchEvent(new Event("GOT_HIT", bossAttack3));
+                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
             } else if (fireball1.collidesWith(boi)) {
                 boi.dispatchEvent(new Event("GOT_HIT", fireball1));
+                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
             }
         }
 

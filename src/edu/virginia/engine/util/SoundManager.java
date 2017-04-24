@@ -3,6 +3,9 @@
 
 package edu.virginia.engine.util;
 
+import edu.virginia.engine.events.Event;
+import edu.virginia.engine.events.IEventListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,13 +19,34 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class SoundManager {
+public class SoundManager implements IEventListener {
 	
 	HashMap<String, Clip> fxList = new HashMap<String, Clip>();
 	HashMap<String, Clip> musicList = new HashMap<String, Clip>();
-	
+
+	//load some fx by default
 	public SoundManager() {
-		
+		try {
+			loadSoundEffect("boiStrike0", "boiStrike0.wav");
+			loadSoundEffect("boiStrike1", "boiStrike1.wav");
+			loadSoundEffect("boiInjured0", "boiInjured0.wav");
+			loadSoundEffect("bossDash", "bossDash.wav");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void handleEvent(Event event) {
+		if (event.getEventType().equals("BOSS_HIT")) {
+			playSoundEffect("boiStrike1");
+		}
+		else if (event.getEventType().equals("BOSS_DASH")) {
+			playSoundEffect("bossDash");
+		}
+		else if (event.getEventType().equals("BOI_INJURED_0")) {
+			playSoundEffect("boiInjured0");
+		}
 	}
 	
 	public void loadSoundEffect(String id, String filename) throws LineUnavailableException, UnsupportedAudioFileException {
@@ -43,6 +67,7 @@ public class SoundManager {
 	public void playSoundEffect(String id) {
 		Clip soundFile = fxList.get(id);
 		if(soundFile != null) {
+			soundFile.setFramePosition(0);
 			soundFile.start();
 		}
 	}
