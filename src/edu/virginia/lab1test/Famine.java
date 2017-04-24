@@ -1,7 +1,7 @@
 package edu.virginia.lab1test;
 
-import edu.virginia.engine.events.Event;
 import edu.virginia.engine.display.*;
+import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.GameClock;
 import javafx.application.Platform;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by Resquall on 4/9/2017.
  */
-public class MovementTest extends Game implements IEventListener {
+public class Famine extends Game implements IEventListener {
 
     Player boi = new Player("boi", "standing", "standing.png");
 
@@ -60,7 +60,7 @@ public class MovementTest extends Game implements IEventListener {
     double offsetMinY;
 
 
-    public MovementTest() {
+    public Famine() {
         super("Movement", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
@@ -76,7 +76,7 @@ public class MovementTest extends Game implements IEventListener {
         this.addChild(boss);
 //        this.addChild(boi);
         boi.setMaxHP(200);
-        boi.setHealth(10);
+        boi.setHealth(200);
         boi.setMaxMP(200);
         boi.setMana(200);
 
@@ -318,7 +318,7 @@ public class MovementTest extends Game implements IEventListener {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    MovementTest.super.dispatchEvent(event);
+                    Famine.super.dispatchEvent(event);
                 }
             });
         } else {
@@ -361,7 +361,7 @@ public class MovementTest extends Game implements IEventListener {
     }
 
     public static void main(String[] args) {
-        MovementTest game = new MovementTest();
+        Famine game = new Famine();
         game.start();
     }
 

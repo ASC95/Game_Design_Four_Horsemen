@@ -2,6 +2,7 @@ package edu.virginia.menu;
 
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
+import edu.virginia.lab1test.Famine;
 import edu.virginia.lab1test.MovementTest;
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
@@ -15,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -25,17 +28,33 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Key;
 
 /**
  * Created by austinchang on 4/23/17.
  */
 public class StartMenu extends Application implements IEventListener {
 
-//    private static Stage theStage = null;
-private static StartMenu instance;
+    private static Stage theStage = null;
+    private static StartMenu instance = null;
+
+    private final static int width = 1280;
+    private final static int height = 720;
+
+    private static final EventHandler<KeyEvent> startScreenHandle = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+            if (event.getCode() == KeyCode.ENTER) {
+                if (theStage != null) {
+                    theStage.setScene(getStartMenu());
+                    theStage.removeEventHandler(KeyEvent.KEY_PRESSED, this);
+                }
+            }
+        }
+    };
 
     public StartMenu() {
-        if(instance != null) {
+        if (instance != null) {
             System.out.println("ERROR: Cannot re-initialize singleton class!");
         }
         instance = this;
@@ -48,7 +67,10 @@ private static StartMenu instance;
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setScene(getStartMenu());
-        primaryStage.setMaximized(true);
+//        primaryStage.setMaximized(true);
+        theStage = primaryStage;
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
         primaryStage.show();
     }
 
@@ -75,27 +97,32 @@ private static StartMenu instance;
         ft.setCycleCount(Timeline.INDEFINITE);
         ft.setAutoReverse(true);
         ft.play();
+        theStage.addEventHandler(KeyEvent.KEY_PRESSED, startScreenHandle);
         return new Scene(stackPane);
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-        if (event.getEventType().equals("gameOver")) {
-            Stage g = new Stage();
-            g.setScene(getGameOverScreen());
-            g.setMaximized(true);
-            g.show();
-        }
-//        theStage.setScene(getGameOverScreen());
-//        theStage.setMaximized(true);
-
     }
 
     private static void formatGridPane(GridPane gridPane) {
 //        gridPane.setVgap(VERTICAL_SPACE);
 //        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 //        gridPane.setBorder(border);
-//        gridPane.setGridLinesVisible(true);
+        gridPane.setGridLinesVisible(true);
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        if (event.getEventType().equals("gameOver")) {
+//            Stage stage = new Stage();
+//            stage.setWidth(width);
+//            stage.setHeight(height);
+//            stage.setScene(getGameOverScreen());
+//            stage.setMaximized(true);
+//            stage.show();
+            theStage.setScene(getGameOverScreen());
+            theStage.setIconified(false);
+        }
+//        theStage.setScene(getGameOverScreen());
+//        theStage.setMaximized(true);
+
     }
 
     private static void addText(GridPane gridPane) {
@@ -103,26 +130,31 @@ private static StartMenu instance;
         title.setFont(new Font(100));
         gridPane.add(title, 1, 0);
         GridPane.setColumnSpan(title, 2);
+
         Text warText = new Text("War");
         warText.setFont(new Font(30));
         GridPane.setValignment(warText, VPos.BOTTOM);
         gridPane.add(warText, 1, 1);
+
+        Text famineText = new Text("Famine");
+        famineText.setFont(new Font(30));
+        GridPane.setValignment(famineText, VPos.BOTTOM);
+        gridPane.add(famineText, 2, 1);
     }
 
     private static void addRows(GridPane gridPane) {
         RowConstraints row0 = new RowConstraints();
-        formatRow(row0);
+        row0.setPercentHeight(20);
+        row0.setValignment(VPos.CENTER);
         RowConstraints row1 = new RowConstraints();
         formatRow(row1);
         RowConstraints row2 = new RowConstraints();
         formatRow(row2);
-//        RowConstraints row3 = new RowConstraints();
-//        formatRow(row3);
         gridPane.getRowConstraints().addAll(row0, row1, row2);
     }
 
     private static void formatRow(RowConstraints row) {
-        row.setPercentHeight(33.3);
+        row.setPercentHeight(40);
         row.setValignment(VPos.CENTER);
     }
 
@@ -150,15 +182,18 @@ private static StartMenu instance;
         Button warBtn = new Button();
         formatButton(warBtn);
         formatWarButton(warBtn);
-        Button boss2 = new Button();
-        formatButton(boss2);
+
+        Button famineBtn = new Button();
+        formatFamineButton(famineBtn);
+        formatButton(famineBtn);
+
         Button boss3 = new Button();
         formatButton(boss3);
         Button boss4 = new Button();
         formatButton(boss4);
 
         gridPane.add(warBtn, 1, 1);
-        gridPane.add(boss2, 2, 1);
+        gridPane.add(famineBtn, 2, 1);
         gridPane.add(boss3, 1, 2);
         gridPane.add(boss4, 2, 2);
     }
@@ -173,6 +208,20 @@ private static StartMenu instance;
                         MovementTest warBoss = new MovementTest();
                         warBoss.addEventListener(getInstance(), "gameOver");
                         warBoss.start();
+                        theStage.setIconified(true);
+                    }
+                });
+    }
+
+    private static void formatFamineButton(Button famBtn) {
+        famBtn.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+        famBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Famine famineBoss = new Famine();
+                        famineBoss.addEventListener(getInstance(), "gameOver");
+                        famineBoss.start();
                     }
                 });
     }
@@ -181,6 +230,18 @@ private static StartMenu instance;
         button.setPrefSize(200, 200);
         Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5.0)));
         button.setBorder(border);
+        button.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        button.setOpacity(.75);
+                    }
+                });
+        button.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        button.setOpacity(1.0);
+                    }
+                });
     }
 
     public static void main(String[] args) throws IOException {
