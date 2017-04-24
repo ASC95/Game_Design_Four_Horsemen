@@ -408,8 +408,11 @@ public class DisplayObject extends EventDispatcher {
 				hitBox.setBounds((int) (((this.getPosition().getX() - this.getPivotPoint().getX() + parentX + hitBoxPos.getX()))), (int)((this.getPosition().getY() - this.getPivotPoint().getY() + parentY + hitBoxPos.getY())), hitBoxWidth, hitBoxHeight);
 			}
 			AffineTransform transform = new AffineTransform();
-			transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition().getX()), (int)(this.getPosition().getY()));
+			//transform.rotate(Math.toRadians(this.getRotation()), (int)this.absPos(this.getPosition()).getX(), (int)this.absPos(this.getPosition()).getY());
+			transform.rotate(Math.toRadians(this.getRotation()), (int)(this.getPosition()).getX(), (int)(this.getPosition()).getY());
 			pathBox = (Path2D) transform.createTransformedShape(hitBox);
+			// TODO: if we want hitboxes to actually rotate, next line should have pathBox instead of hitBox
+			// TODO: however, this causes positioning to go out of wack when adjusting position of rotated hitboxes
 			Area newArea = new Area(hitBox);
 			areaBox.reset();
 			areaBox.add(newArea);

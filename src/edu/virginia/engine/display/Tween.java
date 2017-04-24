@@ -3,6 +3,7 @@ package edu.virginia.engine.display;
 import java.util.ArrayList;
 
 import edu.virginia.engine.events.EventDispatcher;
+import edu.virginia.engine.util.GameClock;
 
 public class Tween extends EventDispatcher {
 
@@ -10,6 +11,7 @@ public class Tween extends EventDispatcher {
 	private String transition = "";
 	private boolean complete;
 	private ArrayList<TweenParam> allParams = new ArrayList<TweenParam>();
+	private GameClock timer = new GameClock();
 
 	public Tween(DisplayObject object) {
 		this.tween = object;
@@ -23,12 +25,23 @@ public class Tween extends EventDispatcher {
 	public void animate(TweenableParams fieldToAnimate, double startVal, double endVal, double time) {
 		TweenParam param = new TweenParam(fieldToAnimate, startVal, endVal, time);
 		allParams.add(param);
+		this.timer.resetGameClock();
 	}
 
 	public void update() {
 		for (int i = 0; i < allParams.size(); i++) {
 			TweenParam thisParam = allParams.get(i);
 			TweenableParams param = thisParam.getParam();
+			double percentTime = timer.getElapsedTime() / thisParam.getTweenTime() ;
+			if (percentTime > 1) {
+				percentTime = 1;
+				allParams.remove(i);
+			}
+
+			double newVal = thisParam.getStartVal() + (thisParam.getEndVal() - thisParam.getStartVal()) * percentTime;
+
+
+			/*
 			double start = thisParam.getStartVal();
 			double end = thisParam.getEndVal();
 			double animTime = thisParam.getTweenTime() * 60;
@@ -67,6 +80,7 @@ public class Tween extends EventDispatcher {
 				percentage = 1;
 				newVal = end;
 			}
+			*/
 						
 			if (param.equals(TweenableParams.X)) {
 				tween.setPosition((int) newVal, tween.getPosition().y);
@@ -81,7 +95,7 @@ public class Tween extends EventDispatcher {
 			} else { // rotation
 				tween.setRotation((int) newVal);
 			}
-			thisParam.setPercentage(percentage);
+			// thisParam.setPercentage(percentage);
 		}
 		
 		complete = true;

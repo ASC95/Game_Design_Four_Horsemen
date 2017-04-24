@@ -37,6 +37,7 @@ public class MovementTest extends Game implements IEventListener {
     AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
 
     TweenJuggler juggler = new TweenJuggler();
+    Tween bossPositionTween = new Tween(boss);
     Tween bossStingerTween = new Tween(boss);
     Tween fireballTween = new Tween(fireball1);
 
@@ -44,11 +45,13 @@ public class MovementTest extends Game implements IEventListener {
     GameClock bossMoveTimer = new GameClock();
 
     boolean bossWasHit;
+    boolean bossMovingAction;
 
 
     // camera shit
     double camX;
     double camY;
+
     double SCREENSIZE_X;
     double SCREENSIZE_Y;
     double WORLDSIZE_X;
@@ -65,6 +68,8 @@ public class MovementTest extends Game implements IEventListener {
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
         boi.setPlayerControlled(true);
+        // see physics sprite notes.
+        boss.setPlayerControlled(true);
         platform1.setPosition(300, 300);
         collisionManager.addChild(boi);
         collisionManager.addChild(platform1);
@@ -146,7 +151,7 @@ public class MovementTest extends Game implements IEventListener {
         boss.addEventListener(this, "BOSS_HIT");
 
         // camera initialization shit
-        WORLDSIZE_X = 1280 * 2;
+        WORLDSIZE_X = 1280;
         WORLDSIZE_Y = 720;
         SCREENSIZE_X = 1280;
         SCREENSIZE_Y = 720;
@@ -181,19 +186,21 @@ public class MovementTest extends Game implements IEventListener {
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
             }
         }
-        if (boss != null && !boss.isAttacking()) {
+        if (boss != null && !boss.isAttacking() && !bossMovingAction) {
             if (bossTimer.getElapsedTime() > 3000) {
                 boss.setVelocityX(0);
                 if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
-                    // tween to one side of the stage
+                    // tween to one (closer) side of the stage
 
                     if (boss.getPosition().x > 640) {
-                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 1180, Math.abs(boss.getPosition().x - 1180) / 60 * 30);
-                        juggler.add(bossStingerTween);
+                        // bossPositionTween.animate(TweenableParams.X, boss.getPosition().x + 1, 1180, Math.abs(boss.getPosition().x - 1180) / 60 * 30);
+                        bossPositionTween.animate(TweenableParams.X, boss.getPosition().x, 1180, 1000 / 60 * 30);
+                        juggler.add(bossPositionTween);
                         boss.setScaleX(-1);
                     } else {
-                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 100, boss.getPosition().x / 60 * 30);
-                        juggler.add(bossStingerTween);
+                        // bossPositionTween.animate(TweenableParams.X, boss.getPosition().x + 1, 100, boss.getPosition().x / 60 * 30);
+                        bossPositionTween.animate(TweenableParams.X, boss.getPosition().x, 100, 1000 / 60 * 30);
+                        juggler.add(bossPositionTween);
                         boss.setScaleX(1);
                     }
                     boss.setAttack("stinger");
@@ -201,16 +208,22 @@ public class MovementTest extends Game implements IEventListener {
                     boss.start();
                     boss.startAttack();
                 } else if (bossTimer.getElapsedTime() * 1000000 % 3 == 1) {
+                    /*
                     if (boss.getPosition().x < boi.getPosition().x) {
                         boss.setScaleX(1);
                     } else {
                         boss.setScaleX(-1);
                     }
+                    */
+                    // set animation to some "ready" stance
                     boss.setAttack("slash");
+                    /*
                     boss.animate("slash");
                     boss.start();
-                    boss.startAttack();
-                } else {
+                    */
+                    bossMovingAction = true;
+                    // boss.startAttack();
+                } else if (Math.abs(boi.getPosition().x - boss.getPosition().x) > 500){
                     if (boss.getPosition().x < boi.getPosition().x) {
                         boss.setScaleX(1);
                     } else {
@@ -220,10 +233,15 @@ public class MovementTest extends Game implements IEventListener {
                     boss.animate("fireball");
                     boss.start();
                     boss.startAttack();
+                } else {
+                    // nothing was chosen
+                    System.out.println("This should be removed!");
+                    // bossTimer.resetGameClock();
                 }
             } else {
                 boss.animate("standing");
                 boss.start();
+                /*
                 if (bossMoveTimer.getElapsedTime() > 600) {
                     if (bossMoveTimer.getElapsedTime() * 1000000 % 3 == 0) {
                         if (boss.getPosition().x > boi.getPosition().x) {
@@ -240,25 +258,54 @@ public class MovementTest extends Game implements IEventListener {
                     }
                     bossMoveTimer.resetGameClock();
                 }
+                */
             }
-            // bounds for boss
-            if (boss.getPosition().x < 100) {
-                boss.getPosition().x = 100;
-            }
-            if (boss.getPosition().x > 1180) {
-                boss.getPosition().x = 1180;
-            }
-
         }
+
+        if (boss != null && !boss.isAttacking() && bossMovingAction) {
+            // if currentAction.equals("slash")
+            if (boss.getVelocityX() == 0) {
+                if (boi.getPosition().x > boss.getPosition().x) {
+                    boss.setVelocityX(6);
+                    boss.setScaleX(1);
+                } else {
+                    boss.setVelocityX(-6);
+                    boss.setScaleX(-1);
+                }
+            }
+            if (Math.abs(boi.getPosition().x - boss.getPosition().x) < 300) {
+                boss.startAttack();
+                boss.animate("slash");
+                boss.start();
+                boss.setVelocityX(0);
+                bossMovingAction = false;
+            }
+        }
+
+        // if (boss != null && boss.getVelocityX() != 0) System.out.println("boss moving");
+
         if (boss != null && boss.isAttacking()) {
             // frame counter checks are cheaper?
             if (boss.getFrameCounter() == 60 && boss.getCurrentAction().equals("stinger")) {
-                bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
+                // bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 18);
+                bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 1000 / 60 * 20);
                 juggler.add(bossStingerTween);
             }
             if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
-                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
+                // fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
+                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 1000 / 60 * 40);
                 juggler.add(fireballTween);
+            }
+        }
+
+        // bounds for boss
+        if (boss != null) {
+            if (boss.getPosition().x < 100) {
+                // should be set lol
+                // boss.getPosition().x = 100;
+            }
+            if (boss.getPosition().x > 1180) {
+                // boss.getPosition().x = 1180;
             }
         }
 
@@ -339,7 +386,7 @@ public class MovementTest extends Game implements IEventListener {
         // draw everything but GUI
         super.draw(g);
         // change back
-        //g.translate((int)camX, (int)camY);
+        g.translate((int)camX, (int)camY);
 
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));

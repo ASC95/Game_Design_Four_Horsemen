@@ -29,6 +29,18 @@ public class Action {
         }
     }
 
+    public Action(int end) {
+        this.input = end;
+        this.interrupt = end;
+        this.end = end;
+        // TODO: check bounds?
+        this.hitboxes = new HitboxList[end];
+        // preventing null pointer
+        for (int i = 0; i < end; i++) {
+            this.hitboxes[i] = new HitboxList();
+        }
+    }
+
     // adds hitbox to specified frame of the action
     public void addHitboxes(AttackHitbox hitbox, int index) {
         this.hitboxes[index].add(hitbox);
