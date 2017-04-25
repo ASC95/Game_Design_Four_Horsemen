@@ -252,7 +252,7 @@ public class StartMenu extends Application implements IEventListener {
     }
 
     private static void formatWarButton(Button warBtn) {
-        Image warImage = new Image("file:resources" + File.separator + "warBtn.png", 200, 200, false, false);
+        Image warImage = new Image("file:resources" + File.separator + "war.png", 200, 200, false, false);
         warBtn.setBackground(new Background(new BackgroundImage(warImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         warBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
@@ -275,7 +275,8 @@ public class StartMenu extends Application implements IEventListener {
     }
 
     private static void formatConquestButton(Button famBtn) {
-        famBtn.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+        Image conquestImage = new Image("file:resources" + File.separator + "conquest.png", 200, 200, false, false);
+        famBtn.setBackground(new Background(new BackgroundImage(conquestImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         famBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
                     @Override
