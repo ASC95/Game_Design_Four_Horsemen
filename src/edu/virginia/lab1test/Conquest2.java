@@ -185,7 +185,7 @@ public class Conquest2 extends Game implements IEventListener {
                 // choose spot in level and move/teleport
                 // note: if player is too close, should affect logic!
                 // or just don't warp to same spot
-                if (((int)(time * 1000000)) % 6 == 0) {
+                if (((int)(time * 100000)) % 6 == 0) {
                     // replace with actual movement call/tween
                     // bottom left
                     if (boss.getPosition().equals(bossPosBL)) {
@@ -197,7 +197,7 @@ public class Conquest2 extends Game implements IEventListener {
                         boss.setPosition(bossPosBL);
                     }
 
-                } else if ((int)(time * 1000000) % 6 == 1) {
+                } else if ((int)(time * 100000) % 6 == 1) {
                     // bottom right
                     if (boss.getPosition().equals(bossPosBR)) {
                         // warp to different spot
@@ -209,7 +209,7 @@ public class Conquest2 extends Game implements IEventListener {
                     }
 
 
-                } else if ((int)(time * 1000000) % 6 == 2) {
+                } else if ((int)(time * 100000) % 6 == 2) {
                     // lower right
                     if (boss.getPosition().equals(bossPosLR)) {
                         // warp to different spot
@@ -220,7 +220,7 @@ public class Conquest2 extends Game implements IEventListener {
                         boss.setPosition(bossPosLR);
                     }
 
-                } else if ((int)(time * 1000000) % 6 == 3) {
+                } else if ((int)(time * 100000) % 6 == 3) {
                     // lower left
                     if (boss.getPosition().equals(bossPosLL)) {
                         // warp to different spot
@@ -231,7 +231,7 @@ public class Conquest2 extends Game implements IEventListener {
                         boss.setPosition(bossPosLL);
                     }
 
-                } else if ((int)(time * 1000000) % 6 == 4) {
+                } else if ((int)(time * 100000) % 6 == 4) {
                     // upper right
                     if (boss.getPosition().equals(bossPosUR)) {
                         // warp to different spot
@@ -242,7 +242,7 @@ public class Conquest2 extends Game implements IEventListener {
                         boss.setPosition(bossPosUR);
                     }
 
-                } else if ((int)(time * 1000000) % 6 == 5) {
+                } else if ((int)(time * 100000) % 6 == 5) {
                     // upper left
                     if (boss.getPosition().equals(bossPosUL)) {
                         // warp to different spot
@@ -255,26 +255,27 @@ public class Conquest2 extends Game implements IEventListener {
 
                 } else {
                     System.out.println("disaster");
-                    System.out.println(time * 1000000 % 6);
+                    System.out.println(time * 100000 % 6);
                 }
 
                 // choose attack and execute - should be independent from movement
                 // different modulos should fix this?
                 bossFrameCounter = 0;
-                if ((int)(time * 1000000) % 3 == 0) {
+                // System.out.println((int)(time * 100000) % 3);
+                if ((int)(time * 100000) % 3 == 0) {
                     boss.setAttack("bullethell1");
                     boss.animate("bullethell1");
                     boss.start();
                     boss.startAttack();
 
-                } else if ((int)(time * 1000000) % 3 == 1) {
+                } else if ((int)(time * 100000) % 3 == 1) {
                     boss.setAttack("straight");
                     boss.animate("straight");
                     boss.start();
                     boss.startAttack();
                     bossTimer.resetGameClock();
 
-                } else if ((int)(time * 1000000) % 3 == 2) {
+                } else if ((int)(time * 100000) % 3 == 2) {
                     boss.setAttack("bullethell1");
                     boss.animate("bullethell1");
                     boss.start();
