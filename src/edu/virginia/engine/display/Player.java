@@ -355,6 +355,7 @@ public class Player extends ActionSprite implements IEventListener {
                     } else {
                         this.setVelocityX(-17);
                     }
+                    this.dispatchEvent(new Event("BOI_DASH", this));
                 }
             }
         } else {
@@ -374,6 +375,7 @@ public class Player extends ActionSprite implements IEventListener {
                     health += 100;
                     if (health > maxHP) health = maxHP;
                     mana -= 80;
+                    this.dispatchEvent(new Event("BOI_HEALED", this));
                 }
             }
         } else {

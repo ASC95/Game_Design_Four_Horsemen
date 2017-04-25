@@ -33,7 +33,11 @@ public class SoundManager implements IEventListener {
             loadSoundEffect("boiStrike2", "boiStrike2.wav");
             loadSoundEffect("boiStrike3", "boiStrike3.wav");
             loadSoundEffect("boiInjured0", "boiInjured0.wav");
+            loadSoundEffect("boiHealed", "boiHealed.wav");
             loadSoundEffect("bossDash", "bossDash.wav");
+            loadSoundEffect("bossFireball", "bossFireball.wav");
+            loadSoundEffect("bossSlash", "bossSlash.wav");
+            loadSoundEffect("boiDash", "boiDash.wav");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,14 +58,18 @@ public class SoundManager implements IEventListener {
                     playSoundEffect("boiStrike3");
                     break;
             }
-        }
-//        if (event.getEventType().equals("BOSS_HIT")) {
-//            playSoundEffect("boiStrike1");
-//        }
-        else if (event.getEventType().equals("BOSS_DASH")) {
+        } else if (event.getEventType().equals("BOSS_DASH")) {
             playSoundEffect("bossDash");
         } else if (event.getEventType().equals("BOI_INJURED_0")) {
             playSoundEffect("boiInjured0");
+        } else if (event.getEventType().equals("BOSS_FIREBALL")) {
+            playSoundEffect("bossFireball");
+        } else if (event.getEventType().equals("BOSS_SLASH")) {
+            playSoundEffect("bossSlash");
+        } else if (event.getEventType().equals("BOI_HEALED")) {
+            playSoundEffect("boiHealed");
+        } else if (event.getEventType().equals("BOI_DASH")) {
+            playSoundEffect("boiDash");
         }
     }
 

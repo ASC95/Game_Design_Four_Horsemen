@@ -9,6 +9,11 @@
 All documents can be found in the “doc” folder.
 
 # Controls
--Move side to side with arrow keys
--Jump with up arrow key
--Attack with “a”
+-Move side to side with the arrow keys.
+-Jump once by pressing the up arrow key. Press up again to double jump in mid-air
+-Use the “shift” key to perform a dash in the direction you are facing. While dashing, you are invincible. You are transparent while dashing.
+
+# Combat
+-Attack with the “a” key
+-Heal yourself with the “e” key
+-When you take damage, you are invincible for a few seconds. This is indicated by your sprite turning transparent. 

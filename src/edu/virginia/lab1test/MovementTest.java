@@ -19,6 +19,7 @@ public class MovementTest extends Game implements IEventListener {
     Player boi = new Player("boi", "standing", "standing.png");
 
     int bossHealth = 1000;
+    int maxBossHealth = 1000;
     int loadingFrames = 0;
 
     Sprite background = new Sprite("background", "warBackground.png");
@@ -26,6 +27,8 @@ public class MovementTest extends Game implements IEventListener {
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
     PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
     PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
+
+    Rectangle boiHealth = new Rectangle(100, 100, 400, 10);
 
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
 
@@ -76,7 +79,7 @@ public class MovementTest extends Game implements IEventListener {
 //        collisionManager.addChild(platform2);
 //        platform2.setPosition(600, 300);
 //        this.addChild(collisionManager);
-//        this.addChild(platform1);
+//        this.addChild(platform1)
 
         this.addChild(background);
         this.addChild(boss);
@@ -94,6 +97,8 @@ public class MovementTest extends Game implements IEventListener {
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
         boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
+        boi.addEventListener(soundManager, "BOI_HEALED");//soundManager listens for when boi heals
+        boi.addEventListener(soundManager, "BOI_DASH");
 
 //        this.addChild(enemy);
         /*
@@ -149,8 +154,10 @@ public class MovementTest extends Game implements IEventListener {
 
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
-        boss.addEventListener(soundManager, "BOSS_HIT");//boss listens for when it gets hit
-        boss.addEventListener(soundManager, "BOSS_DASH");//boss listens for when it dashes
+        boss.addEventListener(soundManager, "BOSS_HIT");//soundManager listens for when boss gets hit
+        boss.addEventListener(soundManager, "BOSS_DASH");//soundManager listens for when boss dashes
+        boss.addEventListener(soundManager, "BOSS_FIREBALL");//soundManager listens for fireball
+        boss.addEventListener(soundManager, "BOSS_SLASH");//soundManager listens for boss's slash
 
         // camera initialization shit
         WORLDSIZE_X = 1280;
@@ -170,6 +177,13 @@ public class MovementTest extends Game implements IEventListener {
         if (juggler != null) {
             juggler.nextFrame();
         }
+        if (boi.getPosition().getX() < 0) {
+            boi.setPosition(0, (int)boi.getPosition().getY());
+        }
+        if (boi.getPosition().getX() > 1280) {
+            boi.setPosition(1280, (int) boi.getPosition().getY());
+        }
+
         if (boi != null) {
 //            if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
             if (!boi.isJumping() && !boi.isAttacking() && !pressedKeys.contains(KeyEvent.VK_LEFT) && !pressedKeys.contains(KeyEvent.VK_RIGHT)) {
@@ -276,6 +290,7 @@ public class MovementTest extends Game implements IEventListener {
             if (Math.abs(boi.getPosition().x - boss.getPosition().x) < 300) {
                 boss.startAttack();
                 boss.animate("slash");
+                boss.dispatchEvent(new Event("BOSS_SLASH", boss));
                 boss.start();
                 boss.setVelocityX(0);
                 bossMovingAction = false;
@@ -295,6 +310,7 @@ public class MovementTest extends Game implements IEventListener {
             if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
                 // fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
                 fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 1000 / 60 * 40);
+                boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
                 juggler.add(fireballTween);
             }
         }
@@ -398,6 +414,9 @@ public class MovementTest extends Game implements IEventListener {
         super.draw(g);
         // change back
         g.translate((int)camX, (int)camY);
+        if (boi != null) {
+            drawHealthBars(g2d);
+        }
 
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
@@ -416,6 +435,29 @@ public class MovementTest extends Game implements IEventListener {
             }
         }
         */
+    }
+
+    private void drawHealthBars(Graphics2D g2d) {
+        if (boi.getHealth() > 100) {
+            g2d.setColor(Color.GREEN);
+        } else if (boi.getHealth() < 100 && boi.getHealth() > 50) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
+        }
+        g2d.fillRect(100, 100, boi.getHealth(), 20);
+        g2d.setColor(Color.blue);
+        g2d.fillRect(100, 150, (int)boi.getMana(), 20);
+        if (bossHealth > 500) {
+            g2d.setColor(Color.GREEN);
+        } else if (bossHealth < 500 && bossHealth > 250) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
+        }
+        int bossHealthPosition = 735 + (maxBossHealth - bossHealth)/2;
+        g2d.fillRect(bossHealthPosition, 100, bossHealth/2, 20);
+
     }
 
     public static void main(String[] args) {
