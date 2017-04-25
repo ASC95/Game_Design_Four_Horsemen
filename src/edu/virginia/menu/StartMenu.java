@@ -150,7 +150,7 @@ public class StartMenu extends Application implements IEventListener {
 //        gridPane.setVgap(VERTICAL_SPACE);
 //        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 //        gridPane.setBorder(border);
-        gridPane.setGridLinesVisible(true);
+//        gridPane.setGridLinesVisible(true);
     }
 
     @Override
