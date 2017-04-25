@@ -311,18 +311,20 @@ public class MovementTest extends Game implements IEventListener {
         }
 
         if (boi != null) {
-            if (bossAttack1.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
-                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
-            } else if (bossAttack2.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack2));
-                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
-            } else if (bossAttack3.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack3));
-                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
-            } else if (fireball1.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", fireball1));
-                boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
+            if (!boi.isInvincible()) {
+                if (bossAttack1.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
+                } else if (bossAttack2.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", bossAttack2));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
+                } else if (bossAttack3.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", bossAttack3));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
+                } else if (fireball1.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", fireball1));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", bossAttack1));
+                }
             }
         }
 

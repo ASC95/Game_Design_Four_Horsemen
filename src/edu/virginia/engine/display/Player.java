@@ -20,6 +20,7 @@ public class Player extends ActionSprite implements IEventListener {
     private Point lastFramePosition;
 
     private boolean hasDJ;
+    private boolean invincible;
 
     private boolean dropDown;
     private boolean canInput = true;
@@ -218,8 +219,12 @@ public class Player extends ActionSprite implements IEventListener {
         this.velocityY = 0;
     }
 
-    public boolean canDropDown () {
+    public boolean canDropDown() {
         return this.dropDown;
+    }
+
+    public boolean isInvincible() {
+        return this.invincible;
     }
 
     @Override
@@ -228,20 +233,22 @@ public class Player extends ActionSprite implements IEventListener {
         this.lastFramePosition = this.position;
         super.update(pressedKeys);
         if (iFrames > 0) {
-            this.setCollidable(false);
+            // this.setCollidable(false);
+            this.invincible = true;
             this.setAlpha(.5f);
             this.iFrames--;
-        } else if (!this.isCollidable()) {
-            this.setCollidable(true);
+        } else if (invincible) {
+            this.invincible = false;
             this.setAlpha(1f);
         }
 
         // mana regen
-        if (mana < maxMP) mana += .08;
+        if (mana < maxMP) mana += .05;
 
         // controls
         if (this.canMove()) {
             if (pressedKeys.contains(KeyEvent.VK_LEFT)) {
+                // TODO: if Math.abs(this.getVelocityX > 10 this.getVelocityX = -15
                 this.setVelocityX(-10);
                 if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
                     this.setSpeed(6);
@@ -374,6 +381,11 @@ public class Player extends ActionSprite implements IEventListener {
         }
 
         if (this.falling) this.animate("jumping");
+
+        // dash off platforms
+        if (this.getCurrentAction() != null && this.getCurrentAction().equals("dash") && this.falling) {
+            this.fullInterrupt();
+        }
 
     }
 

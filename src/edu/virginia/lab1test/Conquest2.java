@@ -36,6 +36,7 @@ public class Conquest2 extends Game implements IEventListener {
     int arrowCounter;
     int bulletHell1Rate = 3;
     int bulletHell1Angle = 15;
+    int bossHealth = 1000;
 
     // boss booleans
     boolean bossWasHit;
@@ -106,9 +107,9 @@ public class Conquest2 extends Game implements IEventListener {
         // platforms
         platform1.setPosition(1280 - 150 - platform1.getUnscaledWidth(), 1260 - 180);
         platform2.setPosition(150, 1260 - 180);
-        platform3.setPosition(640 - platform1.getUnscaledWidth() / 2, 1260 - 480);
-        platform4.setPosition(1280 - 150 - platform1.getUnscaledWidth(), 1260 - 780);
-        platform5.setPosition(150, 1260 - 780);
+        platform3.setPosition(640 - platform1.getUnscaledWidth() / 2, 1260 - 507);
+        platform4.setPosition(1280 - 150 - platform1.getUnscaledWidth(), 1260 - 834);
+        platform5.setPosition(150, 1260 - 834);
         platforms.add(platform1);
         platforms.add(platform2);
         platforms.add(platform3);
@@ -268,8 +269,23 @@ public class Conquest2 extends Game implements IEventListener {
     }
 
     @Override
-    public void handleEvent(Event event) {
-
+    public void handleEvent(Event e) {
+        if (e.getEventType().equals("ATTACK_END" + boss.getId())) {
+            bossTimer.resetGameClock();
+            bossMoveTimer.resetGameClock();
+        }
+        if (e.getEventType().equals("ATTACK_END" + boi.getId())) {
+            bossWasHit = false;
+        }
+        /*
+        if (e.getEventType().equals("GOT_HIT")) {
+        }
+        */
+        if (e.getEventType().equals("BOSS_HIT")) {
+            bossWasHit = true;
+            AttackHitbox x = (AttackHitbox) e.getSource();
+            bossHealth -= x.getDamage();
+        }
     }
 
     public static void main(String[] args) {
