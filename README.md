@@ -17,3 +17,7 @@ All documents can be found in the “doc” folder.
 -Attack with the “a” key
 -Heal yourself with the “e” key
 -When you take damage, you are invincible for a few seconds. This is indicated by your sprite turning transparent. 
+-You can jump through platforms to land on them. Press the “down” arrow key to fall through a platform when you are standing on it.
+
+# Running the game
+Please run the main method of the “startMenu” class

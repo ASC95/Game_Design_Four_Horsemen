@@ -4,6 +4,8 @@ import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.util.GameClock;
+import edu.virginia.engine.util.SoundManager;
+import javafx.application.Platform;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -23,6 +25,9 @@ public class Conquest2 extends Game implements IEventListener {
     Sprite background = new Sprite("background", "conquestBackground.png");
     ArrayList<Sprite> platforms = new ArrayList<>();
 
+    private SoundManager soundManager = new SoundManager();
+
+
     // attack hitboxes for boss go here
     ArrayList<AttackHitbox> bulletHell1 = new ArrayList<>();
     ArrayList<AttackHitbox> straightAttack = new ArrayList<>();
@@ -38,6 +43,7 @@ public class Conquest2 extends Game implements IEventListener {
     int bulletHell1Rate = 2;
     int bulletHell1Angle = 15;
     int bossHealth = 1000;
+    int maxBossHealth = 1000;
 
     // boss booleans
     boolean bossWasHit;
@@ -93,6 +99,9 @@ public class Conquest2 extends Game implements IEventListener {
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
+        boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
+        boi.addEventListener(soundManager, "BOI_HEALED");//soundManager listens for when boi heals
+        boi.addEventListener(soundManager, "BOI_DASH");
 
         // boss
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
@@ -106,6 +115,10 @@ public class Conquest2 extends Game implements IEventListener {
         boss.addAttack("straight", new Action(120));
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
+        boss.addEventListener(soundManager, "BOSS_HIT");//soundManager listens for when boss gets hit
+        boss.addEventListener(soundManager, "BOSS_DASH");//soundManager listens for when boss dashes
+        boss.addEventListener(soundManager, "BOSS_FIREBALL");//soundManager listens for fireball
+        boss.addEventListener(soundManager, "BOSS_SLASH");//soundManager listens for boss's slash
 
         // camera initialization shit
         WORLDSIZE_X = 1280;
@@ -309,8 +322,8 @@ public class Conquest2 extends Game implements IEventListener {
                 if (bossFrameCounter > bulletHell1Rate * 360 / bulletHell1Angle - 1) bossFrameCounter = 0;
 
             } else if (boss.getCurrentAction().equals("straight")) {
-
                 if (bossTimer != null && bossTimer.getElapsedTime() > 400) {
+                    boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
                     double diffx = boi.getPosition().x - boss.getPosition().x;
                     double diffy = boi.getPosition().y - boss.getPosition().y;
                     int signx = 1;
@@ -357,6 +370,7 @@ public class Conquest2 extends Game implements IEventListener {
             for (DisplayObject hitbox : boi.getChildren()) {
                 if (hitbox.collidesWith(boss)) {
                     boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
+                    boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
                     // this prevents hitting more than once with single attack
                     break;
                 }
@@ -376,6 +390,17 @@ public class Conquest2 extends Game implements IEventListener {
             camY = offsetMaxY;
         else if (camY < offsetMinY)
             camY = offsetMinY;
+
+        if (boi != null) {
+            if (boi.getHealth() <= 0) {
+                dispatchEvent(new Event("gameOver", this));
+                super.exitGame();
+            }
+        }
+        if (bossHealth <= 0) {
+            dispatchEvent(new Event("victory", this));
+            super.exitGame();
+        }
     }
 
     @Override
@@ -407,11 +432,39 @@ public class Conquest2 extends Game implements IEventListener {
                 }
             }
         }
-
         // change back
         g.translate((int)camX, (int)camY);
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
+        if (boi != null) g2d.drawString("Player HP: " + boi.getHealth(), 100, 100);
+        if (boi != null) g2d.drawString("Player MP: " + (int)boi.getMana(), 100, 200);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
+        if (boi != null) {
+            drawHealthBars(g2d);
+        }
+    }
 
-
+    private void drawHealthBars(Graphics2D g2d) {
+        if (boi.getHealth() > 100) {
+            g2d.setColor(Color.GREEN);
+        } else if (boi.getHealth() < 100 && boi.getHealth() > 50) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
+        }
+        g2d.fillRect(100, 100, boi.getHealth(), 20);
+        g2d.setColor(Color.blue);
+        g2d.fillRect(100, 150, (int)boi.getMana(), 20);
+        if (bossHealth > 500) {
+            g2d.setColor(Color.GREEN);
+        } else if (bossHealth < 500 && bossHealth > 250) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
+        }
+        int bossHealthPosition = 735 + (maxBossHealth - bossHealth)/2;
+        g2d.fillRect(bossHealthPosition, 100, bossHealth/2, 20);
 
     }
 
@@ -432,6 +485,25 @@ public class Conquest2 extends Game implements IEventListener {
             bossWasHit = true;
             AttackHitbox x = (AttackHitbox) e.getSource();
             bossHealth -= x.getDamage();
+        }
+    }
+
+    /**
+     * This is needed because you need to switch to the JavaFX thread before you can change data in the
+     * JavaFX application.
+     * @param event
+     */
+    @Override
+    public void dispatchEvent(Event event) {
+        if (event.getEventType().equals("gameOver") || event.getEventType().equals("victory")) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Conquest2.super.dispatchEvent(event);
+                }
+            });
+        } else {
+            super.dispatchEvent(event);
         }
     }
 
