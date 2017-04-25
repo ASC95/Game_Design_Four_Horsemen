@@ -177,11 +177,13 @@ public class MovementTest extends Game implements IEventListener {
         if (juggler != null) {
             juggler.nextFrame();
         }
-        if (boi.getPosition().getX() < 0) {
-            boi.setPosition(0, (int)boi.getPosition().getY());
-        }
-        if (boi.getPosition().getX() > 1280) {
-            boi.setPosition(1280, (int) boi.getPosition().getY());
+        if (boi != null) {
+            if (boi.getPosition().getX() < 0) {
+                boi.setPosition(0, (int) boi.getPosition().getY());
+            }
+            if (boi.getPosition().getX() > 1280) {
+                boi.setPosition(1280, (int) boi.getPosition().getY());
+            }
         }
 
         if (boi != null) {
@@ -375,9 +377,11 @@ public class MovementTest extends Game implements IEventListener {
                 super.exitGame();
             }
         }
-        if (bossHealth <= 0) {
-            dispatchEvent(new Event("victory", this));
-            super.exitGame();
+        if (boss != null) {
+            if (bossHealth <= 0) {
+                dispatchEvent(new Event("victory", this));
+                super.exitGame();
+            }
         }
     }
 

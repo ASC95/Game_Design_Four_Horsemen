@@ -398,9 +398,11 @@ public class Conquest2 extends Game implements IEventListener {
                 super.exitGame();
             }
         }
-        if (bossHealth <= 0) {
-            dispatchEvent(new Event("victory", this));
-            super.exitGame();
+        if (boss != null) {
+            if (bossHealth <= 0) {
+                dispatchEvent(new Event("victory", this));
+                super.exitGame();
+            }
         }
     }
 
