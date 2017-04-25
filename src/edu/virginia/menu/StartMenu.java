@@ -4,6 +4,7 @@ import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.SoundManager;
 import edu.virginia.lab1test.Conquest;
+import edu.virginia.lab1test.Conquest2;
 import edu.virginia.lab1test.Famine;
 import edu.virginia.lab1test.MovementTest;
 import javafx.animation.FadeTransition;
@@ -78,12 +79,15 @@ public class StartMenu extends Application implements IEventListener {
 
     private static Scene getStartMenu() {
         GridPane gridPane = new GridPane();
+        Image warImage = new Image("file:resources" + File.separator + "menuImage.png", 1280, 720, false, false);
+        gridPane.setBackground(new Background(new BackgroundImage(warImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         formatGridPane(gridPane);
         addRows(gridPane);
         addColumns(gridPane);
         addButtons(gridPane);
         addText(gridPane);
         Scene startMenu = new Scene(gridPane);
+
         try {
             soundManager.stopAllMusic();
             soundManager.loadMusic("menuMusic", "menu.wav");
@@ -146,7 +150,7 @@ public class StartMenu extends Application implements IEventListener {
 //        gridPane.setVgap(VERTICAL_SPACE);
 //        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 //        gridPane.setBorder(border);
-//        gridPane.setGridLinesVisible(true);
+        gridPane.setGridLinesVisible(true);
     }
 
     @Override
@@ -161,35 +165,49 @@ public class StartMenu extends Application implements IEventListener {
     }
 
     private static void addText(GridPane gridPane) {
-        Text title = new Text("Four Horsemen");
-        title.setFont(new Font(100));
-        gridPane.add(title, 1, 0);
-        GridPane.setColumnSpan(title, 2);
+//        Text title = new Text("Four Horsemen");
+//        title.setFont(new Font(100));
+//        gridPane.add(title, 1, 0);
+//        GridPane.setColumnSpan(title, 2);
+        ImageView titleImage = new ImageView(new Image("file:resources" + File.separator + "title.png"));
+        gridPane.add(titleImage, 1, 0);
+        GridPane.setColumnSpan(titleImage, 2);
+        ScaleTransition st = new ScaleTransition(Duration.millis(1500), titleImage);
+        st.setFromX(1.0);
+        st.setFromY(1.0);
+        st.setToX(1.05);
+        st.setToY(1.05);
+        st.setCycleCount(Timeline.INDEFINITE);
+        st.setAutoReverse(true);
+        st.play();
 
         Text warText = new Text("War");
         warText.setFont(new Font(30));
+        warText.setFill(Color.WHITE);
         GridPane.setValignment(warText, VPos.BOTTOM);
         gridPane.add(warText, 1, 1);
 
         Text famineText = new Text("Conquest");
         famineText.setFont(new Font(30));
+        famineText.setFill(Color.WHITE);
         GridPane.setValignment(famineText, VPos.BOTTOM);
         gridPane.add(famineText, 2, 1);
     }
 
     private static void addRows(GridPane gridPane) {
         RowConstraints row0 = new RowConstraints();
-        row0.setPercentHeight(20);
+        row0.setPercentHeight(30);
         row0.setValignment(VPos.CENTER);
         RowConstraints row1 = new RowConstraints();
         formatRow(row1);
+        row1.setPercentHeight(40);
         RowConstraints row2 = new RowConstraints();
         formatRow(row2);
+        row2.setPercentHeight(30);
         gridPane.getRowConstraints().addAll(row0, row1, row2);
     }
 
     private static void formatRow(RowConstraints row) {
-        row.setPercentHeight(40);
         row.setValignment(VPos.CENTER);
     }
 
@@ -269,7 +287,7 @@ public class StartMenu extends Application implements IEventListener {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Conquest conquestBoss = new Conquest();
+                        Conquest2 conquestBoss = new Conquest2();
                         conquestBoss.addEventListener(getInstance(), "gameOver");
                         conquestBoss.addEventListener(getInstance(), "victory");
                         conquestBoss.start();
@@ -280,7 +298,7 @@ public class StartMenu extends Application implements IEventListener {
 
     private static void formatButton(Button button) {
         button.setPrefSize(200, 200);
-        Border border = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5.0)));
+        Border border = new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5.0)));
         button.setBorder(border);
         button.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
                     @Override

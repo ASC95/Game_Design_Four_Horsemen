@@ -438,18 +438,6 @@ public class MovementTest extends Game implements IEventListener {
         if (e.getEventType().equals("BOSS_HIT")) {
             bossWasHit = true;
             AttackHitbox x = (AttackHitbox) e.getSource();
-            switch(x.getId()) {
-                case "boiAttack1":
-                    // throw sound event
-                    System.out.println("this");
-                    break;
-                case "boiAttack2":
-                    System.out.println("that");
-                    break;
-                case "boiAttack3":
-                    System.out.println("those");
-                    break;
-            }
             bossHealth -= x.getDamage();
         }
     }
