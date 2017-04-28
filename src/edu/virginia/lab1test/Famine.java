@@ -1,9 +1,10 @@
 package edu.virginia.lab1test;
 
-import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.Event;
+import edu.virginia.engine.display.*;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.GameClock;
+import edu.virginia.engine.util.SoundManager;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -18,63 +19,102 @@ public class Famine extends Game implements IEventListener {
     Player boi = new Player("boi", "standing", "standing.png");
 
     int bossHealth = 1000;
+    int maxBossHealth = 1000;
     int loadingFrames = 0;
 
-    PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
-    PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
-    PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
-    PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
+    Sprite background = new Sprite("background", "warBackground.png");
+    Sprite platform1 = new Sprite("plat1", "platform2.png");
+    Sprite platform2 = new Sprite("plat2", "platform2.png");
+    ArrayList<Sprite> platforms = new ArrayList<>();
 
     ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
+    boolean pillarAttackActive = false;
+    boolean pillarsReversed = false;
+    boolean launchPillarAttack = true;
+    boolean pillarAttackFinished = false;
 
-    private CollisionObjectContainer collisionManager = new CollisionObjectContainer("collisionManager");
+    AnimatedSprite lightning = new AnimatedSprite("lightning", "lightningList", "lightning0.png");
+    AnimatedSprite lightning2 = new AnimatedSprite("lightning2", "lightningList", "lightning0.png");
+    AttackHitbox lightningColumnHitBox = new AttackHitbox("lightningColumnHitBox", "lightning0.png", 40, 0, 0, 0);
+    AttackHitbox pillarLeft = new AttackHitbox("pillarLeft", "lightningSkinny.png", 40, 0, 0, 0);
+    AttackHitbox pillarRight = new AttackHitbox("pillarRight", "lightningSkinny.png", 40, 0, 0, 0);
+    Tween leftPillarTween = new Tween(pillarLeft);
+    Tween rightPillarTween = new Tween(pillarRight);
 
 
-    AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+//    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
 
-    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
+    //    AttackHitbox columnLeftHitBox = new AttackHitbox("bossAttack1", "lightningtest.png", 30, 0, 0, 0);
+    AttackHitbox columnRightHitBox = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
+    //    Tween columnLeftTween = new Tween(columnLeftHitBox);
+    Tween columnRightTween = new Tween(columnRightHitBox);
+
 
     TweenJuggler juggler = new TweenJuggler();
+    Tween bossPositionTween = new Tween(boss);
     Tween bossStingerTween = new Tween(boss);
-    Tween fireballTween = new Tween(fireball1);
+
+    //    Tween fireballTween = new Tween(fireball1);
+
 
     GameClock bossTimer = new GameClock();
     GameClock bossMoveTimer = new GameClock();
 
-    boolean bossWasHit;
+    private SoundManager soundManager = new SoundManager();
 
+    boolean bossWasHit;
+    boolean bossMovingAction;
 
     // camera shit
-    double camX;
-    double camY;
-    double SCREENSIZE_X;
-    double SCREENSIZE_Y;
-    double WORLDSIZE_X;
-    double WORLDSIZE_Y;
-    // max = worldsize - screensize
-    double offsetMaxX;
-    double offsetMaxY;
-    double offsetMinX;
-    double offsetMinY;
+//    double camX;
+//    double camY;
+//
+//    double SCREENSIZE_X;
+//    double SCREENSIZE_Y;
+//    double WORLDSIZE_X;
+//    double WORLDSIZE_Y;
+//    // max = worldsize - screensize
+//    double offsetMaxX;
+//    double offsetMaxY;
+//    double offsetMinX;
+//    double offsetMinY;
 
 
     public Famine() {
-        super("Movement", 1280, 720);
+        super("Famine", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
-//        boi.setPlayerControlled(true);
-        platform1.setPosition(300, 300);
-        collisionManager.addChild(boi);
-        collisionManager.addChild(platform1);
-        collisionManager.addChild(platform2);
-        platform2.setPosition(600, 300);
-        this.addChild(collisionManager);
-//        this.addChild(platform1);
 
+//        this.addChild(background);
+        this.addChild(lightning);
+        this.addChild(lightning2);
         this.addChild(boss);
-//        this.addChild(boi);
+        this.addChild(boi);
+
+        lightning.setPosition(0, 0);
+        lightning.addImageWithoutSheet("lightningList", "lightning1.png");
+        lightning.addImageWithoutSheet("lightningList", "lightning2.png");
+        lightning.addImageWithoutSheet("lightningList", "lightning3.png");
+        lightning.addImageWithoutSheet("lightningList", "lightning4.png");
+        lightning.addImageWithoutSheet("lightningList", "lightning5.png");
+        lightning.addImageWithoutSheet("lightningList", "lightning6.png");
+        lightning.setSpeed(2);
+        lightning.setCollidable(false);
+        lightning.setVisible(false);
+
+        lightning2.setPosition(1280, 0);
+        lightning2.addImageWithoutSheet("lightningList", "lightning1.png");
+        lightning2.addImageWithoutSheet("lightningList", "lightning2.png");
+        lightning2.addImageWithoutSheet("lightningList", "lightning3.png");
+        lightning2.addImageWithoutSheet("lightningList", "lightning4.png");
+        lightning2.addImageWithoutSheet("lightningList", "lightning5.png");
+        lightning2.addImageWithoutSheet("lightningList", "lightning6.png");
+        lightning2.setSpeed(2);
+        lightning2.setCollidable(false);
+        lightning2.setVisible(false);
+
         boi.setMaxHP(200);
         boi.setHealth(200);
         boi.setMaxMP(200);
@@ -87,73 +127,70 @@ public class Famine extends Game implements IEventListener {
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
-
-        this.addChild(enemy);
-        /*
-        this.addChild(enemy2);
-        */
-
+        boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
+        boi.addEventListener(soundManager, "BOI_HEALED");//soundManager listens for when boi heals
+        boi.addEventListener(soundManager, "BOI_DASH");
 
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
-
-        // how to set things based on bottom?
-        // i want everything on the floor...
-
-        enemy.setPosition(640, 540);
-        /*
-        enemy2.setPosition(1820, 900);
-        */
-
         boss.setPosition(100, 540);
-        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
-        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
-        boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
 
-        boss.addChild(bossAttack1);
-        bossAttack1.setPosition(boss.getUnscaledWidth() / 2, 0);
-        boss.addChild(bossAttack2);
-        bossAttack2.setPosition(boss.getUnscaledWidth() / 2, -boss.getUnscaledHeight() / 2);
-        boss.addChild(bossAttack3);
-        bossAttack3.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
-        boss.addChild(fireball1);
-        fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+        Action lightningColumnAction = new Action(30, 30, 30);
+        lightningColumnAction.addHitboxes(lightningColumnHitBox, 15);
+        boss.addAttack("lightningColumnAttack", lightningColumnAction);
 
-        Action bossStinger = new Action(60 + 20 + 30, 110, 110);
-        for (int i = 61; i < 81; i++) {
-            bossStinger.addHitboxes(bossAttack1, i);
-            bossStinger.addHitboxes(bossAttack2, i);
-            bossStinger.addHitboxes(bossAttack3, i);
-        }
+//        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
+//        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
+//        boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
+//        boss.addImage("columnAttackAction", "bossPlaceholder2.png", 1, 1);
 
-        Action bossSlash1 = new Action(0, 59, 60);
-        bossSlash1.addHitboxes(bossAttack2, 40);
-        bossSlash1.addHitboxes(bossAttack3, 40);
-        bossSlash1.addHitboxes(bossAttack3, 41);
-        bossSlash1.addHitboxes(bossAttack3, 42);
-        bossSlash1.addHitboxes(bossAttack1, 42);
+//        boss.addChild(bossAttack1);
+//        bossAttack1.setPosition(boss.getUnscaledWidth() / 2, 0);
+//
+//        boss.addChild(bossAttack2);
+//        bossAttack2.setPosition(boss.getUnscaledWidth() / 2, -boss.getUnscaledHeight() / 2);
+//        boss.addChild(bossAttack3);
+//        bossAttack3.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
 
-        Action bossFireball1 = new Action(40 + 30 + 30, 100, 100);
-        for (int i = 41; i < 71; i++) {
-            bossFireball1.addHitboxes(fireball1, i);
-        }
+//        boss.addChild(fireball1);
+//        fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+//        boss.addChild(columnHitbox);
+//        columnHitbox.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
 
-        boss.addAttack("stinger", bossStinger);
-        boss.addAttack("slash", bossSlash1);
-        boss.addAttack("fireball", bossFireball1);
+//        Action bossStinger = new Action(60 + 20 + 30, 110, 110);
+//        for (int i = 61; i < 81; i++) {
+//            bossStinger.addHitboxes(bossAttack1, i);
+//            bossStinger.addHitboxes(bossAttack2, i);
+//            bossStinger.addHitboxes(bossAttack3, i);
+//        }
+
+//        Action bossSlash1 = new Action(0, 59, 60);
+//        bossSlash1.addHitboxes(bossAttack2, 40);
+//        bossSlash1.addHitboxes(bossAttack3, 40);
+//        bossSlash1.addHitboxes(bossAttack3, 41);
+//        bossSlash1.addHitboxes(bossAttack3, 42);
+//        bossSlash1.addHitboxes(bossAttack1, 42);
+
+//        Action bossFireball1 = new Action(40 + 30 + 30, 100, 100);
+//        for (int i = 41; i < 71; i++) {
+//            bossFireball1.addHitboxes(fireball1, i);
+//        }
+//        Action columnAction = new Action(100, 100, 40);
+//        for (int i = 10; i < 40; i++) {
+//            columnAction.addHitboxes(columnHitbox, i);
+//        }
+
+//        boss.addAttack("stinger", bossStinger);
+//        boss.addAttack("slash", bossSlash1);
+//        boss.addAttack("fireball", bossFireball1);
+
 
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
-
-        // camera initialization shit
-        WORLDSIZE_X = 1280 * 2;
-        WORLDSIZE_Y = 720;
-        SCREENSIZE_X = 1280;
-        SCREENSIZE_Y = 720;
-        offsetMaxX = WORLDSIZE_X - SCREENSIZE_X;
-        offsetMaxY = WORLDSIZE_Y - SCREENSIZE_Y;
-        offsetMinX = 0;
-        offsetMinY = 0;
+        boss.addEventListener(soundManager, "BOSS_HIT");//soundManager listens for when boss gets hit
+//        boss.addEventListener(soundManager, "BOSS_DASH");//soundManager listens for when boss dashes
+        boss.addEventListener(soundManager, "BOSS_FIREBALL");//soundManager listens for fireball
+//        boss.addEventListener(soundManager, "BOSS_SLASH");//soundManager listens for boss's slash
 
     }
 
@@ -163,8 +200,108 @@ public class Famine extends Game implements IEventListener {
         if (juggler != null) {
             juggler.nextFrame();
         }
+
+        if (bossTimer != null && !boss.isAttacking() && !pillarAttackActive) {
+            if (bossTimer.getElapsedTime() > 600 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) > 300) {
+                boss.setAttack("lightningColumnAttack");
+                boss.startAttack();
+            }
+            else if (bossTimer.getElapsedTime() > 2000 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) < 300 ) {
+                boss.setCollidable(false);
+                pillarAttackActive = true;
+                Tween bossDisappearTween = new Tween(boss);
+                bossDisappearTween.animate(TweenableParams.ALPHA, 1.0, 0, 1000);
+                juggler.add(bossDisappearTween);
+            }
+        }
+
+        if (boss != null) {
+            if (boss.isAttacking()) {
+                if (boss.getCurrentAction().equals("lightningColumnAttack")) {
+                    if (boss.getFrameCounter() == 1) {
+                        lightningColumnHitBox.setPosition((int) boi.getPosition().getX() - lightningColumnHitBox.getUnscaledWidth() / 2, 0);
+                        lightning.setPosition((int) boi.getPosition().getX() - lightning.getUnscaledWidth() / 2, 0);
+                    }
+                    if (boss.getFrameCounter() == 15) {
+                        lightning.setVisible(true);
+                        lightning.start();
+//                        boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
+                    }
+                    if (boss.getFrameCounter() > 15 + lightning.getNumFrames("lightningList") * lightning.getSpeed()) {
+                        lightning.stop();
+                        lightning.setCurrentFrame(0);
+                        lightning.setVisible(false);
+                    }
+                }
+            }
+            if (pillarAttackActive && !boss.isAttacking()) {//don't do two attacks at once
+                if (launchPillarAttack) {
+                    pillarLeft.setCollidable(true);
+                    pillarRight.setCollidable(true);
+                    launchPillarAttack = false;
+                    lightning.setPosition(0, 0);
+                    lightning.setVisible(true);
+                    lightning.start();
+                    lightning2.setPosition(1000, 0);
+                    lightning2.setVisible(true);
+                    lightning2.start();
+                    pillarLeft.setPosition(0, 0);
+                    pillarRight.setPosition(1280, 0);
+                    leftPillarTween.animate(TweenableParams.X, 0, 640 - pillarLeft.getUnscaledWidth() / 2, 2400);
+                    rightPillarTween.animate(TweenableParams.X, 1280 - pillarRight.getUnscaledWidth(), 640 - pillarRight.getUnscaledWidth() / 2, 2400);
+                    juggler.add(leftPillarTween);
+                    juggler.add(rightPillarTween);
+                } else {
+                    lightning.setPosition((int) pillarLeft.getPosition().getX() + pillarLeft.getUnscaledWidth() / 2 - lightning.getUnscaledWidth() / 2, 0);
+                    lightning2.setPosition((int) pillarRight.getPosition().getX() + pillarRight.getUnscaledWidth() / 2 - lightning2.getUnscaledWidth() / 2, 0);
+                    if (leftPillarTween.isComplete() && !pillarsReversed) {
+                        leftPillarTween.animate(TweenableParams.X, pillarLeft.getPosition().getX(), 0, 1200);
+                        rightPillarTween.animate(TweenableParams.X, pillarRight.getPosition().getX(), 1280 - pillarRight.getUnscaledWidth(), 1200);
+                        juggler.add(rightPillarTween);
+                        juggler.add(leftPillarTween);
+                        leftPillarTween.setComplete(false);
+                        rightPillarTween.setComplete(false);
+                        pillarsReversed = true;
+                    }
+                    if (leftPillarTween.isComplete() && pillarsReversed) {
+                        pillarAttackActive = false;
+                        pillarAttackFinished = true;
+                    }
+                }
+            }
+            if (pillarAttackFinished) {
+                pillarAttackFinished = false;
+                pillarLeft.setCollidable(false);
+                pillarRight.setCollidable(false);
+                lightning.setVisible(false);
+                lightning.stop();
+                lightning.setCurrentFrame(0);
+                lightning2.setVisible(false);
+                lightning2.stop();
+                lightning2.setCurrentFrame(0);
+                pillarsReversed = false;
+                launchPillarAttack = true;
+                if (boi.getPosition().getX() < 640) {
+                    boss.setPosition(1180, (int)boss.getPosition().getY());
+                } else {
+                    boss.setPosition(100, (int)boss.getPosition().getY());
+                }
+                Tween bossReappearTween = new Tween(boss);
+                bossReappearTween.animate(TweenableParams.ALPHA, 0, 1.0, 1000);
+                juggler.add(bossReappearTween);
+                boss.setCollidable(true);
+            }
+        }
+
         if (boi != null) {
-//            if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
+            if (boi.getPosition().getX() < 0) {
+                boi.setPosition(0, (int) boi.getPosition().getY());
+            }
+            if (boi.getPosition().getX() > 1280) {
+                boi.setPosition(1280, (int) boi.getPosition().getY());
+            }
+        }
+        if (boi != null) {
             if (!boi.isJumping() && !boi.isAttacking() && !pressedKeys.contains(KeyEvent.VK_LEFT) && !pressedKeys.contains(KeyEvent.VK_RIGHT)) {
                 boi.animate("standing");
                 boi.start();
@@ -174,103 +311,23 @@ public class Famine extends Game implements IEventListener {
             }
 
             if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
-//                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-//                boi.setFalling(false);
-//                boi.setJumping(false);
                 boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
-            }
-        }
-        if (boss != null && !boss.isAttacking()) {
-            if (bossTimer.getElapsedTime() > 3000) {
-                boss.setVelocityX(0);
-                if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
-                    // tween to one side of the stage
-
-                    if (boss.getPosition().x > 640) {
-                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 1180, Math.abs(boss.getPosition().x - 1180) / 60 * 30);
-                        juggler.add(bossStingerTween);
-                        boss.setScaleX(-1);
-                    } else {
-                        bossStingerTween.animate(TweenableParams.X, boss.getPosition().x + 1, 100, boss.getPosition().x / 60 * 30);
-                        juggler.add(bossStingerTween);
-                        boss.setScaleX(1);
-                    }
-                    boss.setAttack("stinger");
-                    boss.animate("stinger");
-                    boss.start();
-                    boss.startAttack();
-                } else if (bossTimer.getElapsedTime() * 1000000 % 3 == 1) {
-                    if (boss.getPosition().x < boi.getPosition().x) {
-                        boss.setScaleX(1);
-                    } else {
-                        boss.setScaleX(-1);
-                    }
-                    boss.setAttack("slash");
-                    boss.animate("slash");
-                    boss.start();
-                    boss.startAttack();
-                } else {
-                    if (boss.getPosition().x < boi.getPosition().x) {
-                        boss.setScaleX(1);
-                    } else {
-                        boss.setScaleX(-1);
-                    }
-                    boss.setAttack("fireball");
-                    boss.animate("fireball");
-                    boss.start();
-                    boss.startAttack();
-                }
-            } else {
-                boss.animate("standing");
-                boss.start();
-                if (bossMoveTimer.getElapsedTime() > 600) {
-                    if (bossMoveTimer.getElapsedTime() * 1000000 % 3 == 0) {
-                        if (boss.getPosition().x > boi.getPosition().x) {
-                            boss.setVelocityX(4); // away
-                        } else {
-                            boss.setVelocityX(-4); // towards
-                        }
-                    } else {
-                        if (boss.getPosition().x > boi.getPosition().x) {
-                            boss.setVelocityX(-4);
-                        } else {
-                            boss.setVelocityX(4);
-                        }
-                    }
-                    bossMoveTimer.resetGameClock();
-                }
-            }
-            // bounds for boss
-            if (boss.getPosition().x < 100) {
-                boss.getPosition().x = 100;
-            }
-            if (boss.getPosition().x > 1180) {
-                boss.getPosition().x = 1180;
-            }
-
-        }
-        if (boss != null && boss.isAttacking()) {
-            // frame counter checks are cheaper?
-            if (boss.getFrameCounter() == 60 && boss.getCurrentAction().equals("stinger")) {
-                bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 21.33);
-                juggler.add(bossStingerTween);
-            }
-            if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
-                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
-                juggler.add(fireballTween);
             }
         }
 
         if (boi != null) {
-            if (bossAttack1.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack1));
-            } else if (bossAttack2.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack2));
-            } else if (bossAttack3.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", bossAttack3));
-            } else if (fireball1.collidesWith(boi)) {
-                boi.dispatchEvent(new Event("GOT_HIT", fireball1));
+            if (!boi.isInvincible()) {
+                if (lightningColumnHitBox.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", lightningColumnHitBox));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", lightningColumnHitBox));
+                } else if (pillarLeft.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", pillarLeft));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", pillarLeft));
+                } else if (pillarRight.collidesWith(boi)) {
+                    boi.dispatchEvent(new Event("GOT_HIT", pillarRight));
+                    boi.dispatchEvent(new Event("BOI_INJURED_0", pillarRight));
+                }
             }
         }
 
@@ -284,37 +341,30 @@ public class Famine extends Game implements IEventListener {
             }
         }
 
-        // camera update
-        if (boi != null) {
-            camX = boi.getPosition().x - SCREENSIZE_X / 2;
-            camY = boi.getPosition().y - SCREENSIZE_Y / 2;
-        }
-        if (camX > offsetMaxX)
-            camX = offsetMaxX;
-        else if (camX < offsetMinX)
-            camX = offsetMinX;
-
-        if (camY > offsetMaxY)
-            camY = offsetMaxY;
-        else if (camY < offsetMinY)
-            camY = offsetMinY;
-
         if (boi != null) {
             if (boi.getHealth() <= 0) {
                 dispatchEvent(new Event("gameOver", this));
                 super.exitGame();
             }
         }
+        if (boss != null) {
+            if (bossHealth <= 0) {
+                dispatchEvent(new Event("victory", this));
+                super.exitGame();
+            }
+        }
     }
+
 
     /**
      * This is needed because you need to switch to the JavaFX thread before you can change data in the
      * JavaFX application.
+     *
      * @param event
      */
     @Override
     public void dispatchEvent(Event event) {
-        if (event.getEventType().equals("gameOver")) {
+        if (event.getEventType().equals("gameOver") || event.getEventType().equals("victory")) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -330,34 +380,54 @@ public class Famine extends Game implements IEventListener {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-//        g2d.draw(boi.getHitBox());
-//        g2d.draw(platform1.getHitBox());
-//        g2d.draw(platform2.getHitBox());
-        loadingFrames++;
         // camera translation
-        g.translate((int)-camX, (int)-camY);
+//        g.translate((int) -camX, (int) -camY);
         // draw everything but GUI
         super.draw(g);
         // change back
-        //g.translate((int)camX, (int)camY);
+//        g.translate((int) camX, (int) camY);
+        if (boi != null) {
+            drawHealthBars(g2d);
+        }
+//        if (pillarLeft != null) {
+//            g2d.drawRect((int) pillarLeft.getPosition().getX(), (int) pillarLeft.getPosition().getY(),
+//                    (int) pillarLeft.getHitBox().getBounds().getWidth(), (int) pillarLeft.getHitBox().getBounds().getHeight());
+//        }
+//        if (pillarRight != null) {
+//            g2d.drawRect((int) pillarRight.getPosition().getX(), (int) pillarRight.getPosition().getY(),
+//                    (int) pillarRight.getHitBox().getBounds().getWidth(), (int) pillarRight.getHitBox().getBounds().getHeight());
+//        }
+
 
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
         if (boi != null) g2d.drawString("Player HP: " + boi.getHealth(), 100, 100);
-        if (boi != null) g2d.drawString("Player MP: " + (int)boi.getMana(), 100, 200);
+        if (boi != null) g2d.drawString("Player MP: " + (int) boi.getMana(), 100, 200);
         g2d.setColor(Color.red);
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
-        /*
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-            /*
-            for(DisplayObject child : boi.getChildren()) {
-                g2d.setColor(Color.red);
-                g2d.draw(child.getHitBox());
-            }
+    }
+
+    private void drawHealthBars(Graphics2D g2d) {
+        if (boi.getHealth() > 100) {
+            g2d.setColor(Color.GREEN);
+        } else if (boi.getHealth() < 100 && boi.getHealth() > 50) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
         }
-        */
+        g2d.fillRect(100, 100, boi.getHealth(), 20);
+        g2d.setColor(Color.blue);
+        g2d.fillRect(100, 150, (int) boi.getMana(), 20);
+        if (bossHealth > 500) {
+            g2d.setColor(Color.GREEN);
+        } else if (bossHealth < 500 && bossHealth > 250) {
+            g2d.setColor(Color.YELLOW);
+        } else {
+            g2d.setColor(Color.RED);
+        }
+        int bossHealthPosition = 735 + (maxBossHealth - bossHealth) / 2;
+        g2d.fillRect(bossHealthPosition, 100, bossHealth / 2, 20);
+
     }
 
     public static void main(String[] args) {

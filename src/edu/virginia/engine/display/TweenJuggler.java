@@ -5,7 +5,7 @@ import edu.virginia.engine.events.EventDispatcher;
 
 import java.util.ArrayList;
 
-public class TweenJuggler extends EventDispatcher{
+public class TweenJuggler extends EventDispatcher {
 
 	private static TweenJuggler instance;
 	public static ArrayList<Tween> allTweens = new ArrayList<Tween>();

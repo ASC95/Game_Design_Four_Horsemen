@@ -240,15 +240,13 @@ public class StartMenu extends Application implements IEventListener {
         formatConquestButton(conquestBtn);
         formatButton(conquestBtn);
 
-        Button boss3 = new Button();
-        formatButton(boss3);
-        Button boss4 = new Button();
-        formatButton(boss4);
+        Button famineButton = new Button();
+        formatFamineButton(famineButton);
+        formatButton(famineButton);
 
         gridPane.add(warBtn, 1, 1);
         gridPane.add(conquestBtn, 2, 1);
-//        gridPane.add(boss3, 1, 2);
-//        gridPane.add(boss4, 2, 2);
+        gridPane.add(famineButton, 1, 2);
     }
 
     private static void formatWarButton(Button warBtn) {
@@ -292,6 +290,29 @@ public class StartMenu extends Application implements IEventListener {
                         conquestBoss.addEventListener(getInstance(), "gameOver");
                         conquestBoss.addEventListener(getInstance(), "victory");
                         conquestBoss.start();
+                        theStage.setIconified(true);
+                    }
+                });
+    }
+
+    private static void formatFamineButton(Button famBtn) {
+        Image conquestImage = new Image("file:resources" + File.separator + "conquest.png", 200, 200, false, false);
+        famBtn.setBackground(new Background(new BackgroundImage(conquestImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        famBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        try {
+                            soundManager.stopAllMusic();
+                            soundManager.loadMusic("conquestMusic", "conquest.wav");
+                            soundManager.playMusic("conquestMusic");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Famine famineBoss = new Famine();
+                        famineBoss.addEventListener(getInstance(), "gameOver");
+                        famineBoss.addEventListener(getInstance(), "victory");
+                        famineBoss.start();
                         theStage.setIconified(true);
                     }
                 });

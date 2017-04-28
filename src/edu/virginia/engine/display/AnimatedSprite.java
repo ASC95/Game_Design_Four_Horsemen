@@ -82,6 +82,26 @@ public class AnimatedSprite extends Sprite{
 		spriteFrames.put(key, list);
 		createFlipped(key);
 	}
+
+	public void addImageWithoutSheet(String key, String imageName) {
+		ArrayList list = spriteFrames.get(key);
+		if(list == null) {
+			list = new ArrayList<BufferedImage>();
+		}
+//		list.clear(); //if list already exists, clear list to put in new images
+
+		BufferedImage img = null;
+		try {
+			String file = ("resources" + File.separator + imageName);
+			img = ImageIO.read(new File(file));
+		} catch (IOException e) {
+			System.out.println("[Error in DisplayObject.java:readImage] Could not read image " + imageName);
+			e.printStackTrace();
+		}
+		list.add(list.size(), img);
+		spriteFrames.put(key, list);
+//		createFlipped(key);
+	}
 	
 	public void setAnimatedImage(String key) {
 		if(spriteFrames.containsKey(key)) {
@@ -149,6 +169,14 @@ public class AnimatedSprite extends Sprite{
 	public void setTimer(int timer) {
 		this.timer = timer;
 	}
+
+	public int getNumFrames(String key) {
+		if (spriteFrames.get(key) != null) {
+			return spriteFrames.get(key).size() - 1;
+		}
+		return -1;
+	}
+
 	// flip image: http://stackoverflow.com/questions/23457754/how-to-flip-bufferedimage-in-java
 	public void createFlipped(String key) {
 		ArrayList<BufferedImage> toFlip = spriteFrames.get(key);
@@ -172,6 +200,7 @@ public class AnimatedSprite extends Sprite{
 	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
 		if(this.getDisplayImage() != null) {
+//			System.out.println("playing status: " + playing);
 			if(playing) {
 				timer++;
 				if(timer == speed) {
@@ -180,13 +209,13 @@ public class AnimatedSprite extends Sprite{
 					} else {
 						currentFrame = 0;
 					}
+//					if (getId().equals("lightning")) {
+//						System.out.println("lighting current frame: " + getCurrentFrame());
+//					}
 					this.setDisplayImage(spriteFrames.get(animate).get(currentFrame));
-					
 					timer = 0;
 				}
 			}
 		}
 	}
-	
-	
 }

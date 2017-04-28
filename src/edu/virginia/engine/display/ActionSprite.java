@@ -176,6 +176,7 @@ public class ActionSprite extends PhysicsSprite {
 				}
 				// after interrupt frame passes, start queued action
 				if (frameCounter >= currentAction.getInterrupt() && queuedAction != null) {
+					System.out.println("frame counter after interrupt: " + frameCounter);
 				    /*
 				    currentAction = queuedAction;
 					queuedAction = null;

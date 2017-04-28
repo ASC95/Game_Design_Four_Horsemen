@@ -110,6 +110,10 @@ public class Tween extends EventDispatcher {
 		return this.complete;
 	}
 
+	public void setComplete(boolean b) {
+		this.complete = b;
+	}
+
 	public ArrayList<TweenParam> getAllParams() {
 		return this.allParams;
 	}

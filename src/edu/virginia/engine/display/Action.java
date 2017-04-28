@@ -17,6 +17,11 @@ public class Action {
 
     }
 
+    /**
+     * @param input
+     * @param interrupt
+     * @param end is the size of the array of hitboxes
+     */
     public Action(int input, int interrupt, int end) {
         this.input = input;
         this.interrupt = interrupt;

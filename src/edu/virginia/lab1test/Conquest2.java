@@ -22,9 +22,8 @@ public class Conquest2 extends Game implements IEventListener {
     Sprite platform3 = new Sprite("plat3", "platform2.png");
     Sprite platform4 = new Sprite("plat4", "platform2.png");
     Sprite platform5 = new Sprite("plat5", "platform2.png");
-    Sprite background = new Sprite("background", "conquestBackground.png");
     ArrayList<Sprite> platforms = new ArrayList<>();
-
+    Sprite background = new Sprite("background", "conquestBackground.png");
     private SoundManager soundManager = new SoundManager();
 
 

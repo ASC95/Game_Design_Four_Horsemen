@@ -128,8 +128,10 @@ public class Player extends ActionSprite implements IEventListener {
         // TODO: collision throws events
         if (e.getEventType().equals("GOT_HIT")) {
             // get damage of hitbox and apply
-            AttackHitbox x = (AttackHitbox) e.getSource();
-            this.damage(x.getDamage());
+//            if (e.getSource() instanceof  AttackHitbox) {
+                AttackHitbox x = (AttackHitbox) e.getSource();
+                this.damage(x.getDamage());
+//            }
 
 		    this.fullInterrupt();
 			this.iFrames = 120;
