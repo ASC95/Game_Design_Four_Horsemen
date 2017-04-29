@@ -104,9 +104,6 @@ public class PhysicsSprite extends AnimatedSprite {
     // TODO: this
     public void update(ArrayList<Integer> pressedKeys) {
 //		super.update(pressedKeys);
-        // yes let's make this more convoluted
-        // will actually break simple boss movement?
-        // this means that we have to set bosses as "playercontrolled" in order to give them velocities? why?
         if (jumping || falling) {
             velocityY = velocityY + gravity;
 //				if (velocityY > maxVelocityY) {

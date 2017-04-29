@@ -14,11 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.print.DocFlavor.URL;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 
 public class SoundManager implements IEventListener {
 
@@ -28,7 +24,6 @@ public class SoundManager implements IEventListener {
     //load some fx by default
     public SoundManager() {
         try {
-            loadSoundEffect("boiStrike0", "boiStrike0.wav");
             loadSoundEffect("boiStrike1", "boiStrike1.wav");
             loadSoundEffect("boiStrike2", "boiStrike2.wav");
             loadSoundEffect("boiStrike3", "boiStrike3.wav");
@@ -38,6 +33,15 @@ public class SoundManager implements IEventListener {
             loadSoundEffect("bossFireball", "bossFireball.wav");
             loadSoundEffect("bossSlash", "bossSlash.wav");
             loadSoundEffect("boiDash", "boiDash.wav");
+            loadSoundEffect("lightningStrike", "lightning_short_quiet.wav");
+//            loadSoundEffect("footstep", "footstep.wav");
+            loadMusic("footstep", "footsteps.wav");
+            loadSoundEffect("jump1", "jump1.wav");
+            loadSoundEffect("jump2", "jump2.wav");
+//            loadSoundEffect("boiWhiff", "boiWhiff.wav");
+            loadSoundEffect("boiWhiff1", "boiWhiff1.wav");
+            loadSoundEffect("boiWhiff2", "boiWhiff2.wav");
+            loadSoundEffect("boiWhiff3", "boiWhiff3.wav");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,7 +53,7 @@ public class SoundManager implements IEventListener {
             AttackHitbox x = (AttackHitbox) event.getSource();
             switch (x.getId()) {
                 case "boiAttack1":
-                    playSoundEffect("boiStrike0");
+                    playSoundEffect("boiStrike1");
                     break;
                 case "boiAttack2":
                     playSoundEffect("boiStrike2");
@@ -70,6 +74,22 @@ public class SoundManager implements IEventListener {
             playSoundEffect("boiHealed");
         } else if (event.getEventType().equals("BOI_DASH")) {
             playSoundEffect("boiDash");
+        } else if (event.getEventType().equals("LIGHTNING_STRIKE")) {
+            playSoundEffect("lightningStrike");
+        } else if (event.getEventType().equals("BOI_WALKING")) {
+            playMusic("footstep");
+        } else if (event.getEventType().equals("BOI_STOPPED_WALKING")) {
+            stopMusic("footstep");
+        } else if (event.getEventType().equals("BOI_JUMP_1")) {
+            playSoundEffect("jump1");
+        } else if (event.getEventType().equals("BOI_JUMP_2")) {
+            playSoundEffect("jump2");
+        } else if (event.getEventType().equals("BOI_WHIFF_1")) {
+            playSoundEffect("boiWhiff1");
+        } else if (event.getEventType().equals("BOI_WHIFF_2")) {
+            playSoundEffect("boiWhiff2");
+        } else if (event.getEventType().equals("BOI_WHIFF_3")) {
+            playSoundEffect("boiWhiff3");
         }
     }
 
@@ -122,6 +142,7 @@ public class SoundManager implements IEventListener {
     public void stopMusic(String id) {
         Clip soundFile = musicList.get(id);
         soundFile.stop();
+        soundFile.setFramePosition(0); //I added this
     }
 
     public HashMap getMusicList() {

@@ -2,6 +2,7 @@ package edu.virginia.engine.display;
 
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
+import edu.virginia.engine.util.SoundManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -48,6 +49,8 @@ public class Player extends ActionSprite implements IEventListener {
     private AttackHitbox boiAttack10 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
     private AttackHitbox boiAttack11 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
     private AttackHitbox boiAttack12 = new AttackHitbox("boiAttack3", "boiAttack2.png", 30, 0, 0, 0);
+
+    private SoundManager soundManager = new SoundManager();
 
     public Player(String id, String key, String imageFileName) {
         super(id, key, imageFileName);
@@ -118,6 +121,15 @@ public class Player extends ActionSprite implements IEventListener {
         this.addAttack("jab3", jab3);
 
         this.addEventListener(this, "GOT_HIT");
+        this.addEventListener(soundManager, "BOI_WALKING");
+        this.addEventListener(soundManager, "BOI_STOPPED_WALKING");
+        this.addEventListener(soundManager, "BOI_JUMP_1");
+        this.addEventListener(soundManager, "BOI_JUMP_2");
+        this.addEventListener(soundManager, "BOI_WHIFF_1");
+        this.addEventListener(soundManager, "BOI_WHIFF_2");
+        this.addEventListener(soundManager, "BOI_WHIFF_3");
+
+//        this.addEventListener(soundManager, "BOI_STOPPED_ATTACKING");
     }
 
     public Player(String id, String key, String imageFileName, int rows, int col) {
@@ -128,26 +140,24 @@ public class Player extends ActionSprite implements IEventListener {
         // TODO: collision throws events
         if (e.getEventType().equals("GOT_HIT")) {
             // get damage of hitbox and apply
-//            if (e.getSource() instanceof  AttackHitbox) {
-                AttackHitbox x = (AttackHitbox) e.getSource();
-                this.damage(x.getDamage());
-//            }
+            AttackHitbox x = (AttackHitbox) e.getSource();
+            this.damage(x.getDamage());
 
-		    this.fullInterrupt();
-			this.iFrames = 120;
-			this.velocityX = 0;
-			// if velocityY > 0?
-			this.velocityY = 0;
-			if (this.jumping) {
-				this.jumping = false;
-				this.falling = true;
-			}
-			// replace with actual flinch anim
-			this.animate("standing");
-			this.start();
-			this.setAttack("got_hit");
-			this.startAttack();
-		}
+            this.fullInterrupt();
+            this.iFrames = 120;
+            this.velocityX = 0;
+            // if velocityY > 0?
+            this.velocityY = 0;
+            if (this.jumping) {
+                this.jumping = false;
+                this.falling = true;
+            }
+            // replace with actual flinch anim
+            this.animate("standing");
+            this.start();
+            this.setAttack("got_hit");
+            this.startAttack();
+        }
     }
 
     public int getHealth() {
@@ -253,6 +263,7 @@ public class Player extends ActionSprite implements IEventListener {
                 // TODO: if Math.abs(this.getVelocityX > 10 this.getVelocityX = -15
                 this.setVelocityX(-10);
                 if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
+                    dispatchEvent(new Event("BOI_WALKING", this));
                     this.setSpeed(6);
                     this.animate("walking");
                     this.start();
@@ -261,6 +272,7 @@ public class Player extends ActionSprite implements IEventListener {
             } else if (pressedKeys.contains(KeyEvent.VK_RIGHT)) {
                 this.setVelocityX(10);
                 if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
+                    dispatchEvent(new Event("BOI_WALKING", this));
                     this.setSpeed(6);
                     this.animate("walking");
                     this.start();
@@ -268,6 +280,7 @@ public class Player extends ActionSprite implements IEventListener {
                 this.setScaleX(1);
             } else {
                 this.setVelocityX(0);
+                dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
             }
             if (pressedKeys.contains(KeyEvent.VK_UP)) {
                 if (!upWasPressed) {
@@ -277,6 +290,7 @@ public class Player extends ActionSprite implements IEventListener {
                         upWasPressed = true;
                         this.setPosition((int) getPosition().getX(), (int) getPosition().getY() - 1);
                         this.setVelocityY(-35);
+                        dispatchEvent(new Event("BOI_JUMP_1", this));
                         this.setJumping(true);
                         this.setFalling(false);
                         this.animate("jumping");
@@ -284,6 +298,7 @@ public class Player extends ActionSprite implements IEventListener {
                     } else if (this.canDJ()) {
                         upWasPressed = true;
                         this.setVelocityY(-30);
+                        dispatchEvent(new Event("BOI_JUMP_2", this));
                         this.setJumping(true);
                         this.setFalling(false);
                         this.setDJ(false);
@@ -309,26 +324,29 @@ public class Player extends ActionSprite implements IEventListener {
             }
             if (pressedKeys.contains(KeyEvent.VK_DOWN)) {
                 this.dropDown = true;
-            } else{
+            } else {
                 this.dropDown = false;
             }
         }
 
 
         if (pressedKeys.contains(KeyEvent.VK_A)) {
+            dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
             if (!aWasPressed && !this.isJumping() && !this.isFalling()) {
-//            if (!aWasPressed && !this.isJumping()) {
                 if (this.getCurrentAction() == null) {
                     this.animate("standing");
                     this.setVelocityX(0);
                     this.setAttack("jab1");
                     this.startAttack();
+                    dispatchEvent(new Event("BOI_WHIFF_1", this));
                     aWasPressed = true;
                 } else if (!aWasPressed && this.getCurrentAction().equals("jab1")) {
                     this.setAttack("jab2");
+                    dispatchEvent(new Event("BOI_WHIFF_2", this));
                     aWasPressed = true;
                 } else if (!aWasPressed && this.getCurrentAction().equals("jab2")) {
                     this.setAttack("jab3");
+                    dispatchEvent(new Event("BOI_WHIFF_3", this));
                     aWasPressed = true;
                 }
             }
@@ -336,11 +354,13 @@ public class Player extends ActionSprite implements IEventListener {
             aWasPressed = false;
         }
 
+
         if (pressedKeys.contains(KeyEvent.VK_SHIFT)) {
             if (!this.isJumping() && !this.isFalling()) {
                 if (!shiftWasPressed && (this.getCurrentAction() == null)) {
                     shiftWasPressed = true;
                     // replace with dashing animation
+                    dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
                     this.animate("jumping");
                     this.start();
                     this.setAttack("dash");
@@ -384,8 +404,16 @@ public class Player extends ActionSprite implements IEventListener {
             eWasPressed = false;
         }
 
-        if (this.falling) this.animate("jumping");
-
+        if (this.falling) {
+            this.animate("jumping");
+            dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
+        }
+        if (this.jumping) {
+            dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
+        }
+        if (velocityX == 0) {
+            dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
+        }
         // dash off platforms
         if (this.getCurrentAction() != null && this.getCurrentAction().equals("dash") && this.falling) {
             this.fullInterrupt();

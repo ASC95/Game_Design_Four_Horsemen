@@ -200,7 +200,6 @@ public class AnimatedSprite extends Sprite{
 	public void update(ArrayList<Integer> pressedKeys) {
 		super.update(pressedKeys);
 		if(this.getDisplayImage() != null) {
-//			System.out.println("playing status: " + playing);
 			if(playing) {
 				timer++;
 				if(timer == speed) {
@@ -209,9 +208,6 @@ public class AnimatedSprite extends Sprite{
 					} else {
 						currentFrame = 0;
 					}
-//					if (getId().equals("lightning")) {
-//						System.out.println("lighting current frame: " + getCurrentFrame());
-//					}
 					this.setDisplayImage(spriteFrames.get(animate).get(currentFrame));
 					timer = 0;
 				}

@@ -16,6 +16,11 @@ import java.util.ArrayList;
  */
 public class Famine extends Game implements IEventListener {
 
+    /**
+     * Sounds, shaking (damage indicator), tutorial, menu
+     * later: animations
+     */
+
     Player boi = new Player("boi", "standing", "standing.png");
 
     int bossHealth = 1000;
@@ -130,6 +135,7 @@ public class Famine extends Game implements IEventListener {
         boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
         boi.addEventListener(soundManager, "BOI_HEALED");//soundManager listens for when boi heals
         boi.addEventListener(soundManager, "BOI_DASH");
+//        boi.addEventListener(soundManager, "BOI_FOOTSTEP");
 
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
@@ -138,6 +144,8 @@ public class Famine extends Game implements IEventListener {
         Action lightningColumnAction = new Action(30, 30, 30);
         lightningColumnAction.addHitboxes(lightningColumnHitBox, 15);
         boss.addAttack("lightningColumnAttack", lightningColumnAction);
+
+        boss.addEventListener(soundManager, "LIGHTNING_STRIKE");
 
 //        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
 //        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
@@ -225,7 +233,7 @@ public class Famine extends Game implements IEventListener {
                     if (boss.getFrameCounter() == 15) {
                         lightning.setVisible(true);
                         lightning.start();
-//                        boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
+                        boss.dispatchEvent(new Event("LIGHTNING_STRIKE", boss));
                     }
                     if (boss.getFrameCounter() > 15 + lightning.getNumFrames("lightningList") * lightning.getSpeed()) {
                         lightning.stop();
@@ -389,15 +397,6 @@ public class Famine extends Game implements IEventListener {
         if (boi != null) {
             drawHealthBars(g2d);
         }
-//        if (pillarLeft != null) {
-//            g2d.drawRect((int) pillarLeft.getPosition().getX(), (int) pillarLeft.getPosition().getY(),
-//                    (int) pillarLeft.getHitBox().getBounds().getWidth(), (int) pillarLeft.getHitBox().getBounds().getHeight());
-//        }
-//        if (pillarRight != null) {
-//            g2d.drawRect((int) pillarRight.getPosition().getX(), (int) pillarRight.getPosition().getY(),
-//                    (int) pillarRight.getHitBox().getBounds().getWidth(), (int) pillarRight.getHitBox().getBounds().getHeight());
-//        }
-
 
         g2d.setColor(Color.blue);
         g2d.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
