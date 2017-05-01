@@ -127,8 +127,8 @@ public class Famine extends Game implements IEventListener {
         boi.setMana(200);
 
         boi.setGravity(2);
-        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
-        boi.setHitBox(60, 0, boi.getUnscaledWidth() - 120, boi.getUnscaledHeight());
+//        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
+//        boi.setHitBox(60, 0, boi.getUnscaledWidth() - 120, boi.getUnscaledHeight());
         boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
