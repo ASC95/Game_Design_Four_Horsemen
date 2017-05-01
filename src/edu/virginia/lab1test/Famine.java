@@ -28,6 +28,7 @@ public class Famine extends Game implements IEventListener {
     int loadingFrames = 0;
 
     Sprite background = new Sprite("background", "warBackground.png");
+
     Sprite platform1 = new Sprite("plat1", "platform2.png");
     Sprite platform2 = new Sprite("plat2", "platform2.png");
     ArrayList<Sprite> platforms = new ArrayList<>();
@@ -92,7 +93,7 @@ public class Famine extends Game implements IEventListener {
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
 
-//        this.addChild(background);
+        this.addChild(background);
         this.addChild(lightning);
         this.addChild(lightning2);
         this.addChild(boss);
@@ -321,9 +322,9 @@ public class Famine extends Game implements IEventListener {
                 boi.animate("jumping");
             }
 
-            if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() > 500 + boi.getUnscaledHeight() / 2) {
                 boi.setLanding();
-                boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 500 + boi.getUnscaledHeight() / 2);
             }
         }
 

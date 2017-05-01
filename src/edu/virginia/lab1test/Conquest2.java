@@ -525,27 +525,27 @@ public class Conquest2 extends Game implements IEventListener {
         // draw everything but GUI
         super.draw(g);
 
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-            /*
-            for(DisplayObject child : boi.getChildren()) {
-                g2d.setColor(Color.red);
-                g2d.draw(child.getHitBox());
-            }
-            */
-        }
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//            /*
+//            for(DisplayObject child : boi.getChildren()) {
+//                g2d.setColor(Color.red);
+//                g2d.draw(child.getHitBox());
+//            }
+//            */
+//        }
 
-        if (boss != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boss.getHitBox());
-            for(DisplayObject child : boss.getChildren()) {
-                if (child.isCollidable()) {
-                    g2d.setColor(Color.red);
-                    g2d.draw(child.getHitBox());
-                }
-            }
-        }
+//        if (boss != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boss.getHitBox());
+//            for(DisplayObject child : boss.getChildren()) {
+//                if (child.isCollidable()) {
+//                    g2d.setColor(Color.red);
+//                    g2d.draw(child.getHitBox());
+//                }
+//            }
+//        }
         // change back
         g.translate((int)camX, (int)camY);
         g2d.setColor(Color.WHITE);

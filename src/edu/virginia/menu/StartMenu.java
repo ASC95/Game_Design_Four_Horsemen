@@ -3,10 +3,7 @@ package edu.virginia.menu;
 import edu.virginia.engine.events.Event;
 import edu.virginia.engine.events.IEventListener;
 import edu.virginia.engine.util.SoundManager;
-import edu.virginia.lab1test.Conquest;
-import edu.virginia.lab1test.Conquest2;
-import edu.virginia.lab1test.Famine;
-import edu.virginia.lab1test.MovementTest;
+import edu.virginia.lab1test.*;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
@@ -79,8 +76,8 @@ public class StartMenu extends Application implements IEventListener {
 
     private static Scene getStartMenu() {
         GridPane gridPane = new GridPane();
-//        Image menuImage = new Image("file:resources" + File.separator + "menuImage.png", 1280, 720, false, false);
-//        gridPane.setBackground(new Background(new BackgroundImage(menuImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        Image menuImage = new Image("file:resources" + File.separator + "menuImage.png", 1280, 720, false, false);
+        gridPane.setBackground(new Background(new BackgroundImage(menuImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         formatGridPane(gridPane);
         addRows(gridPane);
         addColumns(gridPane);
@@ -150,7 +147,7 @@ public class StartMenu extends Application implements IEventListener {
 //        gridPane.setVgap(VERTICAL_SPACE);
 //        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 //        gridPane.setBorder(border);
-        gridPane.setGridLinesVisible(true);
+//        gridPane.setGridLinesVisible(true);
     }
 
     @Override
@@ -181,21 +178,27 @@ public class StartMenu extends Application implements IEventListener {
         st.setAutoReverse(true);
         st.play();
 
+        Text tutorialText = new Text("Tutorial");
+        tutorialText.setFont(new Font(30));
+        tutorialText.setFill(Color.WHITE);
+        GridPane.setValignment(tutorialText, VPos.BOTTOM);
+        gridPane.add(tutorialText, 1, 1);
+
         Text warText = new Text("War");
         warText.setFont(new Font(30));
-        warText.setFill(Color.BLACK);
+        warText.setFill(Color.WHITE);
         GridPane.setValignment(warText, VPos.BOTTOM);
         gridPane.add(warText, 2, 1);
 
         Text conquestText = new Text("Conquest");
         conquestText.setFont(new Font(30));
-        conquestText.setFill(Color.BLACK);
+        conquestText.setFill(Color.WHITE);
         GridPane.setValignment(conquestText, VPos.BOTTOM);
         gridPane.add(conquestText, 1, 2);
 
         Text famineText = new Text("Famine");
         famineText.setFont(new Font(30));
-        famineText.setFill(Color.BLACK);
+        famineText.setFill(Color.WHITE);
         GridPane.setValignment(famineText, VPos.BOTTOM);
         gridPane.add(famineText, 2, 2);
     }
@@ -215,18 +218,22 @@ public class StartMenu extends Application implements IEventListener {
 
     private static void addColumns(GridPane gridPane) {
         ColumnConstraints col0 = new ColumnConstraints();
-        formatColumn(col0);
+        col0.setPercentWidth(15);
+        col0.setHalignment(HPos.CENTER);
+//        formatColumn(col0);
         ColumnConstraints col1 = new ColumnConstraints();
         formatColumn(col1);
         ColumnConstraints col2 = new ColumnConstraints();
         formatColumn(col2);
         ColumnConstraints col3 = new ColumnConstraints();
-        formatColumn(col3);
+//        formatColumn(col3);
+        col3.setPercentWidth(15);
+        col3.setHalignment(HPos.CENTER);
         gridPane.getColumnConstraints().addAll(col0, col1, col2, col3);
     }
 
     private static void formatColumn(ColumnConstraints col) {
-        col.setPercentWidth(25);
+        col.setPercentWidth(35);
         col.setHalignment(HPos.CENTER);
     }
 
@@ -264,10 +271,10 @@ public class StartMenu extends Application implements IEventListener {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        MovementTest warBoss = new MovementTest();
-                        warBoss.addEventListener(getInstance(), "gameOver");
-                        warBoss.addEventListener(getInstance(), "victory");
-                        warBoss.start();
+                        Tutorial tutorial = new Tutorial();
+                        tutorial.addEventListener(getInstance(), "gameOver");
+                        tutorial.addEventListener(getInstance(), "victory");
+                        tutorial.start();
                         theStage.setIconified(true);
                     }
                 });
@@ -320,8 +327,8 @@ public class StartMenu extends Application implements IEventListener {
     }
 
     private static void formatFamineButton(Button famBtn) {
-        Image conquestImage = new Image("file:resources" + File.separator + "conquest.png", 200, 200, false, false);
-        famBtn.setBackground(new Background(new BackgroundImage(conquestImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+//        Image conquestImage = new Image("file:resources" + File.separator + "conquest.png", 200, 200, false, false);
+//        famBtn.setBackground(new Background(new BackgroundImage(conquestImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         famBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
                     @Override
