@@ -108,6 +108,8 @@ public class ActionSprite extends PhysicsSprite {
 		this.interrupted = false;
 		this.canMove = false;
 		this.frameCounter = 0;
+		this.dispatchEvent(new Event("ATTACK_START_" + this.getCurrentAction(), this));
+		this.start();
 	}
 
 	public void setAttackSpeed(int speed) {

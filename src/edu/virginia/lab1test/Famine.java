@@ -21,7 +21,7 @@ public class Famine extends Game implements IEventListener {
      * later: animations
      */
 
-    Player boi = new Player("boi", "standing", "standing.png");
+    Player boi = new Player("boi", "standing", "standing mc.png");
 
     int bossHealth = 1000;
     int maxBossHealth = 1000;

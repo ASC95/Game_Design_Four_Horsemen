@@ -15,8 +15,8 @@ import java.util.ArrayList;
  * Created by Resquall on 4/21/2017.
  */
 public class Conquest2 extends Game implements IEventListener {
-    Player boi = new Player("boi", "standing", "standing.png");
-    ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
+    Player boi = new Player("boi", "standing", "standing mc.png");
+    ActionSprite boss = new ActionSprite("boss", "standing", "conquest.png");
     Sprite platform1 = new Sprite("plat1", "platform2.png");
     Sprite platform2 = new Sprite("plat2", "platform2.png");
     Sprite platform3 = new Sprite("plat3", "platform2.png");
@@ -38,9 +38,11 @@ public class Conquest2 extends Game implements IEventListener {
     GameClock bossTimer = new GameClock();
     GameClock bossMoveTimer = new GameClock();
     int bossFrameCounter;
-    int arrowCounter;
     int bulletHell1Rate = 2;
-    int bulletHell1Angle = 15;
+    int bulletHell1Angle = 30;
+    int bulletHell2Rate = 3;
+    int bulletHell2Angle = 2;
+    int bulletHell2Streams = 4;
     int bossHealth = 1000;
     int maxBossHealth = 1000;
 
@@ -92,8 +94,10 @@ public class Conquest2 extends Game implements IEventListener {
         */
 
         boi.setGravity(2);
+        /*
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
         boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+        */
         boi.setPosition(1280 / 2, 1260 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
@@ -107,11 +111,14 @@ public class Conquest2 extends Game implements IEventListener {
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
         boss.setPosition(100, 1260 + boi.getUnscaledHeight() - boss.getUnscaledHeight() / 2);
         boss.addImage("bullethell1", "bossPlaceholder2.png", 1, 1);
+        boss.addImage("bullethell2", "bossPlaceholder2.png", 1, 1);
         boss.addImage("straight", "bossPlaceholder3.png", 1, 1);
-        boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
+        boss.addImage("straightV", "bossPlaceHolder4.png", 1, 1);
 
-        boss.addAttack("bullethell1", new Action(120));
-        boss.addAttack("straight", new Action(120));
+        boss.addAttack("bullethell1", new Action(150));
+        boss.addAttack("bullethell2", new Action(270));
+        boss.addAttack("straight", new Action(150));
+        boss.addAttack("straightV", new Action(150));
         boss.addEventListener(this, "ATTACK_END" + boss.getId());
         boss.addEventListener(this, "BOSS_HIT");
         boss.addEventListener(soundManager, "BOSS_HIT");//soundManager listens for when boss gets hit
@@ -158,17 +165,17 @@ public class Conquest2 extends Game implements IEventListener {
             // TODO: falling flag lol
             boi.setFalling(true);
 
-            if (boi.getPosition().getY() >= 1260 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() >= 1260 + /*boi.getUnscaledHeight()*/ 137 / 2) {
                 // set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-                boi.setPosition(boi.getPosition().x, 1260 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 1260 + 137 / 2);
             }
             if (!boi.canDropDown()) {
                 for (Sprite plat : platforms) {
-                    if (plat.getPosition().y >= boi.getLastFramePosition().y + boi.getUnscaledHeight() / 2) {
+                    if (plat.getPosition().y >= boi.getLastFramePosition().y + 137 / 2) {
                         if (plat.collidesWith(boi)) {
                             boi.setLanding();
-                            boi.setPosition(boi.getPosition().x, plat.getPosition().y - boi.getUnscaledHeight() / 2);
+                            boi.setPosition(boi.getPosition().x, plat.getPosition().y - 137 / 2);
                         }
                     }
                 }
@@ -274,25 +281,29 @@ public class Conquest2 extends Game implements IEventListener {
                 // different modulos should fix this?
                 bossFrameCounter = 0;
                 // System.out.println((int)(time * 100000) % 3);
-                if ((int)(time * 100000) % 3 == 0) {
-                    boss.setAttack("bullethell1");
-                    boss.animate("bullethell1");
-                    boss.start();
-                    boss.startAttack();
-
-                } else if ((int)(time * 100000) % 3 == 1) {
+                if ((int)(time * 100000) % 4 == 0) {
                     boss.setAttack("straight");
                     boss.animate("straight");
                     boss.start();
                     boss.startAttack();
+
+                } else if ((int)(time * 100000) % 4 == 1) {
+                    boss.setAttack("straightV");
+                    boss.animate("straightV");
+                    boss.start();
+                    boss.startAttack();
                     bossTimer.resetGameClock();
 
-                } else if ((int)(time * 100000) % 3 == 2) {
+                } else if ((int)(time * 100000) % 4 == 2) {
                     boss.setAttack("bullethell1");
                     boss.animate("bullethell1");
                     boss.start();
                     boss.startAttack();
-
+                } else if ((int)(time * 100000) % 4 == 3) {
+                    boss.setAttack("bullethell2");
+                    boss.animate("bullethell2");
+                    boss.start();
+                    boss.startAttack();
                 } else {
                     System.out.println("modulo didn't work! check attack choosing");
                 }
@@ -305,12 +316,14 @@ public class Conquest2 extends Game implements IEventListener {
 
         // bullet hell
         if (boss != null && boss.isAttacking()) {
-            if (boss.getCurrentAction().equals("bullethell1")) {
+            if (boss.getCurrentAction().equals("bullethell1") && boss.getFrameCounter() < 120) {
                 if (bossFrameCounter % bulletHell1Rate == 0) {
 //                AttackHitbox arrow = bulletHell1.get(bossFrameCounter / bulletHell1Rate);
                     AttackHitbox arrow = new AttackHitbox("bullethell1", "arrow.png", 30, 0, 0, 0);
                     boss.addChild(arrow);
                     arrow.setPivotPoint(arrow.getUnscaledWidth() / 2, arrow.getUnscaledHeight() / 2);
+                    //arrow.setHitBox(71, 17, 23, 13);
+                    arrow.setHitBox(arrow.getUnscaledWidth() / 2 - 23, arrow.getUnscaledHeight() / 2 - 23, 23, 23);
                     arrow.setRotation(90 - bossFrameCounter / bulletHell1Rate * bulletHell1Angle);
                     TweenAttack arrowTween = new TweenAttack(arrow);
                     arrowTween.animate(TweenableParams.X, 0, 1800 * Math.cos(Math.toRadians(arrow.getRotation())), 1000 / 60 * 270);
@@ -322,7 +335,7 @@ public class Conquest2 extends Game implements IEventListener {
                 if (bossFrameCounter > bulletHell1Rate * 360 / bulletHell1Angle - 1) bossFrameCounter = 0;
 
             } else if (boss.getCurrentAction().equals("straight")) {
-                if (bossTimer != null && bossTimer.getElapsedTime() > 400) {
+                if (bossTimer != null && bossTimer.getElapsedTime() > 280) {
                     boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
                     double diffx = boi.getPosition().x - boss.getPosition().x;
                     double diffy = boi.getPosition().y - boss.getPosition().y;
@@ -338,6 +351,8 @@ public class Conquest2 extends Game implements IEventListener {
                     // TweenAttack straightTween = new TweenAttack(straightAttack.get(arrowCounter));
                     AttackHitbox straight = new AttackHitbox("straight", "arrow.png", 30, 0, 0, 0);
                     straight.setPivotPoint(straight.getUnscaledWidth() / 2, straight.getUnscaledHeight() / 2);
+                    // straight.setHitBox(71, 17, 23, 13);
+                    straight.setHitBox(straight.getUnscaledWidth() / 2 - 23, straight.getUnscaledHeight() / 2 - 23, 23, 23);
                     boss.addChild(straight);
                     if (signx > 0) {
                         straight.setRotation((int) Math.toDegrees(rotate));
@@ -345,9 +360,104 @@ public class Conquest2 extends Game implements IEventListener {
                         straight.setRotation(180 + (int) Math.toDegrees(rotate));
                     }
                     TweenAttack straightTween = new TweenAttack(straight);
-                    straightTween.animate(TweenableParams.X, 0, signx * Math.cos(rotate) * 1800, 1000 / 60 * 120);
-                    straightTween.animate(TweenableParams.Y, 0, signx * Math.sin(rotate) * 1800, 1000 / 60 * 120);
+                    straightTween.animate(TweenableParams.X, 0, signx * Math.cos(rotate) * 2200, 1000 / 60 * 120);
+                    straightTween.animate(TweenableParams.Y, 0, signx * Math.sin(rotate) * 2200, 1000 / 60 * 120);
                     TweenJuggler.add(straightTween);
+                    bossTimer.resetGameClock();
+            /*
+            arrowCounter++;
+            if (arrowCounter == straightAttack.size()) arrowCounter = 0;
+            */
+                }
+            } else if (boss.getCurrentAction().equals("bullethell2")) {
+                if (boss.getFrameCounter() < 60) {
+                    if (boss.getFrameCounter() % bulletHell2Rate == 0) {
+//                AttackHitbox arrow = bulletHell1.get(bossFrameCounter / bulletHell1Rate);
+                        for (int i = 0; i < bulletHell2Streams; i++) {
+                            AttackHitbox arrow = new AttackHitbox("bullethell2", "arrow.png", 30, 0, 0, 0);
+                            boss.addChild(arrow);
+                            arrow.setPivotPoint(arrow.getUnscaledWidth() / 2, arrow.getUnscaledHeight() / 2);
+                            // arrow.setHitBox(71, 17, 23, 13);
+                            // TODO: hitbox based on rotation!
+                            arrow.setHitBox(arrow.getUnscaledWidth() / 2 - 23, arrow.getUnscaledHeight() / 2 - 23, 23, 23);
+                            arrow.setRotation(90 + i * (360 / bulletHell2Streams));
+                            TweenAttack arrowTween = new TweenAttack(arrow);
+                            arrowTween.animate(TweenableParams.X, 0, 2000 * Math.cos(Math.toRadians(arrow.getRotation())), 1000 / 60 * 270);
+                            arrowTween.animate(TweenableParams.Y, 0, 2000 * Math.sin(Math.toRadians(arrow.getRotation())), 1000 / 60 * 270);
+                            TweenJuggler.add(arrowTween);
+                        }
+                    }
+                } else if (boss.getFrameCounter() < 240) {
+                    if (bossFrameCounter % bulletHell2Rate == 0) {
+//                AttackHitbox arrow = bulletHell1.get(bossFrameCounter / bulletHell1Rate);
+                        for (int i = 0; i < bulletHell2Streams; i++) {
+                            AttackHitbox arrow = new AttackHitbox("bullethell2", "arrow.png", 30, 0, 0, 0);
+                            boss.addChild(arrow);
+                            arrow.setPivotPoint(arrow.getUnscaledWidth() / 2, arrow.getUnscaledHeight() / 2);
+                            // arrow.setHitBox(71, 17, 23, 13);
+                            // could set hitbox based on rotation..
+                            arrow.setHitBox(arrow.getUnscaledWidth() / 2 - 23, arrow.getUnscaledHeight() / 2 - 23, 23, 23);
+                            arrow.setRotation(90 - bossFrameCounter / bulletHell2Rate * bulletHell2Angle + i * (360 / bulletHell2Streams));
+                            TweenAttack arrowTween = new TweenAttack(arrow);
+                            arrowTween.animate(TweenableParams.X, 0, 2000 * Math.cos(Math.toRadians(arrow.getRotation())), 1000 / 60 * 270);
+                            arrowTween.animate(TweenableParams.Y, 0, 2000 * Math.sin(Math.toRadians(arrow.getRotation())), 1000 / 60 * 270);
+                            TweenJuggler.add(arrowTween);
+                        }
+                    }
+                    bossFrameCounter++;
+                    if (bossFrameCounter > bulletHell2Rate * 360 / bulletHell2Angle - 1) bossFrameCounter = 0;
+                }
+
+
+            } else if (boss.getCurrentAction().equals("straightV")) {
+                if (bossTimer != null && bossTimer.getElapsedTime() > 250) {
+                    boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
+                    double diffx = boi.getPosition().x - boss.getPosition().x;
+                    double diffy = boi.getPosition().y - boss.getPosition().y;
+                    int signx = 1;
+                    if (diffx < 0) signx = -1;
+            /*
+            int signy = 1;
+            if (diffy < 0) signy = -1;
+            */
+                    // radians
+                    double rotate = (Math.atan(diffy / diffx));
+                    // -15 degrees
+                    double rotate1 = rotate - Math.PI / 12;
+                    // +15 degrees
+                    double rotate2 = rotate + Math.PI / 12;
+
+                    AttackHitbox straight = new AttackHitbox("straightV", "arrow.png", 30, 0, 0, 0);
+                    straight.setPivotPoint(straight.getUnscaledWidth() / 2, straight.getUnscaledHeight() / 2);
+                    // straight.setHitBox(71, 17, 23, 13);
+                    straight.setHitBox(straight.getUnscaledWidth() / 2 - 23, straight.getUnscaledHeight() / 2 - 23, 23, 23);
+                    boss.addChild(straight);
+                    if (signx > 0) {
+                        straight.setRotation((int) Math.toDegrees(rotate1));
+                    } else {
+                        straight.setRotation(180 + (int) Math.toDegrees(rotate1));
+                    }
+                    TweenAttack straightTween = new TweenAttack(straight);
+                    straightTween.animate(TweenableParams.X, 0, signx * Math.cos(rotate1) * 2000, 1000 / 60 * 120);
+                    straightTween.animate(TweenableParams.Y, 0, signx * Math.sin(rotate1) * 2000, 1000 / 60 * 120);
+                    TweenJuggler.add(straightTween);
+
+
+                    AttackHitbox straight2 = new AttackHitbox("straightV2", "arrow.png", 30, 0, 0, 0);
+                    straight2.setPivotPoint(straight.getUnscaledWidth() / 2, straight.getUnscaledHeight() / 2);
+                    // straight2.setHitBox(71, 17, 23, 13);
+                    straight2.setHitBox(straight.getUnscaledWidth() / 2 - 23, straight.getUnscaledHeight() / 2 - 23, 23, 23);
+                    boss.addChild(straight2);
+                    if (signx > 0) {
+                        straight2.setRotation((int) Math.toDegrees(rotate2));
+                    } else {
+                        straight2.setRotation(180 + (int) Math.toDegrees(rotate2));
+                    }
+                    TweenAttack straightTween2 = new TweenAttack(straight2);
+                    straightTween2.animate(TweenableParams.X, 0, signx * Math.cos(rotate2) * 2000, 1000 / 60 * 120);
+                    straightTween2.animate(TweenableParams.Y, 0, signx * Math.sin(rotate2) * 2000, 1000 / 60 * 120);
+                    TweenJuggler.add(straightTween2);
+
                     bossTimer.resetGameClock();
             /*
             arrowCounter++;
@@ -361,6 +471,7 @@ public class Conquest2 extends Game implements IEventListener {
             for (DisplayObject attack : boss.getChildren()) {
                 if (attack.collidesWith(boi)) {
                     boi.dispatchEvent(new Event("GOT_HIT", attack));
+                    break;
                 }
             }
 
@@ -369,6 +480,7 @@ public class Conquest2 extends Game implements IEventListener {
         if (boss != null && !bossWasHit) {
             for (DisplayObject hitbox : boi.getChildren()) {
                 if (hitbox.collidesWith(boss)) {
+                    // TODO: why are there two of these
                     boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
                     boss.dispatchEvent(new Event("BOSS_HIT", hitbox));
                     // this prevents hitting more than once with single attack
@@ -413,27 +525,27 @@ public class Conquest2 extends Game implements IEventListener {
         // draw everything but GUI
         super.draw(g);
 
-//        if (boi != null) {
-//            g2d.setColor(Color.red);
-//            g2d.draw(boi.getHitBox());
-//            /*
-//            for(DisplayObject child : boi.getChildren()) {
-//                g2d.setColor(Color.red);
-//                g2d.draw(child.getHitBox());
-//            }
-//            */
-//        }
+        if (boi != null) {
+            g2d.setColor(Color.red);
+            g2d.draw(boi.getHitBox());
+            /*
+            for(DisplayObject child : boi.getChildren()) {
+                g2d.setColor(Color.red);
+                g2d.draw(child.getHitBox());
+            }
+            */
+        }
 
-//        if (boss != null) {
-//            g2d.setColor(Color.red);
-//            g2d.draw(boss.getHitBox());
-//            for(DisplayObject child : boss.getChildren()) {
-//                if (child.isCollidable()) {
-//                    g2d.setColor(Color.red);
-//                    g2d.draw(child.getHitBox());
-//                }
-//            }
-//        }
+        if (boss != null) {
+            g2d.setColor(Color.red);
+            g2d.draw(boss.getHitBox());
+            for(DisplayObject child : boss.getChildren()) {
+                if (child.isCollidable()) {
+                    g2d.setColor(Color.red);
+                    g2d.draw(child.getHitBox());
+                }
+            }
+        }
         // change back
         g.translate((int)camX, (int)camY);
         g2d.setColor(Color.WHITE);

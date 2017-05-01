@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import edu.virginia.engine.events.*;
 
 import javax.imageio.ImageIO;
 
@@ -141,6 +142,7 @@ public class AnimatedSprite extends Sprite{
 		if(!playing) {
 			playing = true;
 		}
+		timer = 0;
 	};
 
 	public String getAnimate() {
@@ -207,6 +209,9 @@ public class AnimatedSprite extends Sprite{
 						currentFrame++;
 					} else {
 						currentFrame = 0;
+						// throw animation complete event to prevent repeating animation
+						// lazy solution
+						this.dispatchEvent(new Event("ANIM_COMPLETE", this));
 					}
 					this.setDisplayImage(spriteFrames.get(animate).get(currentFrame));
 					timer = 0;
