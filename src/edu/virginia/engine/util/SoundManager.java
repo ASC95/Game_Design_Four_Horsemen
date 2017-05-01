@@ -30,11 +30,13 @@ public class SoundManager implements IEventListener {
             loadSoundEffect("boiInjured0", "boiInjured0.wav");
             loadSoundEffect("boiHealed", "boiHealed.wav");
             loadSoundEffect("bossDash", "bossDash.wav");
-            loadSoundEffect("bossFireball", "bossFireball.wav");
+            loadSoundEffect("bossFireball", "bossFireball2.wav");
             loadSoundEffect("bossSlash", "bossSlash.wav");
+            loadSoundEffect("bossArrow", "arrow.wav");
             loadSoundEffect("boiDash", "boiDash.wav");
             loadSoundEffect("lightningStrike", "lightning_short_quiet.wav");
-            loadMusic("footstep", "footsteps.wav");
+//            loadSoundEffect("footstep", "footstep.wav");
+            loadMusic("footstep", "footsteps2.wav");
             loadSoundEffect("jump1", "jump1.wav");
             loadSoundEffect("jump2", "jump2.wav");
             loadSoundEffect("boiWhiff1", "boiWhiff1.wav");
@@ -69,6 +71,8 @@ public class SoundManager implements IEventListener {
             playSoundEffect("bossFireball");
         } else if (event.getEventType().equals("BOSS_SLASH")) {
             playSoundEffect("bossSlash");
+        } else if (event.getEventType().equals("BOSS_ARROW")) {
+            playSoundEffect("bossArrow");
         } else if (event.getEventType().equals("BOI_HEALED")) {
             playSoundEffect("boiHealed");
         } else if (event.getEventType().equals("BOI_DASH")) {

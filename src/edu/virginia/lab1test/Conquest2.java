@@ -71,7 +71,7 @@ public class Conquest2 extends Game implements IEventListener {
     double offsetMinY;
 
     public Conquest2() {
-        super("Conquest2", 1280, 720);
+        super("Conquest", 1280, 720);
 
         this.addChild(background);
         this.addChild(boss);
@@ -125,6 +125,7 @@ public class Conquest2 extends Game implements IEventListener {
         boss.addEventListener(soundManager, "BOSS_DASH");//soundManager listens for when boss dashes
         boss.addEventListener(soundManager, "BOSS_FIREBALL");//soundManager listens for fireball
         boss.addEventListener(soundManager, "BOSS_SLASH");//soundManager listens for boss's slash
+        boss.addEventListener(soundManager, "BOSS_ARROW");
 
         // camera initialization shit
         WORLDSIZE_X = 1280;
@@ -170,6 +171,10 @@ public class Conquest2 extends Game implements IEventListener {
                 boi.setLanding();
                 boi.setPosition(boi.getPosition().x, 1260 + 137 / 2);
             }
+            // bounds checking
+            if (boi.getPosition().x < 62) boi.setPosition(62, boi.getPosition().y);
+            if (boi.getPosition().x > 1218) boi.setPosition(1218, boi.getPosition().y);
+
             if (!boi.canDropDown()) {
                 for (Sprite plat : platforms) {
                     if (plat.getPosition().y >= boi.getLastFramePosition().y + 137 / 2) {
@@ -318,6 +323,7 @@ public class Conquest2 extends Game implements IEventListener {
         if (boss != null && boss.isAttacking()) {
             if (boss.getCurrentAction().equals("bullethell1") && boss.getFrameCounter() < 120) {
                 if (bossFrameCounter % bulletHell1Rate == 0) {
+                    boss.dispatchEvent(new Event("BOSS_ARROW", boss));
 //                AttackHitbox arrow = bulletHell1.get(bossFrameCounter / bulletHell1Rate);
                     AttackHitbox arrow = new AttackHitbox("bullethell1", "arrow.png", 30, 0, 0, 0);
                     boss.addChild(arrow);
@@ -373,6 +379,7 @@ public class Conquest2 extends Game implements IEventListener {
                 if (boss.getFrameCounter() < 60) {
                     if (boss.getFrameCounter() % bulletHell2Rate == 0) {
 //                AttackHitbox arrow = bulletHell1.get(bossFrameCounter / bulletHell1Rate);
+                        boss.dispatchEvent(new Event("BOSS_ARROW", boss));
                         for (int i = 0; i < bulletHell2Streams; i++) {
                             AttackHitbox arrow = new AttackHitbox("bullethell2", "arrow.png", 30, 0, 0, 0);
                             boss.addChild(arrow);

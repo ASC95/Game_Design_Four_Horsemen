@@ -122,10 +122,12 @@ public class Tutorial extends Game implements IEventListener {
         boi.setMana(200);
 
         boi.setGravity(2);
+        /*
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 //        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
         boi.setHitBox(90, 0, boi.getUnscaledWidth() - 180, boi.getUnscaledHeight());
-        boi.setPosition(400, 540 + boi.getUnscaledHeight() / 2 + 1);
+        */
+        boi.setPosition(400, 540 + 137 / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
@@ -243,11 +245,16 @@ public class Tutorial extends Game implements IEventListener {
             if (boi.isJumping()) {
                 boi.animate("jumping");
             }
-            if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() > 540 + 137 / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-                boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 540 + 137 / 2);
             }
+            // bounds checking
+            if (boi.getPosition().x < 62) boi.setPosition(62, boi.getPosition().y);
+            if (boi.getPosition().x > 1218) boi.setPosition(1218, boi.getPosition().y);
+
+
 //            if (!boi.canDropDown()) {
 //                for (Sprite plat : platforms) {
 //                    if (plat.getPosition().y >= boi.getLastFramePosition().y + boi.getUnscaledHeight() / 2) {
@@ -387,11 +394,13 @@ public class Tutorial extends Game implements IEventListener {
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
 
         g2d.setColor(Color.black);
-        if (instructions.get(instructionCounter + "a") != null) {
-            drawInstruction(g2d, instructions.get(instructionCounter + "a"), 350, 30);
-        }
-        if (instructions.get(instructionCounter + "b") != null) {
-            drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
+        if (instructions != null) {
+            if (instructions.get(instructionCounter + "a") != null) {
+                drawInstruction(g2d, instructions.get(instructionCounter + "a"), 350, 30);
+            }
+            if (instructions.get(instructionCounter + "b") != null) {
+                drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
+            }
         }
         if (boi != null) {
             g2d.setColor(Color.red);
