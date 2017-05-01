@@ -125,7 +125,7 @@ public class Tutorial extends Game implements IEventListener {
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 //        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
         boi.setHitBox(90, 0, boi.getUnscaledWidth() - 180, boi.getUnscaledHeight());
-        boi.setPosition(400, 540 + boi.getUnscaledHeight() / 2 + 1);
+        boi.setPosition(400, 520 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
         boi.addEventListener(this, "GOT_HIT");
@@ -243,10 +243,10 @@ public class Tutorial extends Game implements IEventListener {
             if (boi.isJumping()) {
                 boi.animate("jumping");
             }
-            if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() > 520 + boi.getUnscaledHeight() / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-                boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 520 + boi.getUnscaledHeight() / 2);
             }
 //            if (!boi.canDropDown()) {
 //                for (Sprite plat : platforms) {
@@ -393,10 +393,10 @@ public class Tutorial extends Game implements IEventListener {
         if (instructions.get(instructionCounter + "b") != null) {
             drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
         }
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-        }
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//        }
     }
 
     private void drawInstruction(Graphics2D g2d, String inst, int x, int y) {

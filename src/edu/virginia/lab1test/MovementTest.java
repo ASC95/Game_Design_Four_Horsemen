@@ -437,10 +437,10 @@ public class MovementTest extends Game implements IEventListener {
             }
         }
         */
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-        }
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//        }
     }
 
     private void drawHealthBars(Graphics2D g2d) {
