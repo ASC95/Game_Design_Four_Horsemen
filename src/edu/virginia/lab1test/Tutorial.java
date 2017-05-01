@@ -111,7 +111,7 @@ public class Tutorial extends Game implements IEventListener {
         this.addChild(background);
         this.addChild(boss);
         this.addChild(boi);
-        this.addChild(platform1);
+//        this.addChild(platform1);
 
         platforms.add(platform1);
         platform1.setPosition(640, 200);
@@ -123,7 +123,8 @@ public class Tutorial extends Game implements IEventListener {
 
         boi.setGravity(2);
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
-        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+//        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+        boi.setHitBox(90, 0, boi.getUnscaledWidth() - 180, boi.getUnscaledHeight());
         boi.setPosition(400, 540 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
@@ -210,7 +211,7 @@ public class Tutorial extends Game implements IEventListener {
             juggler.nextFrame();
         }
         if (pressedKeys.contains(KeyEvent.VK_UP) && instructionCounter == 2) {
-            instructionCounter+=2;
+            instructionCounter += 2;
         }
         if (pressedKeys.contains(KeyEvent.VK_SHIFT)) {
             if (instructionCounter == 4) {
@@ -361,7 +362,7 @@ public class Tutorial extends Game implements IEventListener {
                 }
             });
         } else {
-        super.dispatchEvent(event);
+            super.dispatchEvent(event);
         }
     }
 
@@ -391,6 +392,10 @@ public class Tutorial extends Game implements IEventListener {
         }
         if (instructions.get(instructionCounter + "b") != null) {
             drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
+        }
+        if (boi != null) {
+            g2d.setColor(Color.red);
+            g2d.draw(boi.getHitBox());
         }
     }
 

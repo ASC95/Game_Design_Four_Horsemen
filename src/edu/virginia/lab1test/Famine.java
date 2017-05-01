@@ -128,7 +128,7 @@ public class Famine extends Game implements IEventListener {
 
         boi.setGravity(2);
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
-        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+        boi.setHitBox(60, 0, boi.getUnscaledWidth() - 120, boi.getUnscaledHeight());
         boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
@@ -212,11 +212,10 @@ public class Famine extends Game implements IEventListener {
         }
 
         if (bossTimer != null && !boss.isAttacking() && !pillarAttackActive) {
-            if (bossTimer.getElapsedTime() > 600 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) > 300) {
+            if (bossTimer.getElapsedTime() > 1200 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) > 300) {
                 boss.setAttack("lightningColumnAttack");
                 boss.startAttack();
-            }
-            else if (bossTimer.getElapsedTime() > 2000 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) < 300 ) {
+            } else if (bossTimer.getElapsedTime() > 2000 && Math.abs(boi.getPosition().getX() - boss.getPosition().getX()) < 300) {
                 boss.setCollidable(false);
                 pillarAttackActive = true;
                 Tween bossDisappearTween = new Tween(boss);
@@ -294,9 +293,9 @@ public class Famine extends Game implements IEventListener {
                 launchPillarAttack = true;
                 boss.dispatchEvent(new Event("STOP_LIGHTNING_ARC", boss));
                 if (boi.getPosition().getX() < 640) {
-                    boss.setPosition(1180, (int)boss.getPosition().getY());
+                    boss.setPosition(1180, (int) boss.getPosition().getY());
                 } else {
-                    boss.setPosition(100, (int)boss.getPosition().getY());
+                    boss.setPosition(100, (int) boss.getPosition().getY());
                 }
                 Tween bossReappearTween = new Tween(boss);
                 bossReappearTween.animate(TweenableParams.ALPHA, 0, 1.0, 1000);
@@ -408,6 +407,11 @@ public class Famine extends Game implements IEventListener {
         if (boi != null) g2d.drawString("Player MP: " + (int) boi.getMana(), 100, 200);
         g2d.setColor(Color.red);
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
+
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//        }
     }
 
     private void drawHealthBars(Graphics2D g2d) {
