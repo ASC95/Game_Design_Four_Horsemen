@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class MovementTest extends Game implements IEventListener {
 
-    Player boi = new Player("boi", "standing", "standing.png");
+    Player boi = new Player("boi", "standing", "standing mc.png");
 
     int bossHealth = 1000;
     int maxBossHealth = 1000;
@@ -30,7 +30,7 @@ public class MovementTest extends Game implements IEventListener {
 
     Rectangle boiHealth = new Rectangle(100, 100, 400, 10);
 
-    ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
+    ActionSprite boss = new ActionSprite("boss", "standing", "war.png");
 
     private CollisionObjectContainer collisionManager = new CollisionObjectContainer("collisionManager");
 
@@ -38,7 +38,7 @@ public class MovementTest extends Game implements IEventListener {
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
 
-    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 30, 0, 0, 0);
+    AttackHitbox fireball1 = new AttackHitbox("bossAttack1", "fireball.png", 30, 0, 0, 0);
 
     TweenJuggler juggler = new TweenJuggler();
     Tween bossPositionTween = new Tween(boss);
@@ -130,22 +130,22 @@ public class MovementTest extends Game implements IEventListener {
         boss.addChild(fireball1);
         fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
 
-        Action bossStinger = new Action(60 + 20 + 30, 110, 110);
-        for (int i = 61; i < 81; i++) {
+        Action bossStinger = new Action(40 + 20 + 30, 90, 90);
+        for (int i = 41; i < 61; i++) {
             bossStinger.addHitboxes(bossAttack1, i);
             bossStinger.addHitboxes(bossAttack2, i);
             bossStinger.addHitboxes(bossAttack3, i);
         }
 
         Action bossSlash1 = new Action(0, 59, 60);
-        bossSlash1.addHitboxes(bossAttack2, 40);
-        bossSlash1.addHitboxes(bossAttack3, 40);
-        bossSlash1.addHitboxes(bossAttack3, 41);
-        bossSlash1.addHitboxes(bossAttack3, 42);
-        bossSlash1.addHitboxes(bossAttack1, 42);
+        bossSlash1.addHitboxes(bossAttack2, 10);
+        bossSlash1.addHitboxes(bossAttack3, 10);
+        bossSlash1.addHitboxes(bossAttack3, 11);
+        bossSlash1.addHitboxes(bossAttack3, 12);
+        bossSlash1.addHitboxes(bossAttack1, 12);
 
-        Action bossFireball1 = new Action(40 + 30 + 30, 100, 100);
-        for (int i = 41; i < 71; i++) {
+        Action bossFireball1 = new Action(20 + 30 + 30, 80, 80);
+        for (int i = 21; i < 51; i++) {
             bossFireball1.addHitboxes(fireball1, i);
         }
 
@@ -189,7 +189,7 @@ public class MovementTest extends Game implements IEventListener {
 
         if (boi != null) {
 //            if (boi.getVelocityX() == 0 && !boi.isJumping() && !boi.isFalling() && !boi.isAttacking()) {
-            if (!boi.isJumping() && !boi.isAttacking() && !pressedKeys.contains(KeyEvent.VK_LEFT) && !pressedKeys.contains(KeyEvent.VK_RIGHT)) {
+            if (!boi.isFalling() && !boi.isJumping() && !boi.isAttacking() && !pressedKeys.contains(KeyEvent.VK_LEFT) && !pressedKeys.contains(KeyEvent.VK_RIGHT)) {
                 boi.animate("standing");
                 boi.start();
             }
@@ -197,14 +197,14 @@ public class MovementTest extends Game implements IEventListener {
                 boi.animate("jumping");
             }
 
-            if (boi.getPosition().getY() > 540 + boi.getUnscaledHeight() / 2) {
+            if (boi.getPosition().getY() > 540 + 137 / 2) {
 //                 set landing sets jumping false, falling false, velocityY 0, hasDJ true
                 boi.setLanding();
-                boi.setPosition(boi.getPosition().x, 540 + boi.getUnscaledHeight() / 2);
+                boi.setPosition(boi.getPosition().x, 540 + 137 / 2);
             }
         }
         if (boss != null && !boss.isAttacking() && !bossMovingAction) {
-            if (bossTimer.getElapsedTime() > 3000) {
+            if (bossTimer.getElapsedTime() > 2000) {
                 boss.setVelocityX(0);
                 if (bossTimer.getElapsedTime() * 1000000 % 3 == 0) {
                     // tween to one (closer) side of the stage
@@ -234,10 +234,8 @@ public class MovementTest extends Game implements IEventListener {
                     */
                     // set animation to some "ready" stance
                     boss.setAttack("slash");
-                    /*
                     boss.animate("slash");
                     boss.start();
-                    */
                     bossMovingAction = true;
                     // boss.startAttack();
                 } else if (Math.abs(boi.getPosition().x - boss.getPosition().x) > 500){
@@ -252,7 +250,6 @@ public class MovementTest extends Game implements IEventListener {
                     boss.startAttack();
                 } else {
                     // nothing was chosen
-                    System.out.println("This should be removed!");
                     // bossTimer.resetGameClock();
                 }
             } else {
@@ -283,10 +280,10 @@ public class MovementTest extends Game implements IEventListener {
             // if currentAction.equals("slash")
             if (boss.getVelocityX() == 0) {
                 if (boi.getPosition().x > boss.getPosition().x) {
-                    boss.setVelocityX(6);
+                    boss.setVelocityX(10);
                     boss.setScaleX(1);
                 } else {
-                    boss.setVelocityX(-6);
+                    boss.setVelocityX(-10);
                     boss.setScaleX(-1);
                 }
             }
@@ -304,13 +301,13 @@ public class MovementTest extends Game implements IEventListener {
 
         if (boss != null && boss.isAttacking()) {
             // frame counter checks are cheaper?
-            if (boss.getFrameCounter() == 60 && boss.getCurrentAction().equals("stinger")) {
+            if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("stinger")) {
                 // bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 20 * 18);
                 bossStingerTween.animate(TweenableParams.X, boss.getPosition().x, 1280 - boss.getPosition().x, 1000 / 60 * 20);
                 juggler.add(bossStingerTween);
                 boss.dispatchEvent(new Event("BOSS_DASH", boss));
             }
-            if (boss.getFrameCounter() == 40 && boss.getCurrentAction().equals("fireball")) {
+            if (boss.getFrameCounter() == 20 && boss.getCurrentAction().equals("fireball")) {
                 // fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
                 fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 1000 / 60 * 40);
                 boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
@@ -480,12 +477,14 @@ public class MovementTest extends Game implements IEventListener {
         }
         /*
         if (e.getEventType().equals("GOT_HIT")) {
+            // TODO: game over condition goes here
         }
         */
         if (e.getEventType().equals("BOSS_HIT")) {
             bossWasHit = true;
             AttackHitbox x = (AttackHitbox) e.getSource();
             bossHealth -= x.getDamage();
+            // TODO: victory condition goes here
         }
     }
 

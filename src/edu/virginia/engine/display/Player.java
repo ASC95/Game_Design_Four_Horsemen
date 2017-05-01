@@ -54,9 +54,19 @@ public class Player extends ActionSprite implements IEventListener {
 
     public Player(String id, String key, String imageFileName) {
         super(id, key, imageFileName);
+        // set hitbox
+        this.setPivotPoint(62 + 71/2, 40 + 137/2);
+        this.setHitBox(62, 40, 71, 137);
         // animations
-        this.addImage("walking", "walk1.png", 1, 2);
-        this.addImage("jumping", "jump.png", 1, 1);
+        this.addImage("walking", "walk2.png", 1, 1);
+        this.addImage("jumping", "jumping.png", 1, 1);
+        this.addImage("dash", "dash.png", 1, 1);
+        this.addImageWithoutSheet("attack1", "mc attack1.1.png");
+        this.addImageWithoutSheet("attack1", "mc attack 1.2.png");
+        this.addImageWithoutSheet("attack2", "mc attack 2.1.png");
+        this.addImageWithoutSheet("attack2", "mc attack 2.2.png");
+        this.addImageWithoutSheet("attack3", "mc attack 3.1.png");
+        this.addImageWithoutSheet("attack3", "mc attack 3.2.png");
 
         // attacks no hitboxes
         this.addAttack("dash", new Action(20, 20, 20));
@@ -121,6 +131,10 @@ public class Player extends ActionSprite implements IEventListener {
         this.addAttack("jab3", jab3);
 
         this.addEventListener(this, "GOT_HIT");
+        this.addEventListener(this, "ANIM_COMPLETE");
+        this.addEventListener(this, "ATTACK_START_jab1");
+        this.addEventListener(this, "ATTACK_START_jab2");
+        this.addEventListener(this, "ATTACK_START_jab3");
         this.addEventListener(soundManager, "BOI_WALKING");
         this.addEventListener(soundManager, "BOI_STOPPED_WALKING");
         this.addEventListener(soundManager, "BOI_JUMP_1");
@@ -157,6 +171,34 @@ public class Player extends ActionSprite implements IEventListener {
             this.start();
             this.setAttack("got_hit");
             this.startAttack();
+        }
+
+        if (e.getEventType().equals("ANIM_COMPLETE")) {
+            Player x = (Player) e.getSource();
+            switch(x.getAnimate()) {
+                case "walking":
+                    break;
+                case "attack1":
+                case "attack2":
+                case "attack3":
+                    this.animate("standing");
+                    break;
+                default:
+                    this.stop();
+            }
+        }
+
+        if (e.getEventType().equals("ATTACK_START_jab1")) {
+            Player x = (Player) e.getSource();
+            x.animate("attack1");
+        } else if (e.getEventType().equals("ATTACK_START_jab2")) {
+            Player x = (Player) e.getSource();
+            x.setSpeed(5);
+            x.animate("attack2");
+        } else if (e.getEventType().equals("ATTACK_START_jab3")) {
+            Player x = (Player) e.getSource();
+            x.setSpeed(9);
+            x.animate("attack3");
         }
     }
 
@@ -264,7 +306,7 @@ public class Player extends ActionSprite implements IEventListener {
                 this.setVelocityX(-10);
                 if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
                     dispatchEvent(new Event("BOI_WALKING", this));
-                    this.setSpeed(6);
+                    this.setSpeed(10);
                     this.animate("walking");
                     this.start();
                 }
@@ -273,7 +315,7 @@ public class Player extends ActionSprite implements IEventListener {
                 this.setVelocityX(10);
                 if (!this.isJumping() && !this.isFalling() && !this.getAnimate().equals("walking")) {
                     dispatchEvent(new Event("BOI_WALKING", this));
-                    this.setSpeed(6);
+                    this.setSpeed(10);
                     this.animate("walking");
                     this.start();
                 }
@@ -289,7 +331,7 @@ public class Player extends ActionSprite implements IEventListener {
                     if (!this.isJumping() && !this.isFalling()) {
                         upWasPressed = true;
                         this.setPosition((int) getPosition().getX(), (int) getPosition().getY() - 1);
-                        this.setVelocityY(-35);
+                        this.setVelocityY(-30);
                         dispatchEvent(new Event("BOI_JUMP_1", this));
                         this.setJumping(true);
                         this.setFalling(false);
@@ -297,7 +339,7 @@ public class Player extends ActionSprite implements IEventListener {
                         this.start();
                     } else if (this.canDJ()) {
                         upWasPressed = true;
-                        this.setVelocityY(-30);
+                        this.setVelocityY(-25);
                         dispatchEvent(new Event("BOI_JUMP_2", this));
                         this.setJumping(true);
                         this.setFalling(false);
@@ -308,12 +350,12 @@ public class Player extends ActionSprite implements IEventListener {
                     if (this.canDJ()) {
                         // if he can double jump and is jumping, then he's using his grounded jump
                         if (this.isJumping() && jumpFrameCounter > 5 && jumpFrameCounter < 16) {
-                            this.setVelocityY(-25 - 6 + jumpFrameCounter);
+                            this.setVelocityY(-20 - 6 + jumpFrameCounter);
                         }
                     } else {
                         // i did this because the two jumps should have different timing windows
                         if (this.isJumping() && jumpFrameCounter > 5 && jumpFrameCounter < 12) {
-                            this.setVelocityY(-20 - 6 + jumpFrameCounter);
+                            this.setVelocityY(-15 - 6 + jumpFrameCounter);
                         }
                     }
                     jumpFrameCounter++;
@@ -334,17 +376,33 @@ public class Player extends ActionSprite implements IEventListener {
             dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
             if (!aWasPressed && !this.isJumping() && !this.isFalling()) {
                 if (this.getCurrentAction() == null) {
-                    this.animate("standing");
+                    this.animate("attack1");
+                    this.setSpeed(4);
+                    this.start();
+
                     this.setVelocityX(0);
                     this.setAttack("jab1");
                     this.startAttack();
                     dispatchEvent(new Event("BOI_WHIFF_1", this));
                     aWasPressed = true;
                 } else if (!aWasPressed && this.getCurrentAction().equals("jab1")) {
+                    /* these can't happen here
+                    put them in event
+                    this.animate("attack2");
+                    this.setSpeed(5);
+                    this.stop();
+                    */
+
                     this.setAttack("jab2");
                     dispatchEvent(new Event("BOI_WHIFF_2", this));
                     aWasPressed = true;
                 } else if (!aWasPressed && this.getCurrentAction().equals("jab2")) {
+                    /*
+                    this.animate("attack3");
+                    this.setSpeed(9);
+                    this.stop();
+                    */
+
                     this.setAttack("jab3");
                     dispatchEvent(new Event("BOI_WHIFF_3", this));
                     aWasPressed = true;
@@ -361,10 +419,10 @@ public class Player extends ActionSprite implements IEventListener {
                     shiftWasPressed = true;
                     // replace with dashing animation
                     dispatchEvent(new Event("BOI_STOPPED_WALKING", this));
-                    this.animate("jumping");
+                    this.animate("dash");
                     this.start();
                     this.setAttack("dash");
-                    if (this.getiFrames() < 10) {
+                    if (this.getiFrames() < 12) {
                         this.setiFrames(12);
                     }
                     this.startAttack();
