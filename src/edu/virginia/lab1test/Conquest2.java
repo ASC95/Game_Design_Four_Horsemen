@@ -533,8 +533,8 @@ public class Conquest2 extends Game implements IEventListener {
         super.draw(g);
 
         if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
             /*
             for(DisplayObject child : boi.getChildren()) {
                 g2d.setColor(Color.red);

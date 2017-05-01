@@ -141,8 +141,8 @@ public class Famine extends Game implements IEventListener {
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
         boss.setPosition(100, 540);
 
-        Action lightningColumnAction = new Action(30, 30, 30);
-        lightningColumnAction.addHitboxes(lightningColumnHitBox, 15);
+        Action lightningColumnAction = new Action(50, 50, 50);
+        lightningColumnAction.addHitboxes(lightningColumnHitBox, 25);
         boss.addAttack("lightningColumnAttack", lightningColumnAction);
 
         boss.addEventListener(soundManager, "LIGHTNING_STRIKE");
@@ -231,12 +231,12 @@ public class Famine extends Game implements IEventListener {
                         lightningColumnHitBox.setPosition((int) boi.getPosition().getX() - lightningColumnHitBox.getUnscaledWidth() / 2, 0);
                         lightning.setPosition((int) boi.getPosition().getX() - lightning.getUnscaledWidth() / 2, 0);
                     }
-                    if (boss.getFrameCounter() == 15) {
+                    if (boss.getFrameCounter() == 25) {
                         lightning.setVisible(true);
                         lightning.start();
                         boss.dispatchEvent(new Event("LIGHTNING_STRIKE", boss));
                     }
-                    if (boss.getFrameCounter() > 15 + lightning.getNumFrames("lightningList") * lightning.getSpeed()) {
+                    if (boss.getFrameCounter() > 25 + lightning.getNumFrames("lightningList") * lightning.getSpeed()) {
                         lightning.stop();
                         lightning.setCurrentFrame(0);
                         lightning.setVisible(false);
@@ -354,12 +354,14 @@ public class Famine extends Game implements IEventListener {
 
         if (boi != null) {
             if (boi.getHealth() <= 0) {
+                boss.dispatchEvent(new Event("STOP_LIGHTNING_ARC", boss));
                 dispatchEvent(new Event("gameOver", this));
                 super.exitGame();
             }
         }
         if (boss != null) {
             if (bossHealth <= 0) {
+                boss.dispatchEvent(new Event("STOP_LIGHTNING_ARC", boss));
                 dispatchEvent(new Event("victory", this));
                 super.exitGame();
             }
@@ -408,10 +410,10 @@ public class Famine extends Game implements IEventListener {
         g2d.setColor(Color.red);
         g2d.drawString("Boss HP: " + bossHealth, 1100, 100);
 
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-        }
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//        }
     }
 
     private void drawHealthBars(Graphics2D g2d) {

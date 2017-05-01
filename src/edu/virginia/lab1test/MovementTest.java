@@ -124,11 +124,11 @@ public class MovementTest extends Game implements IEventListener {
         boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
 
         boss.addChild(bossAttack1);
-        bossAttack1.setPosition(boss.getUnscaledWidth() / 2, 0);
+        bossAttack1.setPosition(boss.getUnscaledWidth() / 2 - 70, 0);
         boss.addChild(bossAttack2);
-        bossAttack2.setPosition(boss.getUnscaledWidth() / 2, -boss.getUnscaledHeight() / 2);
+        bossAttack2.setPosition(boss.getUnscaledWidth() / 2 - 70, -boss.getUnscaledHeight() / 2);
         boss.addChild(bossAttack3);
-        bossAttack3.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+        bossAttack3.setPosition(boss.getUnscaledWidth() - 70, -boss.getUnscaledHeight() / 4);
         boss.addChild(fireball1);
         fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
 
@@ -140,14 +140,14 @@ public class MovementTest extends Game implements IEventListener {
         }
 
         Action bossSlash1 = new Action(0, 59, 60);
-        bossSlash1.addHitboxes(bossAttack2, 10);
-        bossSlash1.addHitboxes(bossAttack3, 10);
-        bossSlash1.addHitboxes(bossAttack3, 11);
-        bossSlash1.addHitboxes(bossAttack3, 12);
-        bossSlash1.addHitboxes(bossAttack1, 12);
+        bossSlash1.addHitboxes(bossAttack2, 25);
+        bossSlash1.addHitboxes(bossAttack3, 25);
+        bossSlash1.addHitboxes(bossAttack3, 26);
+        bossSlash1.addHitboxes(bossAttack3, 27);
+        bossSlash1.addHitboxes(bossAttack1, 27);
 
-        Action bossFireball1 = new Action(20 + 30 + 30, 80, 80);
-        for (int i = 21; i < 51; i++) {
+        Action bossFireball1 = new Action(35 + 30 + 30, 95, 95);
+        for (int i = 36; i < 66; i++) {
             bossFireball1.addHitboxes(fireball1, i);
         }
 
@@ -313,9 +313,9 @@ public class MovementTest extends Game implements IEventListener {
                 juggler.add(bossStingerTween);
                 boss.dispatchEvent(new Event("BOSS_DASH", boss));
             }
-            if (boss.getFrameCounter() == 20 && boss.getCurrentAction().equals("fireball")) {
+            if (boss.getFrameCounter() == 35 && boss.getCurrentAction().equals("fireball")) {
                 // fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 40 * 21.33);
-                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 1000 / 60 * 40);
+                fireballTween.animate(TweenableParams.X, boss.getUnscaledWidth() / 2, 1280, 1000 / 60 * 55);
                 boss.dispatchEvent(new Event("BOSS_FIREBALL", boss));
                 juggler.add(fireballTween);
             }

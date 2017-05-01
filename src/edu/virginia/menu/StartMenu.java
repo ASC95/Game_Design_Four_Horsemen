@@ -87,7 +87,7 @@ public class StartMenu extends Application implements IEventListener {
 
         try {
             soundManager.stopAllMusic();
-            soundManager.loadMusic("menuMusic", "menu.wav");
+            soundManager.loadMusic("menuMusic", "adventure2drams.wav");
             soundManager.playMusic("menuMusic");
         } catch (Exception e) {
             e.printStackTrace();

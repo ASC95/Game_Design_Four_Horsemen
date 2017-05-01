@@ -20,7 +20,7 @@ public class Tutorial extends Game implements IEventListener {
     Player boi = new Player("boi", "standing", "standing mc.png");
 
     int bossHealth = 1000;
-    int maxBossHealth = 1000;
+    int maxBossHealth = 600;
     int loadingFrames = 0;
 
     Sprite background = new Sprite("background", "warBackground.png");
@@ -31,7 +31,7 @@ public class Tutorial extends Game implements IEventListener {
 
     ActionSprite boss = new ActionSprite("boss", "standing", "dummy.png");
 
-    AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
+    AttackHitbox bossAttack1 = new AttackHitbox("bossAttack1", "bossAttack1.png", 5, 0, 0, 0);
     AttackHitbox bossAttack2 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
     AttackHitbox bossAttack3 = new AttackHitbox("bossAttack1", "bossAttack1.png", 40, 0, 0, 0);
 
@@ -122,9 +122,9 @@ public class Tutorial extends Game implements IEventListener {
         boi.setMana(200);
 
         boi.setGravity(2);
-        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
+//        boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
 //        boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
-        boi.setHitBox(90, 0, boi.getUnscaledWidth() - 180, boi.getUnscaledHeight());
+//        boi.setHitBox(90, 0, boi.getUnscaledWidth() - 180, boi.getUnscaledHeight());
         boi.setPosition(400, 520 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
@@ -393,10 +393,10 @@ public class Tutorial extends Game implements IEventListener {
         if (instructions.get(instructionCounter + "b") != null) {
             drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
         }
-        if (boi != null) {
-            g2d.setColor(Color.red);
-            g2d.draw(boi.getHitBox());
-        }
+//        if (boi != null) {
+//            g2d.setColor(Color.red);
+//            g2d.draw(boi.getHitBox());
+//        }
     }
 
     private void drawInstruction(Graphics2D g2d, String inst, int x, int y) {
