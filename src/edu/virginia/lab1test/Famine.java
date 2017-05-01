@@ -135,7 +135,6 @@ public class Famine extends Game implements IEventListener {
         boi.addEventListener(soundManager, "BOI_INJURED_0");//boi listens for when he is injured
         boi.addEventListener(soundManager, "BOI_HEALED");//soundManager listens for when boi heals
         boi.addEventListener(soundManager, "BOI_DASH");
-//        boi.addEventListener(soundManager, "BOI_FOOTSTEP");
 
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
         boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
@@ -146,6 +145,8 @@ public class Famine extends Game implements IEventListener {
         boss.addAttack("lightningColumnAttack", lightningColumnAction);
 
         boss.addEventListener(soundManager, "LIGHTNING_STRIKE");
+        boss.addEventListener(soundManager, "LIGHTNING_ARC");
+        boss.addEventListener(soundManager, "STOP_LIGHTNING_ARC");
 
 //        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
 //        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
@@ -259,6 +260,7 @@ public class Famine extends Game implements IEventListener {
                     rightPillarTween.animate(TweenableParams.X, 1280 - pillarRight.getUnscaledWidth(), 640 - pillarRight.getUnscaledWidth() / 2, 2400);
                     juggler.add(leftPillarTween);
                     juggler.add(rightPillarTween);
+                    boss.dispatchEvent(new Event("LIGHTNING_ARC", boss));
                 } else {
                     lightning.setPosition((int) pillarLeft.getPosition().getX() + pillarLeft.getUnscaledWidth() / 2 - lightning.getUnscaledWidth() / 2, 0);
                     lightning2.setPosition((int) pillarRight.getPosition().getX() + pillarRight.getUnscaledWidth() / 2 - lightning2.getUnscaledWidth() / 2, 0);
@@ -289,6 +291,7 @@ public class Famine extends Game implements IEventListener {
                 lightning2.setCurrentFrame(0);
                 pillarsReversed = false;
                 launchPillarAttack = true;
+                boss.dispatchEvent(new Event("STOP_LIGHTNING_ARC", boss));
                 if (boi.getPosition().getX() < 640) {
                     boss.setPosition(1180, (int)boss.getPosition().getY());
                 } else {

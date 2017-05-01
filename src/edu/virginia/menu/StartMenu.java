@@ -79,8 +79,8 @@ public class StartMenu extends Application implements IEventListener {
 
     private static Scene getStartMenu() {
         GridPane gridPane = new GridPane();
-        Image warImage = new Image("file:resources" + File.separator + "menuImage.png", 1280, 720, false, false);
-        gridPane.setBackground(new Background(new BackgroundImage(warImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+//        Image menuImage = new Image("file:resources" + File.separator + "menuImage.png", 1280, 720, false, false);
+//        gridPane.setBackground(new Background(new BackgroundImage(menuImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         formatGridPane(gridPane);
         addRows(gridPane);
         addColumns(gridPane);
@@ -150,7 +150,7 @@ public class StartMenu extends Application implements IEventListener {
 //        gridPane.setVgap(VERTICAL_SPACE);
 //        Border border = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 //        gridPane.setBorder(border);
-//        gridPane.setGridLinesVisible(true);
+        gridPane.setGridLinesVisible(true);
     }
 
     @Override
@@ -183,32 +183,34 @@ public class StartMenu extends Application implements IEventListener {
 
         Text warText = new Text("War");
         warText.setFont(new Font(30));
-        warText.setFill(Color.WHITE);
+        warText.setFill(Color.BLACK);
         GridPane.setValignment(warText, VPos.BOTTOM);
-        gridPane.add(warText, 1, 1);
+        gridPane.add(warText, 2, 1);
 
-        Text famineText = new Text("Conquest");
+        Text conquestText = new Text("Conquest");
+        conquestText.setFont(new Font(30));
+        conquestText.setFill(Color.BLACK);
+        GridPane.setValignment(conquestText, VPos.BOTTOM);
+        gridPane.add(conquestText, 1, 2);
+
+        Text famineText = new Text("Famine");
         famineText.setFont(new Font(30));
-        famineText.setFill(Color.WHITE);
+        famineText.setFill(Color.BLACK);
         GridPane.setValignment(famineText, VPos.BOTTOM);
-        gridPane.add(famineText, 2, 1);
+        gridPane.add(famineText, 2, 2);
     }
 
     private static void addRows(GridPane gridPane) {
         RowConstraints row0 = new RowConstraints();
-        row0.setPercentHeight(30);
+        row0.setPercentHeight(26);
         row0.setValignment(VPos.CENTER);
         RowConstraints row1 = new RowConstraints();
-        formatRow(row1);
-        row1.setPercentHeight(40);
+        row1.setValignment(VPos.TOP);
+        row1.setPercentHeight(37);
         RowConstraints row2 = new RowConstraints();
-        formatRow(row2);
-        row2.setPercentHeight(30);
+        row2.setValignment(VPos.TOP);
+        row2.setPercentHeight(37);
         gridPane.getRowConstraints().addAll(row0, row1, row2);
-    }
-
-    private static void formatRow(RowConstraints row) {
-        row.setValignment(VPos.CENTER);
     }
 
     private static void addColumns(GridPane gridPane) {
@@ -232,21 +234,43 @@ public class StartMenu extends Application implements IEventListener {
 //        Most methods/constructors in JavaFX that take a string as a parameter in this way
 //        (i.e. specifying a resource) do so via string URI's rather than just a plain file path or URL.
     private static void addButtons(GridPane gridPane) {
+        Button tutorialBtn = new Button();
+        formatButton(tutorialBtn);
+        formatTutorialButton(tutorialBtn);
         Button warBtn = new Button();
         formatButton(warBtn);
         formatWarButton(warBtn);
-
         Button conquestBtn = new Button();
         formatConquestButton(conquestBtn);
         formatButton(conquestBtn);
-
         Button famineButton = new Button();
         formatFamineButton(famineButton);
         formatButton(famineButton);
+        gridPane.add(tutorialBtn, 1, 1);
+        gridPane.add(warBtn, 2, 1);
+        gridPane.add(conquestBtn, 1, 2);
+        gridPane.add(famineButton, 2, 2);
+    }
 
-        gridPane.add(warBtn, 1, 1);
-        gridPane.add(conquestBtn, 2, 1);
-        gridPane.add(famineButton, 1, 2);
+    private static void formatTutorialButton(Button tutorialBtn) {
+        tutorialBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        try {
+                            soundManager.stopAllMusic();
+                            soundManager.loadMusic("warMusic", "war.wav");
+                            soundManager.playMusic("warMusic");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        MovementTest warBoss = new MovementTest();
+                        warBoss.addEventListener(getInstance(), "gameOver");
+                        warBoss.addEventListener(getInstance(), "victory");
+                        warBoss.start();
+                        theStage.setIconified(true);
+                    }
+                });
     }
 
     private static void formatWarButton(Button warBtn) {

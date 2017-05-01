@@ -34,14 +34,13 @@ public class SoundManager implements IEventListener {
             loadSoundEffect("bossSlash", "bossSlash.wav");
             loadSoundEffect("boiDash", "boiDash.wav");
             loadSoundEffect("lightningStrike", "lightning_short_quiet.wav");
-//            loadSoundEffect("footstep", "footstep.wav");
             loadMusic("footstep", "footsteps.wav");
             loadSoundEffect("jump1", "jump1.wav");
             loadSoundEffect("jump2", "jump2.wav");
-//            loadSoundEffect("boiWhiff", "boiWhiff.wav");
             loadSoundEffect("boiWhiff1", "boiWhiff1.wav");
             loadSoundEffect("boiWhiff2", "boiWhiff2.wav");
             loadSoundEffect("boiWhiff3", "boiWhiff3.wav");
+            loadMusic("lightningArc", "lightningArc.wav");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,6 +89,10 @@ public class SoundManager implements IEventListener {
             playSoundEffect("boiWhiff2");
         } else if (event.getEventType().equals("BOI_WHIFF_3")) {
             playSoundEffect("boiWhiff3");
+        } else if (event.getEventType().equals("LIGHTNING_ARC")) {
+            playMusic("lightningArc");
+        } else if (event.getEventType().equals("STOP_LIGHTNING_ARC")) {
+            stopMusic("lightningArc");
         }
     }
 

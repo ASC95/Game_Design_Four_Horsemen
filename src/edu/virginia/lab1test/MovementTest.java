@@ -25,8 +25,8 @@ public class MovementTest extends Game implements IEventListener {
     Sprite background = new Sprite("background", "warBackground.png");
     PhysicsSprite enemy = new PhysicsSprite("enemy", "standing", "stand.png");
     PhysicsSprite enemy2 = new PhysicsSprite("enemy2", "standing", "stand.png");
-    PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
-    PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
+//    PhysicsSprite platform1 = new PhysicsSprite("platform1", "standing", "platform.png");
+//    PhysicsSprite platform2 = new PhysicsSprite("platform2", "standing", "platform.png");
 
     Rectangle boiHealth = new Rectangle(100, 100, 400, 10);
 
@@ -84,6 +84,7 @@ public class MovementTest extends Game implements IEventListener {
         this.addChild(background);
         this.addChild(boss);
         this.addChild(boi);
+
         boi.setMaxHP(200);
         boi.setHealth(200);
         boi.setMaxMP(200);
