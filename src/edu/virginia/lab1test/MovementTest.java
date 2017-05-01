@@ -69,7 +69,7 @@ public class MovementTest extends Game implements IEventListener {
 
 
     public MovementTest() {
-        super("Movement", 1280, 720);
+        super("War", 1280, 720);
         // 1920 - 1280 = 640
         // 1080 - 720 = 360
 //         see physics sprite notes.
@@ -91,8 +91,10 @@ public class MovementTest extends Game implements IEventListener {
         boi.setMana(200);
 
         boi.setGravity(2);
+        /*
         boi.setPivotPoint(new Point(boi.getUnscaledWidth() / 2, boi.getUnscaledHeight() / 2));
         boi.setHitBox(0, 0, boi.getUnscaledWidth(), boi.getUnscaledHeight());
+        */
         boi.setPosition(1280 / 2, 540 + boi.getUnscaledHeight() / 2 + 1);
 
         boi.addEventListener(this, "ATTACK_END" + boi.getId());
@@ -202,6 +204,10 @@ public class MovementTest extends Game implements IEventListener {
                 boi.setLanding();
                 boi.setPosition(boi.getPosition().x, 540 + 137 / 2);
             }
+            // bounds checking
+            if (boi.getPosition().x < 62) boi.setPosition(62, boi.getPosition().y);
+            if (boi.getPosition().x > 1218) boi.setPosition(1218, boi.getPosition().y);
+
         }
         if (boss != null && !boss.isAttacking() && !bossMovingAction) {
             if (bossTimer.getElapsedTime() > 2000) {

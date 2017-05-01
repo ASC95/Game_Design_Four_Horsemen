@@ -393,10 +393,10 @@ public class Tutorial extends Game implements IEventListener {
         if (instructions.get(instructionCounter + "b") != null) {
             drawInstruction(g2d, instructions.get(instructionCounter + "b"), 350, 60);
         }
-//        if (boi != null) {
-//            g2d.setColor(Color.red);
-//            g2d.draw(boi.getHitBox());
-//        }
+        if (boi != null) {
+            g2d.setColor(Color.red);
+            g2d.draw(boi.getHitBox());
+        }
     }
 
     private void drawInstruction(Graphics2D g2d, String inst, int x, int y) {
