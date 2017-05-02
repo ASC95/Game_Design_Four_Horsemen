@@ -108,7 +108,7 @@ public class MovementTest extends Game implements IEventListener {
         this.addChild(enemy2);
         */
         boss.setPivotPoint(new Point(boss.getUnscaledWidth() / 2, boss.getUnscaledHeight() / 2));
-        boss.setHitBox(0, 0, boss.getUnscaledWidth(), boss.getUnscaledHeight());
+        boss.setHitBox(60, 131, 106, 245);
 
         // how to set things based on bottom?
         // i want everything on the floor...
@@ -118,19 +118,23 @@ public class MovementTest extends Game implements IEventListener {
         enemy2.setPosition(1820, 900);
         */
 
-        boss.setPosition(100, 540);
-        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
-        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
-        boss.addImage("fireball", "bossPlaceHolder4.png", 1, 1);
+        boss.setPosition(100, 480);
+//        boss.addImage("stinger", "bossPlaceholder2.png", 1, 1);
+        boss.addImageWithoutSheet("stinger", "war charge1.png");
+        boss.addImageWithoutSheet("stinger", "war charge2.png");
+//        boss.addImage("slash", "bossPlaceholder3.png", 1, 1);
+        boss.addImageWithoutSheet("slash", "war slash1.png");
+        boss.addImageWithoutSheet("slash", "war slash2.png");
+        boss.addImage("fireball", "war fire ball attack.png", 1, 1);
 
         boss.addChild(bossAttack1);
-        bossAttack1.setPosition(boss.getUnscaledWidth() / 2 - 70, 0);
+        bossAttack1.setPosition(boss.getUnscaledWidth() / 2 - 70 - 235, 0);
         boss.addChild(bossAttack2);
-        bossAttack2.setPosition(boss.getUnscaledWidth() / 2 - 70, -boss.getUnscaledHeight() / 2);
+        bossAttack2.setPosition(boss.getUnscaledWidth() / 2 - 70 - 235, -boss.getUnscaledHeight() / 2);
         boss.addChild(bossAttack3);
-        bossAttack3.setPosition(boss.getUnscaledWidth() - 70, -boss.getUnscaledHeight() / 4);
+        bossAttack3.setPosition(boss.getUnscaledWidth() - 70 - 235, -boss.getUnscaledHeight() / 4);
         boss.addChild(fireball1);
-        fireball1.setPosition(boss.getUnscaledWidth(), -boss.getUnscaledHeight() / 4);
+        fireball1.setPosition(boss.getUnscaledWidth() - boss.getUnscaledWidth()/2, -boss.getUnscaledHeight() / 4 + 50);
 
         Action bossStinger = new Action(40 + 20 + 30, 90, 90);
         for (int i = 41; i < 61; i++) {
@@ -220,14 +224,18 @@ public class MovementTest extends Game implements IEventListener {
                         bossPositionTween.animate(TweenableParams.X, boss.getPosition().x, 1180, 1000 / 60 * 30);
                         juggler.add(bossPositionTween);
                         boss.setScaleX(-1);
+                        boss.setHitBox(240, 131, 330, 245);
+
                     } else {
                         // bossPositionTween.animate(TweenableParams.X, boss.getPosition().x + 1, 100, boss.getPosition().x / 60 * 30);
                         bossPositionTween.animate(TweenableParams.X, boss.getPosition().x, 100, 1000 / 60 * 30);
                         juggler.add(bossPositionTween);
                         boss.setScaleX(1);
+                        boss.setHitBox(60, 131, 106, 245);
                     }
                     boss.setAttack("stinger");
                     boss.animate("stinger");
+                    boss.setSpeed(50);
                     boss.start();
                     boss.startAttack();
                 } else if (bossTimer.getElapsedTime() * 1000000 % 3 == 1) {
@@ -239,16 +247,26 @@ public class MovementTest extends Game implements IEventListener {
                     }
                     */
                     // set animation to some "ready" stance
+                	if(boss.getScaleX() > 0) {
+                        boss.setHitBox(60, 131, 106, 245);
+                	} else {
+                        boss.setHitBox(240, 131, 330, 245);
+
+                	}
                     boss.setAttack("slash");
                     boss.animate("slash");
+                    boss.setSpeed(30);
                     boss.start();
                     bossMovingAction = true;
+                    
                     // boss.startAttack();
                 } else if (Math.abs(boi.getPosition().x - boss.getPosition().x) > 500){
                     if (boss.getPosition().x < boi.getPosition().x) {
                         boss.setScaleX(1);
+                        boss.setHitBox(60, 131, 106, 245);
                     } else {
                         boss.setScaleX(-1);
+                        boss.setHitBox(240, 131, 330, 245);
                     }
                     boss.setAttack("fireball");
                     boss.animate("fireball");
@@ -260,6 +278,12 @@ public class MovementTest extends Game implements IEventListener {
                 }
             } else {
                 boss.animate("standing");
+            	if(boss.getScaleX() > 0) {
+                    boss.setHitBox(60, 131, 106, 245);
+            	} else {
+                    boss.setHitBox(240, 131, 330, 245);
+
+            	}
                 boss.start();
                 /*
                 if (bossMoveTimer.getElapsedTime() > 600) {
@@ -288,13 +312,23 @@ public class MovementTest extends Game implements IEventListener {
                 if (boi.getPosition().x > boss.getPosition().x) {
                     boss.setVelocityX(10);
                     boss.setScaleX(1);
+                    boss.setHitBox(60, 131, 106, 245);
+
                 } else {
                     boss.setVelocityX(-10);
                     boss.setScaleX(-1);
+                    boss.setHitBox(240, 131, 330, 245);
+
                 }
             }
             if (Math.abs(boi.getPosition().x - boss.getPosition().x) < 300) {
-                boss.startAttack();
+            	if(boss.getScaleX() > 0) {
+                    boss.setHitBox(60, 131, 106, 245);
+            	} else {
+                    boss.setHitBox(240, 131, 330, 245);
+
+            	}
+            	boss.startAttack();
                 boss.animate("slash");
                 boss.dispatchEvent(new Event("BOSS_SLASH", boss));
                 boss.start();

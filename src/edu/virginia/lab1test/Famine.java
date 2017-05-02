@@ -33,7 +33,7 @@ public class Famine extends Game implements IEventListener {
     Sprite platform2 = new Sprite("plat2", "platform2.png");
     ArrayList<Sprite> platforms = new ArrayList<>();
 
-    ActionSprite boss = new ActionSprite("boss", "standing", "bossPlaceholder1.png");
+    ActionSprite boss = new ActionSprite("boss", "standing", "famine.png");
     boolean pillarAttackActive = false;
     boolean pillarsReversed = false;
     boolean launchPillarAttack = true;

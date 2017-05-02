@@ -58,7 +58,9 @@ public class Player extends ActionSprite implements IEventListener {
         this.setPivotPoint(62 + 71/2, 40 + 137/2);
         this.setHitBox(62, 40, 71, 137);
         // animations
-        this.addImage("walking", "walk2.png", 1, 1);
+//        this.addImage("walking", "walk2.png", 1, 1);
+        this.addImageWithoutSheet("walking", "walk.png");
+        this.addImageWithoutSheet("walking", "walk2.png");
         this.addImage("jumping", "jumping.png", 1, 1);
         this.addImage("dash", "dash.png", 1, 1);
         this.addImageWithoutSheet("attack1", "mc attack1.1.png");
