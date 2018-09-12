@@ -6,44 +6,55 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Collection;
 
-public class DisplayObjectContainer extends DisplayObject{
+//public class DisplayObjectContainer extends DisplayObject{
+public class DisplayObjectContainer<T extends DisplayObject> extends DisplayObject {
 	
-	private ArrayList<DisplayObject> children;
+	//private ArrayList<DisplayObject> children;
+    private ArrayList<T> children;
 	private boolean invisible;
 
 	public DisplayObjectContainer(String id) {
 		super(id);
-		children = new ArrayList<DisplayObject>();
+		//children = new ArrayList<DisplayObject>();
+        children = new ArrayList<>();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public DisplayObjectContainer(String id, String imageFileName) {
 		super(id, imageFileName);
-		children = new ArrayList<DisplayObject>();
+		//children = new ArrayList<DisplayObject>();
+        children = new ArrayList<>();
 
 		// TODO Auto-generated constructor stub
 	}
 
 	public DisplayObjectContainer(String id, Point position) {
 		super(id, position);
-		children = new ArrayList<DisplayObject>();
+		//children = new ArrayList<DisplayObject>();
+        children = new ArrayList<>();
 
 	}
 	
 	public DisplayObjectContainer(String id, String fileName, boolean visible, Point position) {
 		super(id, fileName, visible, position);
-		children = new ArrayList<DisplayObject>();
+		//children = new ArrayList<DisplayObject>();
+        children = new ArrayList<>();
 
 	}
 
-	public ArrayList<DisplayObject> getChildren() {
+	//public ArrayList<DisplayObject> getChildren() {
+	//	return children;
+	//}
+
+	public Collection<T> getChildren() {
 		return children;
 	}
 
-	public void setChildren(ArrayList<DisplayObject> children) {
-		this.children = children;
-	}
+	//public void setChildren(ArrayList<DisplayObject> children) {
+	//	this.children = children;
+	//}
 	
 	public DisplayObject getChild(String child) {
 		for(int i = 0; i < this.children.size(); i++) {
@@ -63,24 +74,26 @@ public class DisplayObjectContainer extends DisplayObject{
 		return invisible;
 	}
 
-	public void setInvisible(boolean invisible) {
-		if(invisible) {
-			for(int i = 0; i < this.children.size(); i++) {
-				this.getChildren().get(i).setVisible(false);
-			}
-		} else {
-			for(int i = 0; i < this.children.size(); i++) {
-				this.getChildren().get(i).setVisible(true);
-			}
-		}
-	}
+	//public void setInvisible(boolean invisible) {
+	//	if(invisible) {
+	//		for(int i = 0; i < this.children.size(); i++) {
+	//			this.getChildren().get(i).setVisible(false);
+	//		}
+	//	} else {
+	//		for(int i = 0; i < this.children.size(); i++) {
+	//			this.getChildren().get(i).setVisible(true);
+	//		}
+	//	}
+	//}
 
-	public void addChild(DisplayObject child) {
+	//public void addChild(DisplayObject child) {
+    public void addChild(T child) {
 		child.setParent(this);
 		this.children.add(child);
 	}
 	
-	public void addChildAtIndex(int index, DisplayObject child) {
+	//public void addChildAtIndex(int index, DisplayObject child) {
+    public void addChildAtIndex(int index, T child) {
 		this.children.add(index, child);
 	}
 	

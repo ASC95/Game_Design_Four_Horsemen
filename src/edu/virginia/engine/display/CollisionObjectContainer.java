@@ -5,21 +5,35 @@ import java.util.ArrayList;
 /**
  * Created by austinchang on 4/18/17.
  */
-public class CollisionObjectContainer extends DisplayObjectContainer {
+//public class CollisionObjectContainer extends DisplayObjectContainer {
+public class CollisionObjectContainer<T extends PhysicsSprite> extends DisplayObjectContainer<T> {
 
     public CollisionObjectContainer(String id) {
         super(id);
     }
 
+    //@Override
+    //protected void update(ArrayList<Integer> pressedKeys) {
+    //    super.update(pressedKeys);
+    //    for (DisplayObject child1 : getChildren()) {
+    //        ((PhysicsSprite) child1).setFalling(true);
+    //        for (DisplayObject child2 : getChildren()) {
+    //            if (areColliding((PhysicsSprite) child1, (PhysicsSprite) child2)) {
+    //                handleCollision((PhysicsSprite) child1, (PhysicsSprite) child2);
+    //                  System.out.println("Collision between " + child1.getId() + " and " + child2.getId());
+    //            }
+    //        }
+    //    }
+    //}
+
     @Override
     protected void update(ArrayList<Integer> pressedKeys) {
         super.update(pressedKeys);
-        for (DisplayObject child1 : getChildren()) {
-            ((PhysicsSprite) child1).setFalling(true);
-            for (DisplayObject child2 : getChildren()) {
-                if (areColliding((PhysicsSprite) child1, (PhysicsSprite) child2)) {
-                    handleCollision((PhysicsSprite) child1, (PhysicsSprite) child2);
-//                    System.out.println("Collision between " + child1.getId() + " and " + child2.getId());
+        for (T child1 : getChildren()) {
+            child1.setFalling(true);
+            for (T child2 : getChildren()) {
+                if (areColliding(child1, child2)) {
+                    handleCollision(child1, child2);
                 }
             }
         }

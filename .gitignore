@@ -3,3 +3,4 @@
 
 # Don't mess up each other's Intellij configurations #
 .idea/
+out/

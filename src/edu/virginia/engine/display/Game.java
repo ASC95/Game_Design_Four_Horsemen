@@ -20,7 +20,7 @@ import javax.swing.WindowConstants;
  * Highest level class for creating a game in Java.
  * 
  * */
-public class Game extends DisplayObjectContainer implements ActionListener, KeyListener {
+public class Game extends DisplayObjectContainer<DisplayObject> implements ActionListener, KeyListener {
 
 	/* Frames per second this game runs at */
 	private int FRAMES_PER_SEC = 60;
