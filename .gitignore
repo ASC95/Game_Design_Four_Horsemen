@@ -1,8 +1,8 @@
 # Remember to recompile every time#
 *.class
-.classpath
-.project
-.iml
+*.classpath
+*.project
+*.iml
 
 # Don't mess up each other's Intellij configurations #
 .idea/
