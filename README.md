@@ -20,4 +20,5 @@ All documents can be found in the “doc” folder.
 -You can jump through platforms to land on them. Press the “down” arrow key to fall through a platform when you are standing on it.
 
 # Running the game
-Please run the main method of the “startMenu” class
+Run the main method of the “edu.virginia.menu.StartMenu.java"
+Alternatively, click on the jar file inside of the runnable-game folder.
